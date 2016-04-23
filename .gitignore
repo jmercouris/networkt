@@ -1,6 +1,7 @@
 # Ignore project specific folders
 links
 resources
+data
 
 # Ignore virutalenv
 environment
