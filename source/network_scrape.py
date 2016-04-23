@@ -1,8 +1,10 @@
-from twython import Twython
 import configparser
+import time
+from initialize import Base, User
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from initialize import Base, User
+from twython import Twython
+
 
 settings = configparser.ConfigParser()
 settings.read('configuration.ini')
@@ -19,17 +21,32 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
-def main():
+def pull_remote_graph(scope_limit=100, screen_name='FactoryBerlin'):
     twitter = Twython(APP_KEY, APP_SECRET,
                       OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
-    twitter.get_home_timeline()
-
-    instance = User(symbol='tst_usr')
-    session.add(instance)
+    next_cursor = -1
+    while(next_cursor and scope_limit):
+        # Limit how many Total Friends we get data for
+        scope_limit -= 1
         
-    # Commit Changes to the Database
-    session.commit()
+        # Process the next Cursor set of Data
+        search = twitter.get_friends_list(screen_name=screen_name, count=200, cursor=next_cursor)
+        for result in search['users']:
+            # Check to see if Parameters Exist
+            # args = {key: value for key, value in results.items() if key in User.__mapper__.attrs}
+            instance = User(result)
+            session.add(instance)
+            
+        # Get Next Cursor, Commit, and Sleep for next iteration
+        next_cursor = search["next_cursor"]
+        session.commit()
+        time.sleep(65)
+
+    # instance = User(symbol='tst_usr')
+    # session.add(instance)
+    # # Commit Changes to the Database
+    # session.commit()
 
 
 if __name__ == "__main__":
-    main()
+    pull_remote_graph()
