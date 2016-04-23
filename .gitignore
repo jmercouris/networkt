@@ -1,8 +1,13 @@
+# Ignore project specific folders
 links
 resources
-# Ignore configuration files
 
+# Ignore virutalenv
+environment
+
+# Ignore configuration files
 *.ini
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
