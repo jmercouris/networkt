@@ -21,7 +21,12 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
-def pull_remote_graph(scope_limit=100, screen_name='FactoryBerlin'):
+# Main Function
+def main(root_user='FactoryBerlin'):
+    pass
+
+
+def pull_remote_graph(screen_name, scope_limit=100):
     twitter = Twython(APP_KEY, APP_SECRET,
                       OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
     next_cursor = -1
@@ -30,9 +35,9 @@ def pull_remote_graph(scope_limit=100, screen_name='FactoryBerlin'):
         scope_limit -= 1
         
         # Process the next Cursor set of Data
-        search = twitter.get_friends_list(screen_name=screen_name, count=200, cursor=next_cursor)
+        search = twitter.get_friends_list(screen_name=screen_name,
+                                          count=200, cursor=next_cursor)
         for result in search['users']:
-            # Check to see if Parameters Exist
             # args = {key: value for key, value in results.items() if key in User.__mapper__.attrs}
             instance = User(result)
             session.add(instance)
@@ -42,11 +47,6 @@ def pull_remote_graph(scope_limit=100, screen_name='FactoryBerlin'):
         session.commit()
         time.sleep(65)
 
-    # instance = User(symbol='tst_usr')
-    # session.add(instance)
-    # # Commit Changes to the Database
-    # session.commit()
-
 
 if __name__ == "__main__":
-    pull_remote_graph()
+    main()
