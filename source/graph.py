@@ -20,17 +20,17 @@ class Node(Base):
             Edge(self, node)
         return self
 
-    def pointer_neighbors(self):
-        return [x.pointer_node for x in self.root_edges]
+    def pointer_nodes(self):
+        return [x.pointer_node for x in self.reference_edges]
 
-    def root_neighbors(self):
-        return [x.root_node for x in self.pointer_edges]
+    def reference_nodes(self):
+        return [x.reference_node for x in self.pointer_edges]
 
 
 class Edge(Base):
     __tablename__ = 'edge'
 
-    root_id = Column(Integer,
+    reference_id = Column(Integer,
                      ForeignKey('node.node_id'),
                      primary_key=True)
 
@@ -38,16 +38,15 @@ class Edge(Base):
                         ForeignKey('node.node_id'),
                         primary_key=True)
 
-    root_node = relationship(Node,
-                             primaryjoin=root_id == Node.node_id,
-                             backref='root_edges')
+    reference_node = relationship(Node,
+                             primaryjoin=reference_id == Node.node_id,
+                             backref='reference_edges')
     pointer_node = relationship(Node,
                                 primaryjoin=pointer_id == Node.node_id,
                                 backref='pointer_edges')
-
-    # here we have root.node_id <= pointer.node_id
+    
     def __init__(self, n1, n2):
-        self.root_node = n1
+        self.reference_node = n1
         self.pointer_node = n2
 
 
@@ -63,7 +62,14 @@ n3 = Node(3)
 n4 = Node(4)
 
 n1.add_edge(n2)
-n2.add_edge(n1)
+n1.add_edge(n3)
 
-session.add_all([n1, n2, n3, n4])
-session.commit()
+n2.add_edge(n1)
+n4.add_edge(n1)
+
+for x in n1.pointer_nodes():
+    print(x.node_id)
+
+
+# session.add_all([n1, n2, n3, n4])
+# session.commit()
