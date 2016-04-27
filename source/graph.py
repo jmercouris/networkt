@@ -31,20 +31,20 @@ class Edge(Base):
     __tablename__ = 'edge'
 
     reference_id = Column(Integer,
-                     ForeignKey('node.node_id'),
-                     primary_key=True)
+                          ForeignKey('node.node_id'),
+                          primary_key=True)
 
     pointer_id = Column(Integer,
                         ForeignKey('node.node_id'),
                         primary_key=True)
 
     reference_node = relationship(Node,
-                             primaryjoin=reference_id == Node.node_id,
-                             backref='reference_edges')
+                                  primaryjoin=reference_id == Node.node_id,
+                                  backref='reference_edges')
     pointer_node = relationship(Node,
                                 primaryjoin=pointer_id == Node.node_id,
                                 backref='pointer_edges')
-    
+
     def __init__(self, n1, n2):
         self.reference_node = n1
         self.pointer_node = n2
