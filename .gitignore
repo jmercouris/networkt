@@ -3,6 +3,9 @@ links
 resources
 data
 
+# Ignore Databases
+*.db
+
 # Ignore virutalenv
 environment
 
