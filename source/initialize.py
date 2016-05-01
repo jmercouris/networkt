@@ -1,9 +1,8 @@
 """ Initialize the database tables, columns, etc
 """
-from sqlalchemy import Column, Text, Boolean, Integer
+from sqlalchemy import (Boolean, Column, ForeignKey, Integer, Text, create_engine)
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import mapper, relationship, sessionmaker
-from sqlalchemy import MetaData, Table, Column, Integer, ForeignKey, create_engine
+from sqlalchemy.orm import relationship
 
 
 Base = declarative_base()
@@ -12,7 +11,6 @@ Base = declarative_base()
 class Node(Base):
     __tablename__ = 'node'
     id = Column(Integer, primary_key=True)
-    node_id = Column(Integer, primary_key=True)
     created_at = Column(Text)
     description = Column(Text)
     favorites_count = Column(Integer)
@@ -45,46 +43,41 @@ class Node(Base):
         self.time_zone = dictionary.get('time_zone', None)
         self.utc_offset = int(dictionary.get('utc_offset') or -1)
         self.verified = bool(dictionary.get('verified', False) or False)
-        self.node_id = int(self.id_str)
+        self.id = int(self.id_str)
 
-    def add_neighbors(self, *nodes):
+    def add_edge(self, *nodes):
         for node in nodes:
             Edge(self, node)
         return self
 
-    def higher_neighbors(self):
-        return [x.higher_node for x in self.lower_edges]
+    def pointer_nodes(self):
+        return [x.pointer_node for x in self.reference_edges]
 
-    def lower_neighbors(self):
-        return [x.lower_node for x in self.higher_edges]
+    def reference_nodes(self):
+        return [x.reference_node for x in self.pointer_edges]
 
 
 class Edge(Base):
     __tablename__ = 'edge'
 
-    lower_id = Column(Integer,
-                      ForeignKey('node.node_id'),
-                      primary_key=True)
+    reference_id = Column(Integer,
+                          ForeignKey('node.id'),
+                          primary_key=True)
 
-    higher_id = Column(Integer,
-                       ForeignKey('node.node_id'),
-                       primary_key=True)
+    pointer_id = Column(Integer,
+                        ForeignKey('node.id'),
+                        primary_key=True)
 
-    lower_node = relationship(Node,
-                              primaryjoin=lower_id == Node.node_id,
-                              backref='lower_edges')
-    higher_node = relationship(Node,
-                               primaryjoin=higher_id == Node.node_id,
-                               backref='higher_edges')
+    reference_node = relationship(Node,
+                                  primaryjoin=reference_id == Node.id,
+                                  backref='reference_edges')
+    pointer_node = relationship(Node,
+                                primaryjoin=pointer_id == Node.id,
+                                backref='pointer_edges')
 
-    # here we have lower.node_id <= higher.node_id
     def __init__(self, n1, n2):
-        if n1.node_id < n2.node_id:
-            self.lower_node = n1
-            self.higher_node = n2
-        else:
-            self.lower_node = n2
-            self.higher_node = n1
+        self.reference_node = n1
+        self.pointer_node = n2
 
 
 def create_database(database_name='sqlite:///data/data_store.db'):
