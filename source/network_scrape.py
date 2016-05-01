@@ -30,7 +30,7 @@ session = DBSession()
 def main(root_user='FactoryBerlin'):
     persist_user(root_user)
     # pull_remote_graph(root_user)
-    # Show All Objects Referencing root_user
+    # Show All Objects Referencing root_userp
 
 
 def persist_user(screen_name):
