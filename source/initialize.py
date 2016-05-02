@@ -56,6 +56,19 @@ class Node(Base):
     def reference_nodes(self):
         return [x.reference_node for x in self.pointer_edges]
 
+    def __str__(self):
+        return self.id_str
+
+    def __hash__(self):
+        return hash(str(self))
+
+    def __eq__(self, other):
+        return self.id_str == other.id_str
+
+    def construct_dictionary(self):
+        return {'screenname': str(self.screen_name),
+                'timezone': str(self.time_zone)}
+
 
 class Edge(Base):
     __tablename__ = 'edge'
