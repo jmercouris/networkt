@@ -1,6 +1,6 @@
 import configparser
 import time
-
+import graph
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -26,11 +26,18 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
-# Main Function
 def main(root_user='FactoryBerlin'):
+    # Save the Root User to the Database
     persist_user(root_user)
+
+    # Pull the Graph for the Root User
     # pull_remote_graph(root_user)
-    # Show All Objects Referencing root_userp
+    
+    # Pull partial graphs of all users following root users
+    root_user_object = session.query(Node).filter_by(screen_name=root_user).first()
+    for node in root_user_object.reference_nodes():
+        pull_remote_graph(node.screen_name)
+        graph.persist_graph(node.screen_name, node.screen_name)
 
 
 def persist_user(screen_name):
@@ -54,11 +61,12 @@ def pull_remote_graph(screen_name, scope_limit=1):
         search = twitter.get_friends_list(screen_name=screen_name,
                                           count=200, cursor=next_cursor)
         for result in search['users']:
-            # args = {key: value for key, value in results.items() if key in User.__mapper__.attrs}
-            instance = Node(result)
-            session.add(instance)
-            # Append Relationships
-            instance.add_edge(root_user_object)
+            # Check if User Exists
+            if (session.query(Node).filter_by(screen_name=result['screen_name']).first() is None):
+                instance = Node(result)
+                session.add(instance)
+                # Append Relationships
+                instance.add_edge(root_user_object)
 
         # Get Next Cursor, Commit, and Sleep for next iteration
         next_cursor = search["next_cursor"]
