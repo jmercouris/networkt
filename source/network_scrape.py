@@ -4,7 +4,6 @@ import graph
 import filter_node
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
 from initialize import Base, Node, edge_point, edge_reference
 from twython import Twython
 
