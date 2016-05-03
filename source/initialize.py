@@ -78,14 +78,6 @@ class Node(Base):
                 'timezone': str(self.time_zone)}
 
 
-def edge_point(n1, n2):
-    return Edge(n1, n2)
-
-
-def edge_reference(n1, n2):
-    return Edge(n2, n1)
-
-
 class Edge(Base):
     __tablename__ = 'edge'
 
@@ -107,6 +99,14 @@ class Edge(Base):
     def __init__(self, n1, n2):
         self.reference_node = n1
         self.pointer_node = n2
+
+
+def edge_point(n1, n2):
+    return Edge(n1, n2)
+
+
+def edge_reference(n1, n2):
+    return Edge(n2, n1)
 
 
 def create_database(database_name='sqlite:///data/data_store.db'):
