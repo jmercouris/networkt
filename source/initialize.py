@@ -53,6 +53,11 @@ class Node(Base):
             Edge(self, node)
         return self
 
+    def add_edge_reference(self, *nodes):
+        for node in nodes:
+            Edge(node, self)
+        return self
+
     def pointer_nodes(self):
         return [x.pointer_node for x in self.reference_edges]
 
@@ -71,6 +76,14 @@ class Node(Base):
     def construct_dictionary(self):
         return {'screenname': str(self.screen_name),
                 'timezone': str(self.time_zone)}
+
+
+def edge_point(n1, n2):
+    return Edge(n1, n2)
+
+
+def edge_reference(n1, n2):
+    return Edge(n2, n1)
 
 
 class Edge(Base):
