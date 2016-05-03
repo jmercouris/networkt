@@ -46,10 +46,10 @@ def main(root_user='FactoryBerlin'):
     
     # ##########################################################################
     # # Pull partial graphs of all filtered users following root user
-    # for node in root_user_object.reference_nodes():
-    #     if (node.filter_0):
-    #         pull_remote_graph_friend(node.screen_name)
-    #         graph.persist_graph(node.screen_name, node.screen_name)
+    for node in root_user_object.pointer_nodes():
+        if (node.filter_0):
+            pull_remote_graph_friend(node.screen_name)
+            graph.persist_graph(node.screen_name, node.screen_name)
     
     # ##########################################################################
     # # Perform level 1 filtering on user - determine if their 1th degree network
