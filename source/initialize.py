@@ -1,6 +1,7 @@
 """ Initialize the database tables, columns, etc
 """
-from sqlalchemy import (Boolean, Column, ForeignKey, Integer, Text, create_engine)
+from sqlalchemy import (Boolean, Column, ForeignKey,
+                        Integer, Text, create_engine)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
