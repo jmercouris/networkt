@@ -1,3 +1,5 @@
+from collections import Counter
+
 """ Used for filtering nodes as to whether they should be expanded or not """
 
 
@@ -12,8 +14,16 @@ def filter_1(node):
 
 
 def logical_distribution(node):
-    print([n.screen_name for n in node.reference_nodes()])
-    return False
+    time_zone_list = []
+    for time_zone in [n.time_zone for n in node.reference_nodes()]:
+        if (time_zone is not None):
+            time_zone_list.append(time_zone)
+    counts = Counter(time_zone_list).most_common(2)
+    inclusive_count = 0
+    for key in counts:
+        inclusive_count = inclusive_count + key[1]
+        
+    return ((inclusive_count > len(time_zone_list) * .50) and (abs(counts[0][1] - counts[1][1]) / counts[0][1] < .8))
 
 
 def logical_time_zone(node):
