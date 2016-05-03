@@ -93,7 +93,6 @@ def pull_remote_graph(screen_name, scope_limit, twitter_function, edge_function)
                 instance = Node(result)
                 session.add(instance)
                 edge_function(instance, user_object)
-
         next_cursor = search["next_cursor"]
         session.commit()
         time.sleep(65)
