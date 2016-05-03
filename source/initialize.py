@@ -26,6 +26,9 @@ class Node(Base):
     time_zone = Column(Text)
     utc_offset = Column(Integer)
     verified = Column(Boolean)
+    # Filtering Levels
+    filter_0 = Column(Boolean)
+    filter_1 = Column(Boolean)
 
     def __init__(self, dictionary):
         self.created_at = dictionary.get('created_at', None)
