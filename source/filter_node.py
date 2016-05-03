@@ -28,4 +28,4 @@ def logical_time_zone(node):
 
 
 def logical_name(node):
-    return False
+    return True
