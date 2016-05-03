@@ -30,6 +30,10 @@ def persist_graph(screen_name, file_name):
         graph.add_node(node.screen_name, data=node.construct_dictionary())
         graph.add_edge(node.screen_name, root_user_object.screen_name)
 
+    for node in root_user_object.pointer_nodes():
+        graph.add_node(node.screen_name, data=node.construct_dictionary())
+        graph.add_edge(root_user_object.screen_name, node.screen_name)
+
     nx.write_gml(graph, 'data/graph/' + file_name + '.gml')
 
 
