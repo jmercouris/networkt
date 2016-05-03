@@ -73,6 +73,7 @@ def main(root_user='FactoryBerlin'):
     # Persist graphs of all filtered users
     pass
 
+
 def persist_user(screen_name):
     user_object = session.query(Node).filter_by(screen_name=screen_name).first()
     if (user_object is None):
