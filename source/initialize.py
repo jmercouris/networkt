@@ -60,10 +60,10 @@ class Node(Base):
         return self
 
     def pointer_nodes(self):
-        return [x.pointer_node for x in self.reference_edges]
+        return [i.pointer_node for i in self.reference_edges]
 
     def reference_nodes(self):
-        return [x.reference_node for x in self.pointer_edges]
+        return [i.reference_node for i in self.pointer_edges]
 
     def __str__(self):
         return self.id_str
@@ -103,11 +103,17 @@ class Edge(Base):
 
 
 def edge_point(n1, n2):
-    return Edge(n1, n2)
+    try:
+        return Edge(n1, n2)
+    except:
+        pass
 
 
 def edge_reference(n1, n2):
-    return Edge(n2, n1)
+    try:
+        return Edge(n2, n1)
+    except:
+        pass
 
 
 def create_database(database_name='sqlite:///data/data_store.db'):
