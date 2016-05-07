@@ -34,8 +34,8 @@ def persist_graph(screen_name, file_name):
         for nodey in node.reference_nodes():
             graph.add_node(nodey.screen_name, data=nodey.construct_dictionary())
             graph.add_edge(nodey.screen_name, node.screen_name)
-            print('{}{}'.format(nodey.screen_name, node.screen_name))
-
+            # print('{}{}'.format(nodey.screen_name, node.screen_name))
+    
     nx.write_gml(graph, 'data/graph/' + file_name + '.gml')
 
 
