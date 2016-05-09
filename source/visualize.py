@@ -6,8 +6,10 @@ from pygame.locals import *
 pygame.init()
 
 # set up the window
-windowSurface = pygame.display.set_mode((500, 400), 0, 32)
-pygame.display.set_caption('Hello world!')
+screen_width = 700
+screen_height = 400
+windowSurface = pygame.display.set_mode((screen_width, screen_height), 0, 32)
+pygame.display.set_caption('Network Simulation')
 
 # set up the colors
 BLACK = (0, 0, 0)
