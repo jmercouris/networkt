@@ -75,8 +75,21 @@ class Node(Base):
         return self.id_str == other.id_str
 
     def construct_dictionary(self):
-        return {'screenname': str(self.screen_name),
-                'timezone': str(self.time_zone)}
+        return {'createdat': str(self.created_at),
+                'description': str(self.description),
+                'favoritescount': int(self.favorites_count),
+                'followerscount': int(self.followers_count),
+                'friendscount': int(self.friends_count),
+                'idstr': str(self.id_str),
+                'lang': str(self.lang),
+                'listedcount': int(self.listed_count),
+                'location': str(self.location),
+                'name': str(self.name),
+                'screenname': str(self.screen_name),
+                'statusescount': int(self.statuses_count),
+                'timezone': str(self.time_zone),
+                'utcoffset': int(self.utc_offset),
+                'verified': bool(self.verified), }
 
 
 class Edge(Base):
