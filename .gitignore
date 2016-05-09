@@ -2,6 +2,7 @@
 links
 resources
 data
+data_backup
 
 # Ignore Databases
 *.db
