@@ -1,7 +1,7 @@
 """ Initialize the database tables, columns, etc
 """
 from sqlalchemy import (Boolean, Column, ForeignKey,
-                        Integer, Text, create_engine)
+                        Integer, Text, DateTime, create_engine)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -30,6 +30,8 @@ class Node(Base):
     # Filtering Levels
     filter_0 = Column(Boolean)
     filter_1 = Column(Boolean)
+    # Relationship to Status Updates
+    statuses = relationship("Status", order_by="Status.date", backref="node", cascade="all, delete")
 
     def __init__(self, dictionary):
         self.created_at = dictionary.get('created_at', None)
@@ -113,6 +115,17 @@ class Edge(Base):
     def __init__(self, n1, n2):
         self.reference_node = n1
         self.pointer_node = n2
+
+
+class status(Base):
+    __tablename__ = 'status'
+    id = Column(Integer, primary_key=True)
+    # PARENT
+    node_id = Column(Integer, ForeignKey('node.id'))
+    name = Column(Text)
+    screen_name = Column(Text)
+    data = Column(Text)
+    date = Column(DateTime)
 
 
 def edge_point(n1, n2):
