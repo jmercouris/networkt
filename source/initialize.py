@@ -1,7 +1,8 @@
 """ INITIALIZE the database tables, columns, etc
 """
-from sqlalchemy import (Boolean, Column, ForeignKey,
-                        Integer, Text, create_engine)
+from datetime import datetime
+from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, Text,
+                        create_engine)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -118,7 +119,7 @@ class Edge(Base):
         self.pointer_node = n2
 
 
-class status(Base):
+class Status(Base):
     __tablename__ = 'status'
     id = Column(Integer, primary_key=True)
     # Parent
@@ -127,6 +128,7 @@ class status(Base):
     coordinate_longitude = Column(Text)
     coordinate_latitude = Column(Text)
     created_at = Column(Text)
+    date = Column(DateTime)
     favorite_count = Column(Integer)
     id_str = Column(Text)
     in_reply_to_screen_name = Column(Text)
@@ -142,8 +144,9 @@ class status(Base):
     truncated = Column(Boolean)
     
     def __init__(self, dictionary):
-        self.coordinate_longitude = dictionary.get('coordinate_longitude', None)
-        self.coordinate_latitude = dictionary.get('coordinate_latitude', None)
+        if dictionary.get('coordinates', None) is not None:
+            self.coordinate_longitude = dictionary.get('coordinates', None)[0]
+            self.coordinate_latitude = dictionary.get('coordinates', None)[1]
         self.created_at = dictionary.get('created_at', None)
         self.favorite_count = int(dictionary.get('favorite_count') or -1)
         self.id_str = dictionary.get('id_str', None)
@@ -159,6 +162,7 @@ class status(Base):
         self.text = dictionary.get('text', None)
         self.truncated = bool(dictionary.get('truncated', False) or False)
         self.id = int(self.id_str)
+        self.date = datetime.strptime(self.created_at, '%a %b %d %H:%M:%S +0000 %Y')
 
 
 def edge_point(n1, n2):
