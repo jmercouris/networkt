@@ -1,7 +1,7 @@
-""" Initialize the database tables, columns, etc
+""" INITIALIZE the database tables, columns, etc
 """
 from sqlalchemy import (Boolean, Column, ForeignKey,
-                        Integer, Text, DateTime, create_engine)
+                        Integer, Text, create_engine)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -31,7 +31,8 @@ class Node(Base):
     filter_0 = Column(Boolean)
     filter_1 = Column(Boolean)
     # Relationship to Status Updates
-    statuses = relationship("Status", order_by="Status.date", backref="node", cascade="all, delete")
+    statuses = relationship("Status", order_by="Status.date",
+                            backref="node", cascade="all, delete")
 
     def __init__(self, dictionary):
         self.created_at = dictionary.get('created_at', None)
@@ -120,12 +121,44 @@ class Edge(Base):
 class status(Base):
     __tablename__ = 'status'
     id = Column(Integer, primary_key=True)
-    # PARENT
+    # Parent
     node_id = Column(Integer, ForeignKey('node.id'))
-    name = Column(Text)
-    screen_name = Column(Text)
-    data = Column(Text)
-    date = Column(DateTime)
+    # Fields
+    coordinate_longitude = Column(Text)
+    coordinate_latitude = Column(Text)
+    created_at = Column(Text)
+    favorite_count = Column(Integer)
+    id_str = Column(Text)
+    in_reply_to_screen_name = Column(Text)
+    in_reply_to_status_id_str = Column(Text)
+    in_reply_to_user_id_str = Column(Text)
+    lang = Column(Text)
+    possibly_sensitive = Column(Boolean)
+    quoted_status_id_str = Column(Text)
+    retweet_count = Column(Integer)
+    retweeted = Column(Boolean)
+    source = Column(Text)
+    text = Column(Text)
+    truncated = Column(Boolean)
+    
+    def __init__(self, dictionary):
+        self.coordinate_longitude = dictionary.get('coordinate_longitude', None)
+        self.coordinate_latitude = dictionary.get('coordinate_latitude', None)
+        self.created_at = dictionary.get('created_at', None)
+        self.favorite_count = int(dictionary.get('favorite_count') or -1)
+        self.id_str = dictionary.get('id_str', None)
+        self.in_reply_to_screen_name = dictionary.get('in_reply_to_screen_name', None)
+        self.in_reply_to_status_id_str = dictionary.get('in_reply_to_status_id_str', None)
+        self.in_reply_to_user_id_str = dictionary.get('in_reply_to_user_id_str', None)
+        self.lang = dictionary.get('lang', None)
+        self.possibly_sensitive = bool(dictionary.get('possibly_sensitive', False) or False)
+        self.quoted_status_id_str = dictionary.get('quoted_status_id_str', None)
+        self.retweet_count = int(dictionary.get('retweet_count') or -1)
+        self.retweeted = bool(dictionary.get('retweeted', False) or False)
+        self.source = dictionary.get('source', None)
+        self.text = dictionary.get('text', None)
+        self.truncated = bool(dictionary.get('truncated', False) or False)
+        self.id = int(self.id_str)
 
 
 def edge_point(n1, n2):
