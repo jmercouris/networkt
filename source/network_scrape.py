@@ -4,7 +4,7 @@ import graph
 import filter_node
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from initialize import Base, Node, Edge, edge_point, edge_reference
+from initialize import Base, Node, Edge, Status, edge_point, edge_reference
 from twython import Twython
 
 
@@ -84,7 +84,8 @@ def main(root_user='FactoryBerlin'):
     # ##########################################################################
     # # Persist graphs of all filtered users
     # graph.persist_graph('CookMal', 'CookMal')
-    pass
+    persist_user(root_user)
+    pull_remote_status(root_user)
 
 
 def persist_user(screen_name):
@@ -96,18 +97,28 @@ def persist_user(screen_name):
         session.commit()
 
 
+def pull_remote_status(screen_name, scope_depth=200):
+    user_object = session.query(Node).filter_by(screen_name=screen_name).first()
+    if (user_object is None):
+        return
+    
+    statuses = twitter.get_user_timeline(screen_name=screen_name, count=scope_depth)
+    for status in statuses:
+        instance = session.query(Status).filter_by(id_str=status['id_str']).first()
+        if (instance is None):
+            user_object.statuses.append(Status(status))
+    session.commit()
+
+
 def pull_remote_graph(screen_name, scope_limit, scope_depth, twitter_function, edge_check_function, edge_function):
-    user_object = session.query(Node).filter_by(
-        screen_name=screen_name).first()
+    user_object = session.query(Node).filter_by(screen_name=screen_name).first()
     next_cursor = -1
 
     while(next_cursor and scope_limit):
         scope_limit -= 1
-        search = twitter_function(
-            screen_name=screen_name, count=scope_depth, cursor=next_cursor)
+        search = twitter_function(screen_name=screen_name, count=scope_depth, cursor=next_cursor)
         for result in search['users']:
-            instance = session.query(Node).filter_by(
-                screen_name=result['screen_name']).first()
+            instance = session.query(Node).filter_by(screen_name=result['screen_name']).first()
             if (instance is None):
                 instance = Node(result)
                 session.add(instance)
