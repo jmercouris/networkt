@@ -1,8 +1,7 @@
+from pygame.locals import *
 import pygame
 import sys
-from pygame.locals import *
 import networkx as nx
-import matplotlib.pyplot as plt
 import pprint
 
 # set up pygame
@@ -28,7 +27,13 @@ windowSurface.fill(WHITE)
 graph = nx.Graph()
 graph.add_node(1)
 graph.add_node(2)
+graph.add_node(3)
+graph.add_node(4)
+graph.add_node(5)
 graph.add_edge(1, 2)
+graph.add_edge(1, 3)
+graph.add_edge(1, 4)
+graph.add_edge(1, 5)
 
 layout = nx.spring_layout(graph)
 pprint.pprint(layout)
@@ -37,9 +42,6 @@ for node in layout:
     print(node, 'corresponds to', layout[node])
     pygame.draw.circle(windowSurface, GREEN,
                        (int(layout[node][0] * 250) + 100, int(layout[node][1] * 250) + 100), 20, 0)
-
-# draw a blue circle onto the surface
-pygame.draw.circle(windowSurface, BLUE, (100, 100), 20, 0)
 
 # draw the window onto the screen
 pygame.display.update()
