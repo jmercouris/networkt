@@ -1,0 +1,9 @@
+* Visualizer
+** Draw Nodes
+** Draw Node Connections
+** Create Camera/Zoom/Scroll
+** Add UI Buttons
+** Create Event Stack
+
+* Scraper
+** Develop Configuration File Standards
