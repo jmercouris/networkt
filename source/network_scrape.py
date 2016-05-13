@@ -86,6 +86,7 @@ def main(root_user='FactoryBerlin'):
     # graph.persist_graph('CookMal', 'CookMal')
     persist_user(root_user)
     pull_remote_status(root_user)
+    pull_remote_graph_follow(root_user)
 
 
 def persist_user(screen_name):

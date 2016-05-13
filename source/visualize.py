@@ -1,6 +1,8 @@
+from pygame.locals import *
 import pygame
 import sys
-from pygame.locals import *
+import networkx as nx
+import pprint
 
 # set up pygame
 pygame.init()
@@ -18,44 +20,30 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
-# set up fonts
-basicFont = pygame.font.SysFont(None, 48)
-
-# set up the text
-text = basicFont.render('Hello world!', True, WHITE, BLUE)
-textRect = text.get_rect()
-textRect.centerx = windowSurface.get_rect().centerx
-textRect.centery = windowSurface.get_rect().centery
-
 # draw the white background onto the surface
 windowSurface.fill(WHITE)
 
-# draw a green polygon onto the surface
-pygame.draw.polygon(windowSurface, GREEN, ((146, 0),
-                                           (291, 106), (236, 277), (56, 277), (0, 106)))
+# generate a simple graph
+graph = nx.Graph()
+graph.add_node(1)
+graph.add_node(2)
+graph.add_node(3)
+graph.add_node(4)
+graph.add_node(5)
+graph.add_node(6)
+graph.add_edge(1, 2)
+graph.add_edge(1, 3)
+graph.add_edge(1, 4)
+graph.add_edge(1, 5)
+graph.add_edge(1, 6)
 
-# draw some blue lines onto the surface
-pygame.draw.line(windowSurface, BLUE, (60, 60), (120, 60), 4)
-pygame.draw.line(windowSurface, BLUE, (120, 60), (60, 120))
-pygame.draw.line(windowSurface, BLUE, (60, 120), (120, 120), 4)
+layout = nx.spring_layout(graph)
+pprint.pprint(layout)
 
-# draw a blue circle onto the surface
-pygame.draw.circle(windowSurface, BLUE, (300, 50), 20, 0)
-
-# draw a red ellipse onto the surface
-pygame.draw.ellipse(windowSurface, RED, (300, 250, 40, 80), 1)
-
-# draw the text's background rectangle onto the surface
-pygame.draw.rect(windowSurface, RED, (textRect.left - 20,
-                                      textRect.top - 20, textRect.width + 40, textRect.height + 40))
-
-# get a pixel array of the surface
-pixArray = pygame.PixelArray(windowSurface)
-pixArray[480][380] = BLACK
-del pixArray
-
-# draw the text onto the surface
-windowSurface.blit(text, textRect)
+for node in layout:
+    print(node, 'corresponds to', layout[node])
+    pygame.draw.circle(windowSurface, GREEN,
+                       (int(layout[node][0] * 250) + 50, int(layout[node][1] * 250) + 50), 20, 0)
 
 # draw the window onto the screen
 pygame.display.update()
