@@ -87,7 +87,8 @@ def main(root_user='FactoryBerlin'):
     persist_user(root_user)
     pull_remote_status(root_user)
     pull_remote_graph_follow(root_user)
-
+    pull_remote_graph_friend(root_user)
+    
 
 def persist_user(screen_name):
     user_object = session.query(Node).filter_by(
