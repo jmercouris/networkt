@@ -1,10 +1,19 @@
+* Root
+** Write Readme
+** Write Documentation
+
 * Visualizer
-** Draw Nodes
-** Draw Node Connections
-** Create Camera/Zoom/Scroll
-** Add UI Buttons
-** Create Event Stack
+** TODO Draw Nodes
+** TODO Draw Node Connections
+** TODO Create Camera/Zoom/Scroll
+** TODO Add UI Buttons
+** TODO Create Event Stack
 
 * Scraper
 ** Develop Configuration File Standards
 ** Break Apart Code into Module
+
+* Graph
+** DONE Create recursive graph traversal
+*** Wrap Graph Traversal in Helper Function
+*** Clean Graph Traversal Code
