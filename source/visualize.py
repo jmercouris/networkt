@@ -24,14 +24,16 @@ def main():
     
     # generate a simple graph
     graph = load_graph_from_database('FactoryBerlin')
-    print(graph.node['FactoryBerlin']['screenname'])
-    
     layout = nx.spring_layout(graph)
+    print(graph.node['FactoryBerlin']['screenname'])
     
     # draw the nodes
     for node in layout:
-        pygame.draw.circle(windowSurface, GREEN,
-                           (int(layout[node][0] * 250) + 50, int(layout[node][1] * 250) + 50), 2, 0)
+        pygame.draw.circle(windowSurface, GREEN, true_position(layout[node]), 2, 0)
+        print(graph.node[node]['description'])
+
+    for edge in graph.edges():
+        print(layout[edge[0]])
     
     # draw the window onto the screen
     pygame.display.update()
@@ -42,6 +44,10 @@ def main():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
+
+
+def true_position(coordinates):
+    return (int(coordinates[0] * 250) + 50, int(coordinates[1] * 250) + 50)
 
 
 class Node(object):
