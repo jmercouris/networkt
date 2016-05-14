@@ -3,7 +3,7 @@ from pygame.locals import *
 import sys
 import networkx as nx
 import pprint
-import graph
+from graph.graph import load_graph_from_database
 
 
 # set up pygame
@@ -23,7 +23,7 @@ GREEN = (0, 255, 0)
 windowSurface.fill(WHITE)
 
 # generate a simple graph
-graph = graph.load_graph_from_database('FactoryBerlin')
+graph = load_graph_from_database('FactoryBerlin')
 layout = nx.spring_layout(graph)
 
 for node in layout:
