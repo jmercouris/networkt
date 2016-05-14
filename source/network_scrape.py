@@ -83,19 +83,17 @@ def main(root_user='FactoryBerlin'):
 
     # ##########################################################################
     # # Persist graphs of all filtered users
-    # graph.persist_graph('CookMal', 'CookMal')
-    # persist_user(root_user)
-    # pull_remote_status(root_user)
-    # pull_remote_graph_follow(root_user)
-    # pull_remote_graph_friend(root_user)
+    persist_user(root_user)
+    pull_remote_status(root_user)
+    pull_remote_graph_follow(root_user, scope_depth=10)
+    pull_remote_graph_friend(root_user, scope_depth=10)
     root_user_object = session.query(Node).filter_by(screen_name=root_user).first()
     for node in root_user_object.pointer_nodes():
-        pull_remote_graph_friend(node.screen_name)
-        pull_remote_graph_follow(node.screen_name)
-    
+        pull_remote_graph_friend(node.screen_name, scope_depth=10)
+        pull_remote_graph_follow(node.screen_name, scope_depth=10)
     for node in root_user_object.reference_nodes():
-        pull_remote_graph_friend(node.screen_name)
-        pull_remote_graph_follow(node.screen_name)
+        pull_remote_graph_friend(node.screen_name, scope_depth=10)
+        pull_remote_graph_follow(node.screen_name, scope_depth=10)
 
 
 def persist_user(screen_name):
@@ -170,4 +168,4 @@ def pull_remote_graph_follow(screen_name, scope_limit=1, scope_depth=200):
 
 
 if __name__ == "__main__":
-    main('jmercouris')
+    main()

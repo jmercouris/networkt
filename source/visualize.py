@@ -23,7 +23,7 @@ GREEN = (0, 255, 0)
 windowSurface.fill(WHITE)
 
 # generate a simple graph
-graph = graph.load_graph_from_database('jmercouris')
+graph = graph.load_graph_from_database('FactoryBerlin')
 layout = nx.spring_layout(graph)
 
 for node in layout:
