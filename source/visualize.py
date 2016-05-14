@@ -28,14 +28,15 @@ def main():
     layout = nx.spring_layout(graph)
     print(graph.node['FactoryBerlin']['screenname'])
     
-    # draw the nodes
-    for node in layout:
-        pygame.draw.circle(windowSurface, GREEN, true_position(layout[node]), 2, 0)
-        print(graph.node[node]['description'])
-
     for edge in graph.edges():
         pygame.draw.line(windowSurface, BLACK, true_position(layout[edge[0]]), true_position(layout[edge[1]]))
         print(layout[edge[0]])
+    
+    # draw the nodes
+    for node in layout:
+        pygame.draw.circle(windowSurface, GREEN, true_position(layout[node]), 10, 0)
+        print(graph.node[node]['description'])
+    
     
     # draw the window onto the screen
     pygame.display.update()
