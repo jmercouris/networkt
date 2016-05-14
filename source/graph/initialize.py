@@ -5,6 +5,8 @@ from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, Text,
                         create_engine)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm import sessionmaker
+import configparser
 
 
 Base = declarative_base()
@@ -188,6 +190,18 @@ def create_database(database_name='sqlite:///data/data_store.db'):
     # statements in raw SQL.
     Base.metadata.create_all(engine)
     print('Database {} Initialized'.format(database_name))
+
+
+def create_database_session(database_name='sqlite:///data/data_store.db'):
+    settings = configparser.ConfigParser()
+    settings.read('configuration.ini')
+    DATABASE_NAME = settings.get('database-configuration', 'database_name')
+    
+    engine = create_engine(DATABASE_NAME)
+    Base.metadata.bind = engine
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    return session
 
 
 if __name__ == "__main__":
