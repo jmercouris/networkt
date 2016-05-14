@@ -29,7 +29,7 @@ layout = nx.spring_layout(graph)
 for node in layout:
     # print(node, 'corresponds to', (int(layout[node][0] * 250) + 50, int(layout[node][1] * 250) + 50))
     pygame.draw.circle(windowSurface, GREEN,
-                       (int(layout[node][0] * 250) + 50, int(layout[node][1] * 250) + 50), 10, 0)
+                       (int(layout[node][0] * 250) + 50, int(layout[node][1] * 250) + 50), 2, 0)
 
 # draw the window onto the screen
 pygame.display.update()

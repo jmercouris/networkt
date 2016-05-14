@@ -1,10 +1,8 @@
 import configparser
 import time
-import graph
-import filter_node
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from initialize import Base, Node, Edge, Status, edge_point, edge_reference
+from graph.initialize import Base, Node, Edge, Status, edge_point, edge_reference
 from twython import Twython
 
 
