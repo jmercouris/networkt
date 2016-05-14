@@ -3,8 +3,8 @@
 ** Write Documentation
 
 * Visualizer
-** TODO Draw Nodes
-** TODO Draw Node Connections
+** DONE Draw Nodes
+** DONE Draw Node Connections
 ** TODO Create Camera/Zoom/Scroll
 ** TODO Add UI Buttons
 ** TODO Create Event Stack
