@@ -2,7 +2,7 @@ import configparser
 import networkx as nx
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from initialize import Base, Node
+from graph.initialize import Base, Node
 
 settings = configparser.ConfigParser()
 settings.read('configuration.ini')
