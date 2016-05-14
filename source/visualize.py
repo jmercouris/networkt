@@ -17,6 +17,7 @@ def main():
     
     # set up the colors
     WHITE = (255, 255, 255)
+    BLACK = (0, 0, 0)
     GREEN = (0, 255, 0)
     
     # draw the white background onto the surface
@@ -33,6 +34,7 @@ def main():
         print(graph.node[node]['description'])
 
     for edge in graph.edges():
+        pygame.draw.line(windowSurface, BLACK, true_position(layout[edge[0]]), true_position(layout[edge[1]]))
         print(layout[edge[0]])
     
     # draw the window onto the screen
