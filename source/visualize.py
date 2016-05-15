@@ -1,4 +1,3 @@
-#!/usr/bin/python
 import pygame
 from pygame.locals import *
 import networkx as nx
@@ -76,26 +75,26 @@ def true_position(coordinates):
 class RootControl(gui.Table):
     def __init__(self, **params):
         gui.Table.__init__(self, **params)
-
+        
         def fullscreen_changed(btn):
             pygame.display.toggle_fullscreen()
             print("TOGGLE FULLSCREEN")
-
+        
         def stars_changed(slider):
             print("Changed")
-
+        
         fg = (0, 0, 0)
-
+        
         self.tr()
-
+        
+        btn = gui.Button('Play')
+        btn.connect(gui.CHANGE, fullscreen_changed, btn)
+        self.td(btn)
+        
         self.td(gui.Label("Speed: ", color=fg), align=1)
         e = gui.HSlider(100, -500, 500, size=20,
                         width=100, height=16, name='speed')
         self.td(e)
-
-        btn = gui.Button('Play')
-        btn.connect(gui.CHANGE, fullscreen_changed, btn)
-        self.td(btn)
 
 
 if __name__ == "__main__":
