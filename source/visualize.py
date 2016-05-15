@@ -39,7 +39,8 @@ def main():
         pygame.draw.circle(screen, GREEN, true_position(layout[node]), 10, 0)
         # print(graph.node[node]['screenname'])
     
-    app = gui.App()
+    theme = gui.Theme("gray")
+    app = gui.App(theme=theme)
     root_control = RootControl()
     c = gui.Container(align=-1, valign=-1)
     c.add(root_control, 20, 440)
