@@ -1,6 +1,6 @@
+#!/usr/bin/python
 import pygame
 from pygame.locals import *
-import sys
 import networkx as nx
 from graph.graph import load_graph_from_database
 
@@ -12,13 +12,13 @@ def main():
     # set up the window
     screen_width = 640
     screen_height = 480
-    windowSurface = pygame.display.set_mode((screen_width, screen_height), 0, 32)
+    windowSurface = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption('Network Simulation')
     
     # set up the colors
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
-    GREEN = (0, 255, 0)
+    GREEN = (0, 200, 0)
     
     # draw the white background onto the surface
     windowSurface.fill(WHITE)
@@ -35,18 +35,26 @@ def main():
     # draw the nodes
     for node in layout:
         pygame.draw.circle(windowSurface, GREEN, true_position(layout[node]), 10, 0)
-        print(graph.node[node]['description'])
+        print(graph.node[node]['screenname'])
     
+    # button rectangle
+    pygame.draw.rect(windowSurface, GREEN, (50, 400, 30, 30))
     
     # draw the window onto the screen
     pygame.display.update()
     
     # run the game loop
-    while True:
+    running = True
+    while running:
         for event in pygame.event.get():
+            print(pygame.mouse.get_pos())
             if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
+                running = False
+            if event.type == KEYDOWN and event.key == K_ESCAPE:
+                running = False
+            if event.type == MOUSEBUTTONDOWN:
+                print(pygame.mouse.get_pos())
+    pygame.display.quit()
 
 
 def true_position(coordinates):
