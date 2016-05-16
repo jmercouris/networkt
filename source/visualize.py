@@ -46,7 +46,7 @@ def main():
     inspector_view = InspectorView()
     c = gui.Container(align=-1, valign=-1)
     c.add(root_control, 20, 440)
-    c.add(inspector_view, screen_width - 120, 30)
+    c.add(inspector_view, screen_width - 180, 30)
     c.add(menus, 0, 0)
     app.init(c)
     
@@ -189,13 +189,15 @@ class InspectorView(gui.Table):
             print("Changed")
         
         self.tr()
-        btn = gui.Button('Play')
-        btn.connect(gui.CHANGE, fullscreen_changed, btn)
-        self.td(gui.Button('Play', width=100), align=-1)
+        self.td(gui.Label("Inspector", cls="h4"))
         self.tr()
-        self.td(gui.Button('Pause', width=100), align=-1)
+        my_list = gui.List(width=150, height=200)
+        for i in range(0,100):
+            my_list.add("item ", value=i)
+
+        self.td(my_list)
         self.tr()
-        self.td(gui.Button('Reset', width=100), align=-1)
+        self.td(gui.Button('Reset', width=150), align=-1)
 
 
 if __name__ == "__main__":
