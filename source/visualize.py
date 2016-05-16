@@ -57,7 +57,7 @@ def main():
                 running = False
             elif event.type == KEYDOWN and event.key == K_ESCAPE:
                 running = False
-            # elif event.type == MOUSEBUTTONDOWN:
+            # if event.type == MOUSEBUTTONDOWN:
             #     print(pygame.mouse.get_pos())
             else:
                 app.event(event)
