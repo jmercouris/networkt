@@ -1,9 +1,8 @@
 import pygame
 from pygame.locals import *
 import networkx as nx
-from graph.graph import load_graph_from_database
+from graph.graph import load_graph_from_database, get_statuses_for_screen_name
 from pgu import gui
-from pprint import pprint
 
 screen_width = 640
 screen_height = 480
@@ -32,6 +31,7 @@ def main():
     for node in layout:
         nodey = Node(graph.node[node])
         nodey.position = true_position(layout[node])
+        nodey.statuses = get_statuses_for_screen_name(nodey.screen_name)
         nodes.append(nodey)
     
     theme = gui.Theme("gray")
@@ -60,7 +60,8 @@ def main():
         screen.fill(WHITE)
         # Draw
         for node in nodes:
-            pygame.draw.circle(screen, GREEN, node.position, 10, 0)
+            node.act(screen)
+        
         app.paint()
         pygame.display.flip()
         pygame.display.update()
@@ -93,7 +94,10 @@ class Node(object):
         self.utc_offset = int(dictionary.get('utcoffset') or -1)
         self.verified = bool(dictionary.get('verified', False) or False)
         self.id = int(self.id_str)
-
+    
+    def act(self, screen):
+        pygame.draw.circle(screen, GREEN, self.position, 10, 0)
+        
 
 class RootControl(gui.Table):
     def __init__(self, **params):

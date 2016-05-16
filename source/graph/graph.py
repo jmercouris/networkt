@@ -29,7 +29,13 @@ def load_graph_from_database(screen_name):
     graph = nx.DiGraph()
     root_user_object = session.query(Node).filter_by(screen_name=screen_name).first()
     graph = traverse(root_user_object, 0, 1, {}, graph)
+    
     return graph
+
+
+def get_statuses_for_screen_name(screen_name):
+    element = session.query(Node).filter_by(screen_name=screen_name).first()
+    return element.statuses
 
 
 def traverse(node, depth, depth_limit, cache, graph):
