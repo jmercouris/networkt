@@ -34,11 +34,20 @@ def main():
         pygame.draw.line(screen, BLACK, true_position(layout[edge[0]]), true_position(layout[edge[1]]))
         nodes[edge[0]].edges.append(nodes[edge[1]])
     
+    menus = gui.Menus([
+        ('File/Exit', None, None),
+        ('Help/Help', None, None),
+        ('Help/About', None, None)
+    ])
+    
     theme = gui.Theme("gray")
     app = gui.App(theme=theme)
     root_control = RootControl()
+    inspector_view = InspectorView()
     c = gui.Container(align=-1, valign=-1)
     c.add(root_control, 20, 440)
+    c.add(inspector_view, screen_width - 120, 30)
+    c.add(menus, 0, 0)
     app.init(c)
     
     # run the game loop
@@ -166,6 +175,27 @@ class RootControl(gui.Table):
         e = gui.HSlider(100, -500, 500, size=20,
                         width=100, height=16, name='speed')
         self.td(e)
+
+
+class InspectorView(gui.Table):
+    def __init__(self, **params):
+        gui.Table.__init__(self, **params)
+        
+        def fullscreen_changed(btn):
+            pygame.display.toggle_fullscreen()
+            print("TOGGLE FULLSCREEN")
+        
+        def stars_changed(slider):
+            print("Changed")
+        
+        self.tr()
+        btn = gui.Button('Play')
+        btn.connect(gui.CHANGE, fullscreen_changed, btn)
+        self.td(gui.Button('Play', width=100), align=-1)
+        self.tr()
+        self.td(gui.Button('Pause', width=100), align=-1)
+        self.tr()
+        self.td(gui.Button('Reset', width=100), align=-1)
 
 
 if __name__ == "__main__":
