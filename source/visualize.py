@@ -7,7 +7,7 @@ from pprint import pprint
 
 screen_width = 640
 screen_height = 480
-fps = 5
+fps = 30
 # set up the colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
