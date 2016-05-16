@@ -1,14 +1,16 @@
-from graph.network_scrape import persist_user, pull_remote_graph_follow, pull_remote_graph_friend
+# from graph.network_scrape import persist_user, pull_remote_graph_follow, pull_remote_graph_friend
 # from graph.initialize import create_database_session
 # from graph.initialize import Node
+from graph.graph import persist_graph
 
 
 def main(root_user='FactoryBerlin'):
-    persist_user(root_user)
+    # persist_user(root_user)
     # session = create_database_session()
     # root_user_object = session.query(Node).filter_by(screen_name=root_user).first()
-    pull_remote_graph_friend(root_user, scope_depth=10)
-    pull_remote_graph_follow(root_user, scope_depth=10)
+    # pull_remote_graph_friend(root_user, scope_depth=10)
+    # pull_remote_graph_follow(root_user, scope_depth=10)
+    persist_graph(root_user, root_user)
 
 
 if __name__ == "__main__":
