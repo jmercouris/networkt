@@ -20,19 +20,19 @@ def main():
     
     # generate a simple graph
     graph = load_graph_from_database('FactoryBerlin')
-    nodes = []
+    nodes = {}
     layout = nx.spring_layout(graph)
-    
-    for edge in graph.edges():
-        pygame.draw.line(screen, BLACK, true_position(layout[edge[0]]), true_position(layout[edge[1]]))
-        # print(layout[edge[0]])
     
     # draw the nodes
     for node in layout:
         nodey = Node(graph.node[node])
         nodey.position = true_position(layout[node])
         nodey.statuses = get_statuses_for_screen_name(nodey.screen_name)
-        nodes.append(nodey)
+        nodes[nodey.screen_name] = nodey
+    
+    for edge in graph.edges():
+        pygame.draw.line(screen, BLACK, true_position(layout[edge[0]]), true_position(layout[edge[1]]))
+        nodes[edge[0]].edges.append(nodes[edge[1]])
     
     theme = gui.Theme("gray")
     app = gui.App(theme=theme)
@@ -60,7 +60,7 @@ def main():
         screen.fill(WHITE)
         # Draw
         for node in nodes:
-            node.act(screen)
+            nodes[node].act(screen)
         
         app.paint()
         pygame.display.flip()
@@ -77,7 +77,10 @@ class Node(object):
     
     """
     def __init__(self, dictionary):
+        self.tick = 0
         self.position = ''
+        self.active_statuses = []
+        self.edges = []
         self.created_at = dictionary.get('createdat', None)
         self.description = dictionary.get('description', None)
         self.favorites_count = int(dictionary.get('favouritescount') or -1)
@@ -96,21 +99,46 @@ class Node(object):
         self.id = int(self.id_str)
     
     def act(self, screen):
+        # Draw Edges
+        for edge in self.edges:
+            pygame.draw.line(screen, BLACK, self.position, edge.position)
+        # Draw Self
         pygame.draw.circle(screen, GREEN, self.position, 10, 0)
+        
+        # Animate Messages
+        self.tick = self.tick + 1
+        if (self.tick % 60 == 0):
+            for edge in self.edges:
+                self.active_statuses.append(Status(self.position, edge.position))
+        
+        valid_statuses = []
+        for status_object in self.active_statuses:
+            status_object.act(screen)
+            if (status_object.alive):
+                valid_statuses.append(status_object)
+        self.active_statuses = valid_statuses
 
 
 class Status(object):
     """Represents a status
     
     """
-    def __init__(self, position):
+    def __init__(self, position, destination):
         self.position = position
+        self.destination = destination
+        self.true_position = self.position
+        self.steps = 60
+        self.dx = (self.destination[0] - self.position[0]) / self.steps
+        self.dy = (self.destination[1] - self.position[1]) / self.steps
         self.alive = True
     
     def act(self, screen):
-        self.position = (self.position[0] + 1, self.position[1] + 1)
-        pygame.draw.circle(screen, BLACK, self.position, 10, 0)
-        if (self.position[0] > screen_height or self.position[1] > screen_width):
+        # Maintain a Virtual Position that is more exact than pixels
+        self.true_position = (self.true_position[0] + self.dx, self.true_position[1] + self.dy)
+        self.position = (int(self.true_position[0]), int(self.true_position[1]))
+        pygame.draw.circle(screen, BLACK, self.position, 5, 0)
+        self.steps = self.steps - 1
+        if (self.steps < 0):
             self.alive = False
 
 
@@ -129,8 +157,11 @@ class RootControl(gui.Table):
         
         self.tr()
         btn = gui.Button('Play')
+        
         btn.connect(gui.CHANGE, fullscreen_changed, btn)
-        self.td(btn)
+        self.td(gui.Button('Play'))
+        self.td(gui.Button('Pause'))
+        self.td(gui.Button('Reset'))
         self.td(gui.Label("Speed: ", color=fg), align=1)
         e = gui.HSlider(100, -500, 500, size=20,
                         width=100, height=16, name='speed')
