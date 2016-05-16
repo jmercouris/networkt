@@ -97,7 +97,22 @@ class Node(object):
     
     def act(self, screen):
         pygame.draw.circle(screen, GREEN, self.position, 10, 0)
-        
+
+
+class Status(object):
+    """Represents a status
+    
+    """
+    def __init__(self, position):
+        self.position = position
+        self.alive = True
+    
+    def act(self, screen):
+        self.position = (self.position[0] + 1, self.position[1] + 1)
+        pygame.draw.circle(screen, BLACK, self.position, 10, 0)
+        if (self.position[0] > screen_height or self.position[1] > screen_width):
+            self.alive = False
+
 
 class RootControl(gui.Table):
     def __init__(self, **params):
