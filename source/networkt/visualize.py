@@ -4,6 +4,7 @@ import networkx as nx
 from graph.graph import load_graph_from_database, get_statuses_for_screen_name
 from pgu import gui
 
+
 screen_width = 640
 screen_height = 480
 fps = 30
