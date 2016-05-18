@@ -6,7 +6,8 @@ from kivy.properties import StringProperty
 
 
 class NetworktUI(Widget):
-    pass
+    def change_text(self):
+        self.ids.messages.text = 'LOL'
 
 
 class ScrollableLabel(ScrollView):
@@ -28,7 +29,8 @@ class Network(Widget):
 
 class NetworktApp(App):
     def build(self):
-        return NetworktUI()
+        networkUI = NetworktUI()
+        return networkUI
 
 
 if __name__ == '__main__':
