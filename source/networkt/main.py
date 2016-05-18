@@ -16,6 +16,8 @@ class Network(Widget):
                 Color(0, 1, 0)
                 diameter = 30.
                 Ellipse(pos=(touch.x - diameter / 2, touch.y - diameter / 2), size=(diameter, diameter))
+        else:
+            return False
 
 
 class NetworktApp(App):
