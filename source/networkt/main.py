@@ -1,10 +1,16 @@
 from kivy.app import App
+from kivy.graphics import Color, Ellipse
+from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
-from kivy.graphics import Ellipse, Color
+from kivy.properties import StringProperty
 
 
 class NetworktUI(Widget):
     pass
+
+
+class ScrollableLabel(ScrollView):
+    text = StringProperty('')
 
 
 class Network(Widget):

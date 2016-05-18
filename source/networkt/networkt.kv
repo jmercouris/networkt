@@ -1,6 +1,16 @@
 <Network>:
     canvas:
 
+<ScrollableLabel>:
+    Label:
+        size_hint_y: None
+        height: self.texture_size[1]
+        text_size: self.width, None
+        text: root.text
+        padding_y: 10
+        color: [1,1,1,1]
+        markup: True
+
 
 <NetworktUI>:
     BoxLayout:
@@ -31,13 +41,14 @@
                 width: 250
                 orientation: 'vertical'
                 AccordionItem:
-                    text: 'First Item'
-                    Label:
+                    title: 'Inspector'
+                    ScrollableLabel:
                         text: 'Hello world'
                 AccordionItem:
-                    text: 'First Item'
-                    Label:
+                    title: 'Messages'
+                    ScrollableLabel:
                         text: 'Hello worlds'
+
 
         Button:
             text: 'lal'
