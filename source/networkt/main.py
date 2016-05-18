@@ -1,7 +1,6 @@
-from random import random
 from kivy.app import App
 from kivy.uix.widget import Widget
-from kivy.graphics import Ellipse, Color, Line
+from kivy.graphics import Ellipse, Color
 
 
 class NetworktUI(Widget):
@@ -10,15 +9,13 @@ class NetworktUI(Widget):
 
 class Network(Widget):
     def on_touch_down(self, touch):
-        with self.canvas:
-            color = (random(), random(), random())
-            Color(*color)
-            diameter = 30.
-            Ellipse(pos=(touch.x - diameter / 2, touch.y - diameter / 2), size=(diameter, diameter))
-            touch.ud['line'] = Line(points=(touch.x, touch.y))
-    
-    def on_touch_move(self, touch):
-        touch.ud['line'].points += [touch.x, touch.y]
+        x = touch.x
+        y = touch.y
+        if self.collide_point(x, y):
+            with self.canvas:
+                Color(0, 1, 0)
+                diameter = 30.
+                Ellipse(pos=(touch.x - diameter / 2, touch.y - diameter / 2), size=(diameter, diameter))
 
 
 class NetworktApp(App):

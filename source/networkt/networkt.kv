@@ -1,6 +1,6 @@
 <Network>:
     canvas:
-        
+
 
 <NetworktUI>:
     BoxLayout:
@@ -26,10 +26,18 @@
 
             Network:
 
-            Button:
+            Accordion:
                 size_hint: (None, 1)
                 width: 250
-                text: 'lol'
+                orientation: 'vertical'
+                AccordionItem:
+                    text: 'First Item'
+                    Label:
+                        text: 'Hello world'
+                AccordionItem:
+                    text: 'First Item'
+                    Label:
+                        text: 'Hello worlds'
 
         Button:
             text: 'lal'
