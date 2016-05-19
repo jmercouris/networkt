@@ -3,11 +3,15 @@ from kivy.graphics import Color, Ellipse
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
 from kivy.properties import StringProperty
+from kivy.clock import Clock
 
 
 class NetworktUI(Widget):
     def change_text(self):
         self.ids.messages.text = 'LOL'
+    
+    def update(self, dt):
+        pass
 
 
 class ScrollableLabel(ScrollView):
@@ -29,8 +33,9 @@ class Network(Widget):
 
 class NetworktApp(App):
     def build(self):
-        networkUI = NetworktUI()
-        return networkUI
+        networktUI = NetworktUI()
+        Clock.schedule_interval(networktUI.update, 1.0 / 60.0)
+        return networktUI
 
 
 if __name__ == '__main__':
