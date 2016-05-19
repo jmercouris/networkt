@@ -4,11 +4,25 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
 from kivy.properties import StringProperty
 from kivy.clock import Clock
+import networkx as nx
+from graph.graph import load_graph_from_database, get_statuses_for_screen_name
 
 
 class NetworktUI(Widget):
     def change_text(self):
         self.ids.messages.text = 'LOL'
+    
+    def load_graph(self):
+        # generate a simple graph
+        graph = load_graph_from_database('FactoryBerlin')
+        layout = nx.spring_layout(graph)
+        self.nodes = {}
+        # Generate the list of nodes with positions
+        for node in layout:
+            nodey = Node(graph.node[node])
+            nodey.position = Node.true_position(layout[node])
+            nodey.statuses = get_statuses_for_screen_name(nodey.screen_name)
+            self.nodes[nodey.screen_name] = nodey
     
     def update(self, dt):
         pass
@@ -34,8 +48,39 @@ class Network(Widget):
 class NetworktApp(App):
     def build(self):
         networktUI = NetworktUI()
+        networktUI.load_graph()
         Clock.schedule_interval(networktUI.update, 1.0 / 60.0)
         return networktUI
+
+
+class Node(object):
+    """Documentation for Node
+    
+    """
+    def __init__(self, dictionary):
+        self.tick = 0
+        self.position = ''
+        self.active_statuses = []
+        self.edges = []
+        self.created_at = dictionary.get('createdat', None)
+        self.description = dictionary.get('description', None)
+        self.favorites_count = int(dictionary.get('favouritescount') or -1)
+        self.followers_count = int(dictionary.get('followerscount') or -1)
+        self.friends_count = int(dictionary.get('friendscount') or -1)
+        self.id_str = dictionary.get('idstr', None)
+        self.lang = dictionary.get('lang', None)
+        self.listed_count = int(dictionary.get('listedcount') or -1)
+        self.location = dictionary.get('location', None)
+        self.name = dictionary.get('name', None)
+        self.screen_name = dictionary.get('screenname', None)
+        self.statuses_count = int(dictionary.get('statusescount') or -1)
+        self.time_zone = dictionary.get('timezone', None)
+        self.utc_offset = int(dictionary.get('utcoffset') or -1)
+        self.verified = bool(dictionary.get('verified', False) or False)
+        self.id = int(self.id_str)
+    
+    def true_position(coordinates):
+        return (int(coordinates[0] * 250) + 50, int(coordinates[1] * 250) + 50)
 
 
 if __name__ == '__main__':
