@@ -9,11 +9,16 @@ from graph.graph import load_graph_from_database, get_statuses_for_screen_name
 
 
 class NetworktUI(Widget):
+    nodes = DictProperty({})
+    
     def change_text(self):
         self.ids.messages.text = 'LOL'
     
     def update(self, dt):
         pass
+    
+    def on_nodes(self, *args):
+        self.ids.network.update()
 
 
 class ScrollableLabel(ScrollView):
@@ -32,22 +37,19 @@ class Network(Widget):
                 Color(0, 1, 0)
                 diameter = 30.
                 Ellipse(pos=(touch.x - diameter / 2, touch.y - diameter / 2), size=(diameter, diameter))
-                Ellipse(pos=(200, 200), size=(30.0, 30.0))
         else:
             return False
     
-    def on_nodes(self, *args):
-        print('lol')
+    def update(self):
+        print('Update the view')
 
 
 class NetworktApp(App):
     def build(self):
-        networktUI = NetworktUI()
+        self.networktUI = NetworktUI()
         self.load_graph()
-        Clock.schedule_interval(networktUI.update, 1.0 / 60.0)
-        return networktUI
-    
-    nodes = DictProperty({})
+        Clock.schedule_interval(self.networktUI.update, 1.0 / 60.0)
+        return self.networktUI
     
     def load_graph(self):
         # generate a simple graph
@@ -58,8 +60,8 @@ class NetworktApp(App):
             nodei = Node(graph.node[node])
             nodei.position = Node.true_position(layout[node])
             nodei.statuses = get_statuses_for_screen_name(nodei.screen_name)
-            self.nodes[nodei.screen_name] = nodei
-
+            self.networktUI.nodes[nodei.screen_name] = nodei
+    
 
 class Node(object):
     """Documentation for Node

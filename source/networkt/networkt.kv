@@ -1,5 +1,4 @@
 <Network>:
-    id: network
     canvas:
 
 <ScrollableLabel>:
@@ -36,7 +35,8 @@
             orientation: 'horizontal'
 
             Network:
-                nodes: app.nodes
+                nodes: root.nodes
+                id: network
 
             Accordion:
                 size_hint: (None, 1)
