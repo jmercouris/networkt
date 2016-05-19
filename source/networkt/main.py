@@ -39,7 +39,6 @@ class Network(Widget):
             return False
     
     def update(self):
-        print('lol')
         diameter = 10.0
         with self.canvas:
             Color(0, 1, 0)
