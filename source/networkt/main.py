@@ -11,12 +11,9 @@ from graph.graph import load_graph_from_database, get_statuses_for_screen_name
 class NetworktUI(Widget):
     nodes = DictProperty({})
     
-    def change_text(self):
-        self.ids.messages.text = 'LOL'
-    
     def update(self, dt):
         pass
-    
+
     def on_nodes(self, *args):
         self.ids.network.update()
 
@@ -30,6 +27,7 @@ class Network(Widget):
         super(Network, self).__init__(**kwargs)
 
     def on_touch_down(self, touch):
+        self.update()
         x = touch.x
         y = touch.y
         if self.collide_point(x, y):
@@ -41,7 +39,13 @@ class Network(Widget):
             return False
     
     def update(self):
-        print('Update the view')
+        print('lol')
+        diameter = 10.0
+        with self.canvas:
+            Color(0, 1, 0)
+            for node in self.nodes:
+                nodei = self.nodes[node]
+                Ellipse(pos=(nodei.position), size=(diameter, diameter))
 
 
 class NetworktApp(App):
@@ -90,7 +94,7 @@ class Node(object):
         self.id = int(self.id_str)
     
     def true_position(coordinates):
-        return (int(coordinates[0] * 250) + 50, int(coordinates[1] * 250) + 50)
+        return (int(coordinates[0] * 250) + 50, int(coordinates[1] * 250) + 200)
 
 
 if __name__ == '__main__':
