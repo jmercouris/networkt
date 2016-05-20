@@ -11,6 +11,10 @@
         color: [1,1,1,1]
         markup: True
 
+<ExpandableLabel>:
+    size_hint_y: None
+    text_size: self.width, None
+    height: self.texture_size[1]
 
 <NetworktUI>:
     BoxLayout:
@@ -23,13 +27,14 @@
                 ActionPrevious:
                     title: 'Networkt'
                     with_previous: False
-                ActionOverflow:
                 ActionGroup:
                     text: 'File'
                     ActionButton:
                         text: 'Open'
                     ActionButton:
                         text: 'Export'
+                    ActionButton:
+                        text: 'Settings'
         
         BoxLayout:
             orientation: 'horizontal'
@@ -51,10 +56,24 @@
                         id: messages
                         text: 'Text'
 
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint:(1, None)
+            height:100
+            ProgressBar:
+                value: 60
+            BoxLayout:
+                orientation: 'horizontal'
+                Button:
+                    text: 'Play'
+                Button:
+                    text: 'Pause'
+                Button:
+                    text: 'Rewind'
+                Label:
+                    text: 'Speed'    
+                Slider:
 
-        Button:
-            text: ''
-            size_hint: (1, None)
-            height: 100
+                
             
 
