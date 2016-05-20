@@ -23,17 +23,19 @@ class ScrollableLabel(ScrollView):
 
 
 class Network(Widget):
+    description = StringProperty('')
+    
     def __init__(self, **kwargs):
         super(Network, self).__init__(**kwargs)
 
     def on_touch_down(self, touch):
-        self.update()
+        self.description = str(self.nodes['FactoryBerlin'].time_zone)
         x = touch.x
         y = touch.y
         if self.collide_point(x, y):
             with self.canvas:
                 Color(0, 1, 0)
-                diameter = 30.
+                diameter = 5.
                 Ellipse(pos=(touch.x - diameter / 2, touch.y - diameter / 2), size=(diameter, diameter))
         else:
             return False
