@@ -9,7 +9,6 @@ from graph.graph import load_graph_from_database, get_statuses_for_screen_name
 
 
 class NetworktUI(Widget):
-    nodes = DictProperty({})
     
     def update(self, dt):
         pass
@@ -24,22 +23,18 @@ class ScrollableLabel(ScrollView):
 
 class Network(Widget):
     description = ListProperty([str(index) for index in range(100)])
+    nodes = DictProperty({})
     
     def __init__(self, **kwargs):
         super(Network, self).__init__(**kwargs)
 
     def on_touch_down(self, touch):
-        self.description = str(self.nodes['FactoryBerlin'].time_zone)
-        x = touch.x
-        y = touch.y
-        if self.collide_point(x, y):
-            with self.canvas:
-                Color(0, 1, 0)
-                diameter = 5.
-                Ellipse(pos=(touch.x - diameter / 2, touch.y - diameter / 2), size=(diameter, diameter))
-        else:
-            return False
-    
+        dictionary = self.nodes['FactoryBerlin'].__dict__
+        tmp_list = []
+        for key in dictionary:
+            tmp_list.append(str(key) + ': ' + str(dictionary[key]))
+        self.description = sorted(tmp_list[:])
+        
     def update(self):
         diameter = 10.0
         with self.canvas:
@@ -47,6 +42,9 @@ class Network(Widget):
             for node in self.nodes:
                 nodei = self.nodes[node]
                 Ellipse(pos=(nodei.position), size=(diameter, diameter))
+    
+    def on_nodes(self, *args):
+        self.update()
 
 
 class NetworktApp(App):
@@ -60,22 +58,21 @@ class NetworktApp(App):
         # generate a simple graph
         graph = load_graph_from_database('FactoryBerlin')
         layout = nx.spring_layout(graph)
+        network = self.networktUI.ids.network
         # Generate the list of nodes with positions
         for node in layout:
             nodei = Node(graph.node[node])
             nodei.position = Node.true_position(layout[node])
             nodei.statuses = get_statuses_for_screen_name(nodei.screen_name)
-            self.networktUI.nodes[nodei.screen_name] = nodei
-    
+            network.nodes[nodei.screen_name] = nodei
+
 
 class Node(object):
     """Documentation for Node
     
     """
     def __init__(self, dictionary):
-        self.tick = 0
         self.position = ''
-        self.active_statuses = []
         self.edges = []
         self.created_at = dictionary.get('createdat', None)
         self.description = dictionary.get('description', None)
