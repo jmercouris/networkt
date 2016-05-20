@@ -2,14 +2,15 @@ from kivy.app import App
 from kivy.graphics import Color, Ellipse
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
-from kivy.properties import StringProperty, DictProperty, ListProperty
+from kivy.properties import StringProperty, DictProperty, ObjectProperty
 from kivy.clock import Clock
 import networkx as nx
 from graph.graph import load_graph_from_database, get_statuses_for_screen_name
+from kivy.adapters.simplelistadapter import SimpleListAdapter
+from kivy.uix.label import Label
 
 
 class NetworktUI(Widget):
-    
     def update(self, dt):
         pass
 
@@ -22,8 +23,9 @@ class ScrollableLabel(ScrollView):
 
 
 class Network(Widget):
-    description = ListProperty([str(index) for index in range(100)])
     nodes = DictProperty({})
+    adapter = ObjectProperty(SimpleListAdapter(data=[],
+                                               cls=Label))
     
     def __init__(self, **kwargs):
         super(Network, self).__init__(**kwargs)
@@ -33,8 +35,9 @@ class Network(Widget):
         tmp_list = []
         for key in dictionary:
             tmp_list.append(str(key) + ': ' + str(dictionary[key]))
-        self.description = sorted(tmp_list[:])
-        
+        self.adapter = SimpleListAdapter(data=sorted(tmp_list[:]),
+                                         cls=Label)
+
     def update(self):
         diameter = 10.0
         with self.canvas:
