@@ -2,7 +2,7 @@ from kivy.app import App
 from kivy.graphics import Color, Ellipse
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
-from kivy.properties import StringProperty, DictProperty
+from kivy.properties import StringProperty, DictProperty, ListProperty
 from kivy.clock import Clock
 import networkx as nx
 from graph.graph import load_graph_from_database, get_statuses_for_screen_name
@@ -23,7 +23,7 @@ class ScrollableLabel(ScrollView):
 
 
 class Network(Widget):
-    description = StringProperty('')
+    description = ListProperty([str(index) for index in range(100)])
     
     def __init__(self, **kwargs):
         super(Network, self).__init__(**kwargs)
