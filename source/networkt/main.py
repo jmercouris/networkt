@@ -1,13 +1,15 @@
+import networkx as nx
+from kivy.adapters.simplelistadapter import SimpleListAdapter
 from kivy.app import App
+from kivy.clock import Clock
 from kivy.graphics import Color, Ellipse
+from kivy.properties import DictProperty, ObjectProperty, StringProperty
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
-from kivy.properties import StringProperty, DictProperty, ObjectProperty
-from kivy.clock import Clock
-import networkx as nx
-from graph.graph import load_graph_from_database, get_statuses_for_screen_name
-from kivy.adapters.simplelistadapter import SimpleListAdapter
-from kivy.uix.label import Label
+
+from graph.graph import get_statuses_for_screen_name, load_graph_from_database
 
 
 class NetworktUI(Widget):
@@ -22,6 +24,10 @@ class ScrollableLabel(ScrollView):
     text = StringProperty('')
 
 
+class ExpandableLabel(Label):
+    text = StringProperty('')
+
+
 class Network(Widget):
     nodes = DictProperty({})
     adapter = ObjectProperty(SimpleListAdapter(data=[],
@@ -32,11 +38,12 @@ class Network(Widget):
 
     def on_touch_down(self, touch):
         dictionary = self.nodes['FactoryBerlin'].__dict__
+        dictionary.pop("statuses", None)
         tmp_list = []
         for key in dictionary:
             tmp_list.append(str(key) + ': ' + str(dictionary[key]))
         self.adapter = SimpleListAdapter(data=sorted(tmp_list[:]),
-                                         cls=Label)
+                                         cls=ExpandableLabel)
 
     def update(self):
         diameter = 10.0
