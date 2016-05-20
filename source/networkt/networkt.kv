@@ -35,16 +35,16 @@
             orientation: 'horizontal'
 
             Network:
-                nodes: root.nodes
                 id: network
 
             Accordion:
                 size_hint: (None, 1)
-                width: 285
+                width: 300
                 orientation: 'vertical'
                 AccordionItem:
                     title: 'Inspector'
                     ListView:
+                        halign: 'left'
                         item_strings: network.description
                 AccordionItem:
                     title: 'Messages'
