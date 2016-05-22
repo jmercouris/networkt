@@ -107,8 +107,9 @@ class Network(StencilView):
     
     def translate_render(self, position):
         position = (int(position[0] * self.camera.zoom) + 50, int(position[1] * self.camera.zoom) + 200)
-        translate_position = (position[0] + self.camera.position[0], position[1] + self.camera.position[1])
-        return translate_position
+        position = (position[0] + self.camera.position[0], position[1] + self.camera.position[1])
+        position = (dp(position[0]), dp(position[1]))
+        return position
     
     def update(self):
         self.canvas.clear()
