@@ -1,7 +1,7 @@
 import networkx as nx
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.graphics import Color, Line, Rectangle
+from kivy.graphics import Color, Line
 from kivy.properties import DictProperty, StringProperty
 from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
@@ -9,6 +9,7 @@ from kivy.uix.widget import Widget
 from kivy.core.window import Window
 from graph.graph import get_statuses_for_screen_name, load_graph_from_database
 from kivy.uix.stencilview import StencilView
+
 
 class NetworktUI(Widget):
     def update(self, dt):
@@ -30,8 +31,9 @@ class Camera(object):
     def __init__(self, **kwargs):
         super(Camera, self).__init__()
         self.position = (0, 0)
-        self.zoom = 0
+        self.zoom = 250
         self.move_speed = 10
+        self.zoom_factor = 10
     
     def camera_up(self):
         self.position = (self.position[0], self.position[1] + self.move_speed)
@@ -44,6 +46,12 @@ class Camera(object):
     
     def camera_right(self):
         self.position = (self.position[0] + self.move_speed, self.position[1])
+    
+    def camera_zoom_in(self):
+        self.zoom = self.zoom + self.zoom_factor
+    
+    def camera_zoom_out(self):
+        self.zoom = self.zoom - self.zoom_factor
 
 
 class Network(StencilView):
@@ -65,21 +73,30 @@ class Network(StencilView):
         
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
         if (text == 'w'):
-            self.camera.camera_up()
-            self.update_node_positions()
-            return True
-        elif (text == 'a'):
-            self.camera.camera_left()
-            self.update_node_positions()
-            return True
-        elif (text == 's'):
             self.camera.camera_down()
             self.update_node_positions()
             return True
-        elif (text == 'd'):
+        elif (text == 'a'):
             self.camera.camera_right()
             self.update_node_positions()
             return True
+        elif (text == 's'):
+            self.camera.camera_up()
+            self.update_node_positions()
+            return True
+        elif (text == 'd'):
+            self.camera.camera_left()
+            self.update_node_positions()
+            return True
+        elif (text == 'e'):
+            self.camera.camera_zoom_in()
+            self.update_node_positions()
+            return True
+        elif (text == 'q'):
+            self.camera.camera_zoom_out()
+            self.update_node_positions()
+            return True
+        
         return False
     
     def update_node_positions(self):
@@ -89,7 +106,7 @@ class Network(StencilView):
         self.update()
     
     def translate_render(self, position):
-        position = (int(position[0] * 250) + 50, int(position[1] * 250) + 200)
+        position = (int(position[0] * self.camera.zoom) + 50, int(position[1] * self.camera.zoom) + 200)
         translate_position = (position[0] + self.camera.position[0], position[1] + self.camera.position[1])
         return translate_position
     
