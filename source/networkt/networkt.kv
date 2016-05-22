@@ -27,14 +27,12 @@
                 ActionPrevious:
                     title: 'Networkt'
                     with_previous: False
-                ActionGroup:
-                    text: 'File'
-                    ActionButton:
-                        text: 'Open'
-                    ActionButton:
-                        text: 'Export'
-                    ActionButton:
-                        text: 'Settings'
+                ActionButton:
+                    text: 'Open'
+                ActionButton:
+                    text: 'Export'
+                ActionButton:
+                    text: 'Settings'
         
         BoxLayout:
             orientation: 'horizontal'
@@ -44,7 +42,7 @@
 
             Accordion:
                 size_hint: (None, 1)
-                width: 300
+                width: '300dp'
                 orientation: 'vertical'
                 AccordionItem:
                     title: 'Inspector'
@@ -59,7 +57,7 @@
         BoxLayout:
             orientation: 'vertical'
             size_hint:(1, None)
-            height:100
+            height: '100dp'
             ProgressBar:
                 value: 60
             BoxLayout:
