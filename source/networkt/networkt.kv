@@ -27,10 +27,13 @@
                 ActionPrevious:
                     title: 'Networkt'
                     with_previous: False
+
                 ActionButton:
                     text: 'Open'
+
                 ActionButton:
                     text: 'Export'
+
                 ActionButton:
                     text: 'Settings'
         
@@ -39,15 +42,19 @@
 
             Network:
                 id: network
+                nodes: app.nodes
 
             Accordion:
                 size_hint: (None, 1)
                 width: '300dp'
                 orientation: 'vertical'
+                
                 AccordionItem:
                     title: 'Inspector'
-                    ListView:
-                        adapter: network.adapter
+                    ScrollableLabel:
+                        id: inspector
+                        text: 'Text'
+
                 AccordionItem:
                     title: 'Messages'
                     ScrollableLabel:
@@ -58,8 +65,10 @@
             orientation: 'vertical'
             size_hint:(1, None)
             height: '100dp'
+
             ProgressBar:
                 value: 60
+
             BoxLayout:
                 orientation: 'horizontal'
                 Button:
