@@ -4,7 +4,6 @@ from kivy.app import App
 from kivy.clock import Clock
 from kivy.graphics import Color, Ellipse
 from kivy.properties import DictProperty, ObjectProperty, StringProperty
-from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
@@ -15,9 +14,6 @@ from graph.graph import get_statuses_for_screen_name, load_graph_from_database
 class NetworktUI(Widget):
     def update(self, dt):
         pass
-
-    def on_nodes(self, *args):
-        self.ids.network.update()
 
 
 class ScrollableLabel(ScrollView):
@@ -30,8 +26,6 @@ class ExpandableLabel(Label):
 
 class Network(Widget):
     nodes = DictProperty({})
-    adapter = ObjectProperty(SimpleListAdapter(data=[],
-                                               cls=Label))
     
     def __init__(self, **kwargs):
         super(Network, self).__init__(**kwargs)
@@ -58,6 +52,8 @@ class Network(Widget):
 
 
 class NetworktApp(App):
+    nodes = DictProperty({})
+    
     def build(self):
         self.networktUI = NetworktUI()
         self.load_graph()
@@ -68,13 +64,12 @@ class NetworktApp(App):
         # generate a simple graph
         graph = load_graph_from_database('FactoryBerlin')
         layout = nx.spring_layout(graph)
-        network = self.networktUI.ids.network
         # Generate the list of nodes with positions
         for node in layout:
             nodei = Node(graph.node[node])
             nodei.position = Node.true_position(layout[node])
             nodei.statuses = get_statuses_for_screen_name(nodei.screen_name)
-            network.nodes[nodei.screen_name] = nodei
+            self.nodes[nodei.screen_name] = nodei
 
 
 class Node(object):
