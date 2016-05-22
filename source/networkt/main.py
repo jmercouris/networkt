@@ -24,12 +24,23 @@ class ExpandableLabel(Label):
     text = StringProperty('')
 
 
+class Camera(object):
+    """Documentation for Camera
+    
+    """
+    def __init__(self, args):
+        super(Camera, self).__init__()
+        self.args = args
+        self.position = (0, 0)
+        self.zoom = 0
+
+
 class Network(Widget):
     nodes = DictProperty({})
     
     def __init__(self, **kwargs):
         super(Network, self).__init__(**kwargs)
-
+    
     def on_touch_down(self, touch):
         dictionary = self.nodes['FactoryBerlin'].__dict__
         dictionary.pop("statuses", None)
@@ -38,7 +49,18 @@ class Network(Widget):
             tmp_list.append(str(key) + ': ' + str(dictionary[key]))
         self.adapter = SimpleListAdapter(data=sorted(tmp_list[:]),
                                          cls=ExpandableLabel)
-
+    
+    def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
+        if keycode[1] == 'w':
+            print('w')
+        elif keycode[1] == 's':
+            print('s')
+        elif keycode[1] == 'up':
+            print('up')
+        elif keycode[1] == 'down':
+            print('down')
+        return True
+    
     def update(self):
         self.canvas.clear()
         with self.canvas:
@@ -65,6 +87,7 @@ class NetworktApp(App):
     
     def load_graph(self):
         # Generate a simple graph
+        self.nodes = {}
         root_user = 'FactoryBerlin'
         graph = load_graph_from_database(root_user)
         layout = nx.spring_layout(graph)
