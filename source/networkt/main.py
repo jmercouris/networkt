@@ -9,7 +9,7 @@ from kivy.uix.widget import Widget
 from kivy.core.window import Window
 from graph.graph import get_statuses_for_screen_name, load_graph_from_database
 from kivy.uix.stencilview import StencilView
-
+from kivy.metrics import dp
 
 class NetworktUI(Widget):
     def update(self, dt):
@@ -117,7 +117,7 @@ class Network(StencilView):
             Color(0, 1, 0)
             for node in self.nodes:
                 nodei = self.nodes[node]
-                Line(circle=(nodei.render_position[0], nodei.render_position[1], diameter))
+                Line(circle=(nodei.render_position[0], nodei.render_position[1], dp(diameter)))
                 for edge in nodei.edges:
                     Line(points=(nodei.render_position[0], nodei.render_position[1],
                                  edge.render_position[0], edge.render_position[1]))
