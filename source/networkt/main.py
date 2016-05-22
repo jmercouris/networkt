@@ -3,7 +3,7 @@ from kivy.adapters.simplelistadapter import SimpleListAdapter
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.graphics import Color, Ellipse
-from kivy.properties import DictProperty, ObjectProperty, StringProperty
+from kivy.properties import DictProperty, StringProperty
 from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
@@ -46,6 +46,8 @@ class Network(Widget):
             for node in self.nodes:
                 nodei = self.nodes[node]
                 Ellipse(pos=(nodei.position), size=(diameter, diameter))
+                for edge in nodei.edges:
+                    print(nodei.screen_name)
     
     def on_nodes(self, *args):
         self.update()
@@ -61,8 +63,9 @@ class NetworktApp(App):
         return self.networktUI
     
     def load_graph(self):
-        # generate a simple graph
-        graph = load_graph_from_database('FactoryBerlin')
+        # Generate a simple graph
+        root_user = 'FactoryBerlin'
+        graph = load_graph_from_database(root_user)
         layout = nx.spring_layout(graph)
         # Generate the list of nodes with positions
         for node in layout:
@@ -70,6 +73,12 @@ class NetworktApp(App):
             nodei.position = Node.true_position(layout[node])
             nodei.statuses = get_statuses_for_screen_name(nodei.screen_name)
             self.nodes[nodei.screen_name] = nodei
+        # Add edges to every node in graph
+        for edge in graph.edges():
+            self.nodes[edge[0]].edges.append(self.nodes[edge[1]])
+        # Invoke Update
+        self.nodes['0'] = Node(graph.node[root_user])
+        self.nodes.pop('0', 0)
 
 
 class Node(object):
@@ -77,7 +86,7 @@ class Node(object):
     
     """
     def __init__(self, dictionary):
-        self.position = ''
+        self.position = (0, 0)
         self.edges = []
         self.created_at = dictionary.get('createdat', None)
         self.description = dictionary.get('description', None)
@@ -89,12 +98,12 @@ class Node(object):
         self.listed_count = int(dictionary.get('listedcount') or -1)
         self.location = dictionary.get('location', None)
         self.name = dictionary.get('name', None)
-        self.screen_name = dictionary.get('screenname', None)
+        self.screen_name = dictionary.get('screenname', 'default')
         self.statuses_count = int(dictionary.get('statusescount') or -1)
         self.time_zone = dictionary.get('timezone', None)
         self.utc_offset = int(dictionary.get('utcoffset') or -1)
         self.verified = bool(dictionary.get('verified', False) or False)
-        self.id = int(self.id_str)
+        self.id = int(self.id_str or -1)
     
     def true_position(coordinates):
         return (int(coordinates[0] * 250) + 50, int(coordinates[1] * 250) + 200)
