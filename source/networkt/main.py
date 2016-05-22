@@ -47,6 +47,10 @@ class Camera(object):
 
 
 class Network(StencilView):
+    """Extends Stencilview to clip drawing to bounding box
+    
+    
+    """
     nodes = DictProperty({})
     
     def __init__(self, **kwargs):
@@ -85,6 +89,7 @@ class Network(StencilView):
         self.update()
     
     def translate_render(self, position):
+        position = (int(position[0] * 250) + 50, int(position[1] * 250) + 200)
         translate_position = (position[0] + self.camera.position[0], position[1] + self.camera.position[1])
         return translate_position
     
@@ -111,6 +116,8 @@ class NetworktApp(App):
         self.networktUI = NetworktUI()
         self.load_graph()
         Clock.schedule_interval(self.networktUI.update, 1.0 / 60.0)
+        network = self.networktUI.ids.network
+        network.update_node_positions()
         return self.networktUI
     
     def load_graph(self):
@@ -122,8 +129,7 @@ class NetworktApp(App):
         # Generate the list of nodes with positions
         for node in layout:
             nodei = Node(graph.node[node])
-            nodei.position = Node.true_position(layout[node])
-            nodei.render_position = nodei.position
+            nodei.position = layout[node]
             nodei.statuses = get_statuses_for_screen_name(nodei.screen_name)
             self.nodes[nodei.screen_name] = nodei
         # Add edges to every node in graph
@@ -158,9 +164,6 @@ class Node(object):
         self.utc_offset = int(dictionary.get('utcoffset') or -1)
         self.verified = bool(dictionary.get('verified', False) or False)
         self.id = int(self.id_str or -1)
-    
-    def true_position(coordinates):
-        return (int(coordinates[0] * 250) + 50, int(coordinates[1] * 250) + 200)
 
 
 if __name__ == '__main__':
