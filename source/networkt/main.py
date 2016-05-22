@@ -7,7 +7,7 @@ from kivy.properties import DictProperty, StringProperty
 from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
-
+from kivy.core.window import Window
 from graph.graph import get_statuses_for_screen_name, load_graph_from_database
 
 
@@ -40,6 +40,24 @@ class Network(Widget):
     
     def __init__(self, **kwargs):
         super(Network, self).__init__(**kwargs)
+        self._keyboard = Window.request_keyboard(self._keyboard_closed, self, 'text')
+        self._keyboard.bind(on_key_down=self._on_keyboard_down)
+    
+    def _keyboard_closed(self):
+        self._keyboard.unbind(on_key_down=self._on_keyboard_down)
+        self._keyboard = None
+        
+    def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
+        print('The key', keycode, 'have been pressed')
+        print(' - text is %r' % text)
+        print(' - modifiers are %r' % modifiers)
+        
+        # Keycode is composed of an integer + a string
+        # If we hit escape, release the keyboard
+        if keycode[1] == 'escape':
+            keyboard.release()
+        
+        return True
     
     def on_touch_down(self, touch):
         dictionary = self.nodes['FactoryBerlin'].__dict__
@@ -49,17 +67,6 @@ class Network(Widget):
             tmp_list.append(str(key) + ': ' + str(dictionary[key]))
         self.adapter = SimpleListAdapter(data=sorted(tmp_list[:]),
                                          cls=ExpandableLabel)
-    
-    def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
-        if keycode[1] == 'w':
-            print('w')
-        elif keycode[1] == 's':
-            print('s')
-        elif keycode[1] == 'up':
-            print('up')
-        elif keycode[1] == 'down':
-            print('down')
-        return True
     
     def update(self):
         self.canvas.clear()
