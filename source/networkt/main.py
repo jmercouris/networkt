@@ -1,14 +1,14 @@
 import networkx as nx
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.graphics import Color, Line
+from kivy.graphics import Color, Line, Rectangle
 from kivy.properties import DictProperty, StringProperty
 from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
 from kivy.core.window import Window
 from graph.graph import get_statuses_for_screen_name, load_graph_from_database
-
+from kivy.uix.stencilview import StencilView
 
 class NetworktUI(Widget):
     def update(self, dt):
@@ -46,7 +46,7 @@ class Camera(object):
         self.position = (self.position[0] + self.move_speed, self.position[1])
 
 
-class Network(Widget):
+class Network(StencilView):
     nodes = DictProperty({})
     
     def __init__(self, **kwargs):
