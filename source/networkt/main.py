@@ -2,7 +2,7 @@ import networkx as nx
 from kivy.adapters.simplelistadapter import SimpleListAdapter
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.graphics import Color, Ellipse
+from kivy.graphics import Color, Line
 from kivy.properties import DictProperty, StringProperty
 from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
@@ -40,14 +40,15 @@ class Network(Widget):
                                          cls=ExpandableLabel)
 
     def update(self):
-        diameter = 10.0
+        self.canvas.clear()
         with self.canvas:
+            diameter = 10.0
             Color(0, 1, 0)
             for node in self.nodes:
                 nodei = self.nodes[node]
-                Ellipse(pos=(nodei.position), size=(diameter, diameter))
+                Line(circle=(nodei.position[0], nodei.position[1], diameter))
                 for edge in nodei.edges:
-                    print(nodei.screen_name)
+                    Line(points=(nodei.position[0], nodei.position[1], edge.position[0], edge.position[1]))
     
     def on_nodes(self, *args):
         self.update()
