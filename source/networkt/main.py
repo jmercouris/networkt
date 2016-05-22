@@ -1,5 +1,4 @@
 import networkx as nx
-from kivy.adapters.simplelistadapter import SimpleListAdapter
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.graphics import Color, Line
@@ -28,11 +27,23 @@ class Camera(object):
     """Documentation for Camera
     
     """
-    def __init__(self, args):
+    def __init__(self, **kwargs):
         super(Camera, self).__init__()
-        self.args = args
         self.position = (0, 0)
         self.zoom = 0
+        self.move_speed = 10
+    
+    def camera_up(self):
+        self.position = (self.position[0], self.position[1] + self.move_speed)
+    
+    def camera_down(self):
+        self.position = (self.position[0], self.position[1] - self.move_speed)
+    
+    def camera_left(self):
+        self.position = (self.position[0] - self.move_speed, self.position[1])
+    
+    def camera_right(self):
+        self.position = (self.position[0] + self.move_speed, self.position[1])
 
 
 class Network(Widget):
@@ -42,31 +53,40 @@ class Network(Widget):
         super(Network, self).__init__(**kwargs)
         self._keyboard = Window.request_keyboard(self._keyboard_closed, self, 'text')
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
+        self.camera = Camera()
     
     def _keyboard_closed(self):
         self._keyboard.unbind(on_key_down=self._on_keyboard_down)
         self._keyboard = None
         
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
-        print('The key', keycode, 'have been pressed')
-        print(' - text is %r' % text)
-        print(' - modifiers are %r' % modifiers)
-        
-        # Keycode is composed of an integer + a string
-        # If we hit escape, release the keyboard
-        if keycode[1] == 'escape':
-            keyboard.release()
-        
-        return True
+        if (text == 'w'):
+            self.camera.camera_up()
+            self.update_node_positions()
+            return True
+        elif (text == 'a'):
+            self.camera.camera_left()
+            self.update_node_positions()
+            return True
+        elif (text == 's'):
+            self.camera.camera_down()
+            self.update_node_positions()
+            return True
+        elif (text == 'd'):
+            self.camera.camera_right()
+            self.update_node_positions()
+            return True
+        return False
     
-    def on_touch_down(self, touch):
-        dictionary = self.nodes['FactoryBerlin'].__dict__
-        dictionary.pop("statuses", None)
-        tmp_list = []
-        for key in dictionary:
-            tmp_list.append(str(key) + ': ' + str(dictionary[key]))
-        self.adapter = SimpleListAdapter(data=sorted(tmp_list[:]),
-                                         cls=ExpandableLabel)
+    def update_node_positions(self):
+        for node in self.nodes:
+            nodei = self.nodes[node]
+            nodei.render_position = self.translate_render(nodei.position)
+        self.update()
+    
+    def translate_render(self, position):
+        translate_position = (position[0] + self.camera.position[0], position[1] + self.camera.position[1])
+        return translate_position
     
     def update(self):
         self.canvas.clear()
@@ -75,9 +95,10 @@ class Network(Widget):
             Color(0, 1, 0)
             for node in self.nodes:
                 nodei = self.nodes[node]
-                Line(circle=(nodei.position[0], nodei.position[1], diameter))
+                Line(circle=(nodei.render_position[0], nodei.render_position[1], diameter))
                 for edge in nodei.edges:
-                    Line(points=(nodei.position[0], nodei.position[1], edge.position[0], edge.position[1]))
+                    Line(points=(nodei.render_position[0], nodei.render_position[1],
+                                 edge.render_position[0], edge.render_position[1]))
     
     def on_nodes(self, *args):
         self.update()
@@ -102,6 +123,7 @@ class NetworktApp(App):
         for node in layout:
             nodei = Node(graph.node[node])
             nodei.position = Node.true_position(layout[node])
+            nodei.render_position = nodei.position
             nodei.statuses = get_statuses_for_screen_name(nodei.screen_name)
             self.nodes[nodei.screen_name] = nodei
         # Add edges to every node in graph
@@ -118,6 +140,7 @@ class Node(object):
     """
     def __init__(self, dictionary):
         self.position = (0, 0)
+        self.render_position = (0, 0)
         self.edges = []
         self.created_at = dictionary.get('createdat', None)
         self.description = dictionary.get('description', None)
