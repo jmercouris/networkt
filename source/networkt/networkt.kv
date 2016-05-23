@@ -11,11 +11,6 @@
         color: [1,1,1,1]
         markup: True
 
-<ExpandableLabel>:
-    size_hint_y: None
-    text_size: self.width, None
-    height: self.texture_size[1]
-
 <NetworktUI>:
     BoxLayout:
         size: (root.width, root.height)
@@ -51,9 +46,9 @@
                 
                 AccordionItem:
                     title: 'Inspector'
-                    ScrollableLabel:
-                        id: inspector
+                    Inspector:
                         text: 'Text'
+                        selected_node: network.selected_node
 
                 AccordionItem:
                     title: 'Messages'
