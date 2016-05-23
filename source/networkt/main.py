@@ -28,6 +28,13 @@ class Inspector(ScrollableLabel):
         print('Node Selected')
 
 
+class Messages(ScrollableLabel):
+    selected_node = ObjectProperty(None)
+    
+    def on_selected_node(self, *args):
+        self.text = self.selected_node.screen_name
+
+
 class Camera(object):
     """Documentation for Camera
     
