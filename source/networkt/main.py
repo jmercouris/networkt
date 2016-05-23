@@ -20,7 +20,7 @@ class NetworktUI(Widget):
     
     def update(self, dt):
         self.network.update_logic()
-        self.network.update()
+        self.network.update_graphic()
 
 
 class ScrollableLabel(ScrollView):
@@ -131,7 +131,7 @@ class Network(StencilView):
         for node in self.nodes:
             nodei = self.nodes[node]
             nodei.render_position = self.translate_render(nodei.position)
-        self.update()
+        self.update_graphic()
     
     def translate_render(self, position):
         position = (int(position[0] * self.camera.zoom) + 50, int(position[1] * self.camera.zoom) + 200)
@@ -139,7 +139,7 @@ class Network(StencilView):
         position = (dp(position[0]), dp(position[1]))
         return position
     
-    def update(self):
+    def update_graphic(self):
         self.canvas.clear()
         with self.canvas:
             Color(0, 1, 0)
@@ -166,7 +166,7 @@ class Network(StencilView):
             self.selected_node.active_statuses.append(tmp_message)
     
     def on_nodes(self, *args):
-        self.update()
+        self.update_graphic()
 
 
 class NetworktApp(App):
