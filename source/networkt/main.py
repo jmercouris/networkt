@@ -38,7 +38,10 @@ class Statuses(ScrollableLabel):
     selected_node = ObjectProperty(None)
     
     def on_selected_node(self, *args):
-        pass
+        statuses_string = ''
+        for status in self.selected_node.statuses:
+            statuses_string = statuses_string + '----------------------------------------\n' + status.__str__() + '\n'
+        self.text = statuses_string
 
 
 class Camera(object):
@@ -198,6 +201,7 @@ class NetworktApp(App):
         # Invoke Update
         self.nodes['0'] = Node(graph.node[root_user])
         self.nodes.pop('0', 0)
+        # Generate graph metadata
 
 
 class Node(object):
@@ -319,6 +323,16 @@ class Status(object):
             return True
         else:
             return False
+    
+    def __str__(self):
+        return_string = """\
+        Sender: {}
+        Text: {}
+        """.format(
+            self.sender.screen_name,
+            self.text,
+        )
+        return dedent(return_string)
 
 if __name__ == '__main__':
     NetworktApp().run()
