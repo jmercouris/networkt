@@ -3,7 +3,6 @@ from kivy.app import App
 from kivy.clock import Clock
 from kivy.graphics import Color, Line
 from kivy.properties import DictProperty, StringProperty, ObjectProperty
-from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
 from kivy.core.window import Window
@@ -22,8 +21,11 @@ class ScrollableLabel(ScrollView):
     text = StringProperty('')
 
 
-class ExpandableLabel(Label):
-    text = StringProperty('')
+class Inspector(ScrollableLabel):
+    selected_node = ObjectProperty(None)
+    
+    def on_selected_node(self, *args):
+        print('Node Selected')
 
 
 class Camera(object):
@@ -110,6 +112,7 @@ class Network(StencilView):
             squared_y = pow((touch.y - nodei.render_position[1]), 2)
             squared_radius = pow(nodei.radius, 2)
             if (squared_radius > squared_x + squared_y):
+                self.selected_node = nodei
                 print('Collision')
             
         print(touch.x, touch.y)
