@@ -157,8 +157,12 @@ class Network(StencilView):
     def update_logic(self):
         for node in self.nodes:
             nodei = self.nodes[node]
+            tmp_active_statuses = []
             for status in nodei.active_statuses:
-                status.act()
+                if (status.is_alive()):
+                    status.act()
+                    tmp_active_statuses.append(status)
+            nodei.active_statuses = tmp_active_statuses
     
     def on_selected_node(self, *args):
         for edge in self.selected_node.edges:
@@ -248,10 +252,16 @@ class Status(object):
         self.delta_y = (self.receiver.render_position[1] - self.sender.render_position[1]) / self.steps
     
     def act(self):
-        self.position = (self.position[0] + self.delta_x, self.position[1] + self.delta_y)
-        self.render_position = (int(self.position[0]), int(self.position[1]))
-        self.steps = self.steps - 1
-
+        if (self.steps > 0):
+            self.position = (self.position[0] + self.delta_x, self.position[1] + self.delta_y)
+            self.render_position = (int(self.position[0]), int(self.position[1]))
+            self.steps = self.steps - 1
+    
+    def is_alive(self):
+        if (self.steps > 0):
+            return True
+        else:
+            return False
 
 if __name__ == '__main__':
     NetworktApp().run()
