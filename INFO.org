@@ -5,9 +5,12 @@
 * Visualizer
 ** DONE Draw Nodes
 ** DONE Draw Node Connections
-** TODO Create Camera/Zoom/Scroll
-** TODO Add UI Buttons
+** DONE Create Camera/Zoom/Scroll
+** DONE Add UI Buttons
 ** TODO Create Event Stack
+** Node selection by Mouse
+** Camera movement by mouse/scroll wheel
+** Accordion population based on Node selection
 
 * Scraper
 ** Develop Configuration File Standards
