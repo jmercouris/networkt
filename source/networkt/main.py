@@ -39,8 +39,11 @@ class Statuses(ScrollableLabel):
     
     def on_selected_node(self, *args):
         statuses_string = ''
+        limit = 10
         for status in self.selected_node.statuses:
-            statuses_string = statuses_string + '----------------------------------------\n' + status.__str__() + '\n'
+            if(limit > 0):
+                statuses_string = statuses_string + status.__str__()
+                limit = limit - 1
         self.text = statuses_string
 
 
@@ -185,7 +188,6 @@ class NetworktApp(App):
         for node in layout:
             nodei = Node(graph.node[node])
             nodei.position = layout[node]
-            nodei.statuses = get_statuses_for_screen_name(nodei.screen_name)
             self.nodes[nodei.screen_name] = nodei
         # Add edges to every node in graph
         for edge in graph.edges():
@@ -194,6 +196,10 @@ class NetworktApp(App):
         self.nodes['0'] = Node(graph.node[root_user])
         self.nodes.pop('0', 0)
         # Generate graph metadata
+        for node in self.nodes:
+            nodei = self.nodes[node]
+            for status in get_statuses_for_screen_name(nodei.screen_name):
+                nodei.statuses.append(Status(status, sender=nodei))
 
 
 class Node(object):
@@ -289,17 +295,17 @@ class Status(object):
     """Documentation for Status
     
     """
-    def __init__(self, sender, receiver, text, src_status_object):
+    def __init__(self, src_status_object, sender=None, receiver=None):
         super(Status, self).__init__()
         # Rendering Specific
         self.sender = sender
-        self.receiver = receiver
-        self.text = text
         self.position = sender.render_position
         self.render_position = sender.render_position
         self.steps = 10
         self.radius = 5.0
-        self.calculate_delta()
+        if (receiver is not None):
+            self.receiver = receiver
+            self.calculate_delta()
         # Datastore specific
         self.coordinate_longitude = src_status_object.coordinate_longitude
         self.coordinate_latitude = src_status_object.coordinate_latitude
