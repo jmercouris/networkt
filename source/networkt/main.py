@@ -2,7 +2,7 @@ import networkx as nx
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.graphics import Color, Line
-from kivy.properties import DictProperty, StringProperty
+from kivy.properties import DictProperty, StringProperty, ObjectProperty
 from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
@@ -10,6 +10,8 @@ from kivy.core.window import Window
 from graph.graph import get_statuses_for_screen_name, load_graph_from_database
 from kivy.uix.stencilview import StencilView
 from kivy.metrics import dp
+from math import pow
+
 
 class NetworktUI(Widget):
     def update(self, dt):
@@ -60,6 +62,7 @@ class Network(StencilView):
     
     """
     nodes = DictProperty({})
+    selected_node = ObjectProperty(None)
     
     def __init__(self, **kwargs):
         super(Network, self).__init__(**kwargs)
@@ -99,6 +102,18 @@ class Network(StencilView):
         
         return False
     
+    def on_touch_up(self, touch):
+        for node in self.nodes:
+            nodei = self.nodes[node]
+            # (R0-R1)^2 <= (x0-x1)^2+(y0-y1)^2 <= (R0+R1)^2
+            squared_x = pow((touch.x - nodei.render_position[0]), 2)
+            squared_y = pow((touch.y - nodei.render_position[1]), 2)
+            squared_radius = pow(nodei.radius, 2)
+            if (squared_radius > squared_x + squared_y):
+                print('Collision')
+            
+        print(touch.x, touch.y)
+    
     def update_node_positions(self):
         for node in self.nodes:
             nodei = self.nodes[node]
@@ -114,11 +129,10 @@ class Network(StencilView):
     def update(self):
         self.canvas.clear()
         with self.canvas:
-            diameter = 10.0
             Color(0, 1, 0)
             for node in self.nodes:
                 nodei = self.nodes[node]
-                Line(circle=(nodei.render_position[0], nodei.render_position[1], dp(diameter)))
+                Line(circle=(nodei.render_position[0], nodei.render_position[1], dp(nodei.radius)))
                 for edge in nodei.edges:
                     Line(points=(nodei.render_position[0], nodei.render_position[1],
                                  edge.render_position[0], edge.render_position[1]))
@@ -164,6 +178,7 @@ class Node(object):
     """
     def __init__(self, dictionary):
         self.position = (0, 0)
+        self.radius = 10.0
         self.render_position = (0, 0)
         self.edges = []
         self.created_at = dictionary.get('createdat', None)

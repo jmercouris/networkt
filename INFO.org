@@ -8,9 +8,9 @@
 ** DONE Create Camera/Zoom/Scroll
 ** DONE Add UI Buttons
 ** TODO Create Event Stack
-** Node selection by Mouse
-** Camera movement by mouse/scroll wheel
-** Accordion population based on Node selection
+** TODO Node selection by Mouse
+** TODO Camera movement by mouse/scroll wheel
+** TODO Accordion population based on Node selection
 
 * Scraper
 ** Develop Configuration File Standards
