@@ -13,8 +13,13 @@ from math import pow
 
 
 class NetworktUI(Widget):
+    def __init__(self, **kwargs):
+        super(NetworktUI, self).__init__()
+        self.network = self.ids.network
+    
     def update(self, dt):
-        pass
+        self.network.update_logic()
+        self.network.update()
 
 
 class ScrollableLabel(ScrollView):
@@ -25,14 +30,14 @@ class Inspector(ScrollableLabel):
     selected_node = ObjectProperty(None)
     
     def on_selected_node(self, *args):
-        print('Node Selected')
+        pass
 
 
-class Messages(ScrollableLabel):
+class Statuses(ScrollableLabel):
     selected_node = ObjectProperty(None)
     
     def on_selected_node(self, *args):
-        self.text = self.selected_node.screen_name
+        pass
 
 
 class Camera(object):
@@ -120,9 +125,6 @@ class Network(StencilView):
             squared_radius = pow(nodei.radius, 2)
             if (squared_radius > squared_x + squared_y):
                 self.selected_node = nodei
-                print('Collision')
-            
-        print(touch.x, touch.y)
     
     def update_node_positions(self):
         for node in self.nodes:
@@ -142,10 +144,26 @@ class Network(StencilView):
             Color(0, 1, 0)
             for node in self.nodes:
                 nodei = self.nodes[node]
+                # Draw All Nodes
                 Line(circle=(nodei.render_position[0], nodei.render_position[1], dp(nodei.radius)))
+                # Draw All Edges
                 for edge in nodei.edges:
                     Line(points=(nodei.render_position[0], nodei.render_position[1],
                                  edge.render_position[0], edge.render_position[1]))
+                # Draw All Statuses
+                for status in nodei.active_statuses:
+                    Line(circle=(status.render_position[0], status.render_position[1], dp(status.radius)))
+    
+    def update_logic(self):
+        for node in self.nodes:
+            nodei = self.nodes[node]
+            for status in nodei.active_statuses:
+                status.act()
+    
+    def on_selected_node(self, *args):
+        for edge in self.selected_node.edges:
+            tmp_message = Status(self.selected_node, edge, 'message')
+            self.selected_node.active_statuses.append(tmp_message)
     
     def on_nodes(self, *args):
         self.update()
@@ -157,7 +175,7 @@ class NetworktApp(App):
     def build(self):
         self.networktUI = NetworktUI()
         self.load_graph()
-        Clock.schedule_interval(self.networktUI.update, 1.0 / 60.0)
+        Clock.schedule_interval(self.networktUI.update, 1.0 / 30.0)
         network = self.networktUI.ids.network
         network.update_node_positions()
         return self.networktUI
@@ -203,10 +221,36 @@ class Node(object):
         self.name = dictionary.get('name', None)
         self.screen_name = dictionary.get('screenname', 'default')
         self.statuses_count = int(dictionary.get('statusescount') or -1)
+        self.statuses = []
+        self.active_statuses = []
         self.time_zone = dictionary.get('timezone', None)
         self.utc_offset = int(dictionary.get('utcoffset') or -1)
         self.verified = bool(dictionary.get('verified', False) or False)
         self.id = int(self.id_str or -1)
+
+
+class Status(object):
+    """Documentation for Status
+    
+    """
+    def __init__(self, sender, receiver, text):
+        super(Status, self).__init__()
+        self.sender = sender
+        self.receiver = receiver
+        self.text = text
+        self.position = sender.render_position
+        self.steps = 10
+        self.radius = 5.0
+        self.calculate_delta()
+    
+    def calculate_delta(self):
+        self.delta_x = (self.receiver.render_position[0] - self.sender.render_position[0]) / self.steps
+        self.delta_y = (self.receiver.render_position[1] - self.sender.render_position[1]) / self.steps
+    
+    def act(self):
+        self.position = (self.position[0] + self.delta_x, self.position[1] + self.delta_y)
+        self.render_position = (int(self.position[0]), int(self.position[1]))
+        self.steps = self.steps - 1
 
 
 if __name__ == '__main__':
