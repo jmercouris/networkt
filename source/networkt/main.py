@@ -157,12 +157,7 @@ class Network(StencilView):
     def update_logic(self):
         for node in self.nodes:
             nodei = self.nodes[node]
-            tmp_active_statuses = []
-            for status in nodei.active_statuses:
-                if (status.is_alive()):
-                    status.act()
-                    tmp_active_statuses.append(status)
-            nodei.active_statuses = tmp_active_statuses
+            nodei.act()
     
     def on_selected_node(self, *args):
         for edge in self.selected_node.edges:
@@ -231,6 +226,14 @@ class Node(object):
         self.utc_offset = int(dictionary.get('utcoffset') or -1)
         self.verified = bool(dictionary.get('verified', False) or False)
         self.id = int(self.id_str or -1)
+    
+    def act(self):
+        tmp_active_statuses = []
+        for status in self.active_statuses:
+            if (status.is_alive()):
+                status.act()
+                tmp_active_statuses.append(status)
+        self.active_statuses = tmp_active_statuses
 
 
 class Status(object):
@@ -243,6 +246,7 @@ class Status(object):
         self.receiver = receiver
         self.text = text
         self.position = sender.render_position
+        self.render_position = sender.render_position
         self.steps = 10
         self.radius = 5.0
         self.calculate_delta()
