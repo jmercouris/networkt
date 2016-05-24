@@ -58,22 +58,22 @@ class Camera(object):
         self.move_speed = 10
         self.zoom_factor = 10
     
-    def camera_up(self):
+    def shift_up(self):
         self.position = (self.position[0], self.position[1] + self.move_speed)
     
-    def camera_down(self):
+    def shift_down(self):
         self.position = (self.position[0], self.position[1] - self.move_speed)
     
-    def camera_left(self):
+    def shift_left(self):
         self.position = (self.position[0] - self.move_speed, self.position[1])
     
-    def camera_right(self):
+    def shift_right(self):
         self.position = (self.position[0] + self.move_speed, self.position[1])
     
-    def camera_zoom_in(self):
+    def zoom_in(self):
         self.zoom = self.zoom + self.zoom_factor
     
-    def camera_zoom_out(self):
+    def zoom_out(self):
         self.zoom = self.zoom - self.zoom_factor
 
 
@@ -97,41 +97,54 @@ class Network(StencilView):
         
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
         if (text == 'w'):
-            self.camera.camera_down()
+            self.camera.shift_down()
             self.update_node_positions()
             return True
         elif (text == 'a'):
-            self.camera.camera_right()
+            self.camera.shift_right()
             self.update_node_positions()
             return True
         elif (text == 's'):
-            self.camera.camera_up()
+            self.camera.shift_up()
             self.update_node_positions()
             return True
         elif (text == 'd'):
-            self.camera.camera_left()
+            self.camera.shift_left()
             self.update_node_positions()
             return True
         elif (text == 'e'):
-            self.camera.camera_zoom_in()
+            self.camera.zoom_in()
             self.update_node_positions()
             return True
         elif (text == 'q'):
-            self.camera.camera_zoom_out()
+            self.camera.zoom_out()
             self.update_node_positions()
             return True
         
         return False
     
+    def on_touch_down(self, touch):
+        # Handle Mouse Zoom
+        if touch.button is 'scrollup':
+            self.camera.zoom_out()
+            self.update_node_positions()
+            return True
+        if touch.button is 'scrolldown':
+            self.camera.zoom_in()
+            self.update_node_positions()
+            return True
+    
     def on_touch_up(self, touch):
-        for node in self.nodes:
-            nodei = self.nodes[node]
-            # (R0-R1)^2 <= (x0-x1)^2+(y0-y1)^2 <= (R0+R1)^2
-            squared_x = pow((touch.x - nodei.render_position[0]), 2)
-            squared_y = pow((touch.y - nodei.render_position[1]), 2)
-            squared_radius = pow(nodei.radius, 2)
-            if (squared_radius > squared_x + squared_y):
-                self.selected_node = nodei
+        # Handle Clicks Within Nodes
+        if touch.button is 'left':
+            for node in self.nodes:
+                nodei = self.nodes[node]
+                # (R0-R1)^2 <= (x0-x1)^2+(y0-y1)^2 <= (R0+R1)^2
+                squared_x = pow((touch.x - nodei.render_position[0]), 2)
+                squared_y = pow((touch.y - nodei.render_position[1]), 2)
+                squared_radius = pow(nodei.radius, 2)
+                if (squared_radius > squared_x + squared_y):
+                    self.selected_node = nodei
     
     def update_node_positions(self):
         for node in self.nodes:
