@@ -97,21 +97,20 @@ class Network(StencilView):
     
     def on_touch_down(self, touch):
         # Handle Mouse Zoom
-        # TODO: Check if scroll is within bounds
-        if touch.button is 'scrollup':
+        if touch.button is 'scrollup' and self.collide_point(*touch.pos):
             self.camera.zoom_out()
             self.update_node_positions()
             return True
-        if touch.button is 'scrolldown':
+        if touch.button is 'scrolldown' and self.collide_point(*touch.pos):
             self.camera.zoom_in()
             self.update_node_positions()
             return True
     
     def on_touch_move(self, touch):
         # Handle Mouse Drag
-        # TODO: Check if drag is within bounds
-        self.camera.shift_offset((touch.dpos[0], touch.dpos[1]))
-        self.update_node_positions()
+        if self.collide_point(*touch.opos):
+            self.camera.shift_offset((touch.dpos[0], touch.dpos[1]))
+            self.update_node_positions()
     
     def on_touch_up(self, touch):
         # Handle Clicks Within Nodes
