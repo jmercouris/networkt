@@ -6,10 +6,10 @@ from kivy.properties import DictProperty, StringProperty, ObjectProperty
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
 from kivy.core.window import Window
-from graph.graph import get_statuses_for_screen_name, load_graph_from_database
 from kivy.uix.stencilview import StencilView
 from kivy.metrics import dp
 from math import pow
+from graph.graph import get_statuses_for_screen_name, load_graph_from_database
 from networkt.status import Status
 from networkt.node import Node
 from networkt.camera import Camera
