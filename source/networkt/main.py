@@ -56,7 +56,7 @@ class Camera(object):
         self.position = (0, 0)
         self.zoom = 250
         self.move_speed = 10
-        self.zoom_factor = 10
+        self.zoom_factor = 30
     
     def shift_up(self):
         self.position = (self.position[0], self.position[1] + self.move_speed)
@@ -69,6 +69,9 @@ class Camera(object):
     
     def shift_right(self):
         self.position = (self.position[0] + self.move_speed, self.position[1])
+    
+    def shift_offset(self, offset):
+        self.position = (self.position[0] + offset[0], self.position[1] + offset[1])
     
     def zoom_in(self):
         self.zoom = self.zoom + self.zoom_factor
@@ -125,6 +128,7 @@ class Network(StencilView):
     
     def on_touch_down(self, touch):
         # Handle Mouse Zoom
+        # TODO: Check if scroll is within bounds
         if touch.button is 'scrollup':
             self.camera.zoom_out()
             self.update_node_positions()
@@ -133,6 +137,12 @@ class Network(StencilView):
             self.camera.zoom_in()
             self.update_node_positions()
             return True
+    
+    def on_touch_move(self, touch):
+        # Handle Mouse Drag
+        # TODO: Check if drag is within bounds
+        self.camera.shift_offset((touch.dpos[0], touch.dpos[1]))
+        self.update_node_positions()
     
     def on_touch_up(self, touch):
         # Handle Clicks Within Nodes
