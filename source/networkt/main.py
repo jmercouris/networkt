@@ -122,7 +122,7 @@ class Network(StencilView):
                 squared_x = pow((touch.x - nodei.render_position[0]), 2)
                 squared_y = pow((touch.y - nodei.render_position[1]), 2)
                 squared_radius = pow(nodei.radius, 2)
-                if (squared_radius > squared_x + squared_y):
+                if (dp(squared_radius) > squared_x + squared_y):
                     self.selected_node = nodei
     
     def update_node_positions(self):
