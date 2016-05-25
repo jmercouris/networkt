@@ -65,7 +65,8 @@ class PreviewSlider(Slider):
         with self.canvas.after:
             Color(0, 1, 0, .25)
             for marker in self.markers:
-                Rectangle(size=(1, self.height * .5), pos=(self.width * marker.position, self.height + self.height * .25))
+                Rectangle(size=(1, self.height * .5),
+                          pos=(self.width * marker.position, self.height + self.height * .25))
     
     def date_difference(d1, d2):
         diff = d2 - d1
