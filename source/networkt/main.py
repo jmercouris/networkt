@@ -15,8 +15,6 @@ from networkt.status import Status, by_date_key
 from networkt.node import Node
 from networkt.camera import Camera
 from kivy.factory import Factory
-from datetime import datetime
-import time
 
 
 class NetworktUI(Widget):
@@ -57,7 +55,7 @@ class PreviewSlider(Slider):
             print('{} {}'.format(self.markers[0].date, self.markers[-1].date))
     
     def update_graphic(self):
-        print('update')
+        pass
     
     def date_difference(d1, d2):
         diff = d2 - d1
