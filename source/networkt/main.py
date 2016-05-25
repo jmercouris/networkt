@@ -1,7 +1,7 @@
 import networkx as nx
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.graphics import Color, Line
+from kivy.graphics import Color, Line, Rectangle
 from kivy.properties import DictProperty, StringProperty, ObjectProperty, ListProperty
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.slider import Slider
@@ -42,6 +42,10 @@ class PreviewSlider(Slider):
         self.update_logic()
         self.update_graphic()
     
+    def on_width(self, *args):
+        self.update_logic()
+        self.update_graphic()
+    
     def update_logic(self):
         tmp_list = []
         for node in self.nodes:
@@ -49,13 +53,19 @@ class PreviewSlider(Slider):
             for status in nodei.statuses:
                 tmp_list.append(status)
         self.markers = sorted(tmp_list, key=by_date_key)
-
+        
         if len(self.markers) > 0:
-            print(PreviewSlider.date_difference(self.markers[0].date, self.markers[-1].date))
-            print('{} {}'.format(self.markers[0].date, self.markers[-1].date))
+            total_difference = PreviewSlider.date_difference(self.markers[0].date, self.markers[-1].date)
+            for marker in self.markers:
+                marker.position = PreviewSlider.date_difference(self.markers[0].date,
+                                                                marker.date) / total_difference
     
     def update_graphic(self):
-        pass
+        self.canvas.after.clear()
+        with self.canvas.after:
+            Color(0, 1, 0, .25)
+            for marker in self.markers:
+                Rectangle(size=(1, self.height * .5), pos=(self.width * marker.position, self.height + self.height * .25))
     
     def date_difference(d1, d2):
         diff = d2 - d1
