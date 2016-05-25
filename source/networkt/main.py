@@ -15,6 +15,8 @@ from networkt.status import Status, by_date_key
 from networkt.node import Node
 from networkt.camera import Camera
 from kivy.factory import Factory
+from datetime import datetime
+import time
 
 
 class NetworktUI(Widget):
@@ -48,13 +50,19 @@ class PreviewSlider(Slider):
             nodei = self.nodes[node]
             for status in nodei.statuses:
                 tmp_list.append(status)
-                print(status.text)
         self.markers = sorted(tmp_list, key=by_date_key)
-        for status in self.markers:
-            print(status.date)
+
+        if len(self.markers) > 0:
+            print(PreviewSlider.date_difference(self.markers[0].date, self.markers[-1].date))
+            print('{} {}'.format(self.markers[0].date, self.markers[-1].date))
     
     def update_graphic(self):
         print('update')
+    
+    def date_difference(d1, d2):
+        diff = d2 - d1
+        diff_minutes = (diff.days * 24 * 60) + (diff.seconds/60)
+        return(diff_minutes)
 
 
 class Inspector(ScrollableLabel):
@@ -79,7 +87,6 @@ class Statuses(ScrollableLabel):
 
 class Network(StencilView):
     """Extends Stencilview to clip drawing to bounding box
-    
     
     """
     nodes = DictProperty({})
