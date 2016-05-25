@@ -13,6 +13,7 @@ from graph.graph import get_statuses_for_screen_name, load_graph_from_database
 from networkt.status import Status
 from networkt.node import Node
 from networkt.camera import Camera
+from kivy.factory import Factory
 
 
 class NetworktUI(Widget):
@@ -160,6 +161,7 @@ class Network(StencilView):
 
 class NetworktApp(App):
     nodes = DictProperty({})
+    Factory.register('RangeSlider', module='networkt.range_slider')
     
     def build(self):
         self.networktUI = NetworktUI()
