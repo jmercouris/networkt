@@ -34,7 +34,7 @@ class Status(object):
         self.source = src_status_object.source
         self.text = src_status_object.text
         self.truncated = src_status_object.truncated
-        
+    
     def calculate_delta(self):
         self.delta_x = (self.receiver.render_position[0] - self.sender.render_position[0]) / self.steps
         self.delta_y = (self.receiver.render_position[1] - self.sender.render_position[1]) / self.steps
@@ -60,3 +60,8 @@ class Status(object):
             self.text,
         )
         return dedent(return_string)
+
+
+# Key by Date for Sorting
+def by_date_key(status):
+    return status.date

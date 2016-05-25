@@ -11,7 +11,7 @@ from kivy.uix.stencilview import StencilView
 from kivy.metrics import dp
 from math import pow
 from graph.graph import get_statuses_for_screen_name, load_graph_from_database
-from networkt.status import Status
+from networkt.status import Status, by_date_key
 from networkt.node import Node
 from networkt.camera import Camera
 from kivy.factory import Factory
@@ -49,7 +49,9 @@ class PreviewSlider(Slider):
             for status in nodei.statuses:
                 tmp_list.append(status)
                 print(status.text)
-        self.markers = tmp_list
+        self.markers = sorted(tmp_list, key=by_date_key)
+        for status in self.markers:
+            print(status.date)
     
     def update_graphic(self):
         print('update')
