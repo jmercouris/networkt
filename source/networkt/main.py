@@ -2,8 +2,9 @@ import networkx as nx
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.graphics import Color, Line
-from kivy.properties import DictProperty, StringProperty, ObjectProperty
+from kivy.properties import DictProperty, StringProperty, ObjectProperty, ListProperty
 from kivy.uix.scrollview import ScrollView
+from kivy.uix.slider import Slider
 from kivy.uix.widget import Widget
 from kivy.core.window import Window
 from kivy.uix.stencilview import StencilView
@@ -28,6 +29,30 @@ class NetworktUI(Widget):
 
 class ScrollableLabel(ScrollView):
     text = StringProperty('')
+
+
+class PreviewSlider(Slider):
+    nodes = DictProperty({})
+    markers = ListProperty([])
+    
+    def __init__(self, **kwargs):
+        super(PreviewSlider, self).__init__(**kwargs)
+    
+    def on_nodes(self, *args):
+        self.update_logic()
+        self.update_graphic()
+    
+    def update_logic(self):
+        tmp_list = []
+        for node in self.nodes:
+            nodei = self.nodes[node]
+            for status in nodei.statuses:
+                tmp_list.append(status)
+                print(status.text)
+        self.markers = tmp_list
+    
+    def update_graphic(self):
+        print('update')
 
 
 class Inspector(ScrollableLabel):
@@ -185,14 +210,14 @@ class NetworktApp(App):
         # Add edges to every node in graph
         for edge in graph.edges():
             self.nodes[edge[0]].edges.append(self.nodes[edge[1]])
-        # Invoke Update
-        self.nodes['0'] = Node(graph.node[root_user])
-        self.nodes.pop('0', 0)
         # Generate graph metadata
         for node in self.nodes:
             nodei = self.nodes[node]
             for status in get_statuses_for_screen_name(nodei.screen_name):
                 nodei.statuses.append(Status(status, sender=nodei))
+        # Invoke Update
+        self.nodes['0'] = Node(graph.node[root_user])
+        self.nodes.pop('0', 0)
 
 
 if __name__ == '__main__':

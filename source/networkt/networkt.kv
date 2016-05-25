@@ -1,6 +1,14 @@
 <Network>:
     canvas:
 
+<PreviewSlider>:
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, .5
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
 <ScrollableLabel>:
     Label:
         size_hint_y: None
@@ -64,8 +72,9 @@
 
             RangeSlider:
 
-            Slider:
+            PreviewSlider:
                 value: 40
+                nodes: app.nodes
 
             BoxLayout:
                 orientation: 'horizontal'
