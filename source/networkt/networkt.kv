@@ -64,10 +64,14 @@
             size_hint:(1, None)
             height: '125dp'
 
-            RangeSlider:
+            PreviewRangeSlider:
+                id: preview_range_slider
+                nodes: app.nodes
 
             PreviewSlider:
-                nodes: app.nodes
+                start: preview_range_slider.value1
+                end: preview_range_slider.value2
+                
 
             BoxLayout:
                 orientation: 'horizontal'
