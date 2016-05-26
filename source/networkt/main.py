@@ -132,6 +132,7 @@ class Network(StencilView):
     """
     nodes = DictProperty({})
     selected_node = ObjectProperty(None)
+    time = NumericProperty(0)
     
     def __init__(self, **kwargs):
         super(Network, self).__init__(**kwargs)
