@@ -35,13 +35,25 @@ class ScrollableLabel(ScrollView):
 class PreviewSlider(Slider):
     start = NumericProperty(0)
     end = NumericProperty(100)
+    markers = ListProperty([])
     
     def on_start(self, *args):
-        print('Start Value Changed')
+        self.update_graphic()
     
     def on_end(self, *args):
-        print('End value changed')
-
+        self.update_graphic()
+    
+    def update_logic(self):
+        pass
+    
+    def update_graphic(self):
+        self.canvas.after.clear()
+        with self.canvas.after:
+            for marker in self.markers:
+                if (marker.position * 100 > self.start and marker.position * 100 < self.end):
+                    Rectangle(size=(1, self.height),
+                              pos=(self.width * marker.position, self.pos[1]))
+            
 
 class PreviewRangeSlider(RangeSlider):
     nodes = DictProperty({})
@@ -55,7 +67,7 @@ class PreviewRangeSlider(RangeSlider):
         self.update_graphic()
     
     def on_width(self, *args):
-        # self.update_logic()
+        self.update_logic()
         self.update_graphic()
     
     def update_logic(self):
