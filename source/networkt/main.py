@@ -57,6 +57,7 @@ class PreviewSlider(Slider):
         
         self.canvas.after.clear()
         with self.canvas.after:
+            Color(0, 1, 0, .5)
             for marker in self.active_markers:
                 Rectangle(size=(1, self.height),
                           pos=(self.width * marker.sub_position, self.pos[1]))
