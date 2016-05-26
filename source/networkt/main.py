@@ -2,10 +2,10 @@ import networkx as nx
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.graphics import Color, Line, Rectangle
-from kivy.properties import DictProperty, StringProperty, ObjectProperty, ListProperty
+from kivy.properties import DictProperty, StringProperty, ObjectProperty, ListProperty, NumericProperty
 from kivy.uix.scrollview import ScrollView
-from kivy.uix.slider import Slider
 from kivy.uix.widget import Widget
+from kivy.uix.slider import Slider
 from kivy.core.window import Window
 from kivy.uix.stencilview import StencilView
 from kivy.metrics import dp
@@ -14,6 +14,7 @@ from graph.graph import get_statuses_for_screen_name, load_graph_from_database
 from networkt.status import Status, by_date_key
 from networkt.node import Node
 from networkt.camera import Camera
+from networkt.range_slider import RangeSlider
 from kivy.factory import Factory
 
 
@@ -32,18 +33,29 @@ class ScrollableLabel(ScrollView):
 
 
 class PreviewSlider(Slider):
+    start = NumericProperty(0)
+    end = NumericProperty(100)
+    
+    def on_start(self, *args):
+        print('Start Value Changed')
+    
+    def on_end(self, *args):
+        print('End value changed')
+
+
+class PreviewRangeSlider(RangeSlider):
     nodes = DictProperty({})
     markers = ListProperty([])
     
     def __init__(self, **kwargs):
-        super(PreviewSlider, self).__init__(**kwargs)
+        super(PreviewRangeSlider, self).__init__(**kwargs)
     
     def on_nodes(self, *args):
         self.update_logic()
         self.update_graphic()
     
     def on_width(self, *args):
-        self.update_logic()
+        # self.update_logic()
         self.update_graphic()
     
     def update_logic(self):
@@ -55,18 +67,18 @@ class PreviewSlider(Slider):
         self.markers = sorted(tmp_list, key=by_date_key)
         
         if len(self.markers) > 0:
-            total_difference = PreviewSlider.date_difference(self.markers[0].date, self.markers[-1].date)
+            total_difference = PreviewRangeSlider.date_difference(self.markers[0].date, self.markers[-1].date)
             for marker in self.markers:
-                marker.position = PreviewSlider.date_difference(self.markers[0].date,
-                                                                marker.date) / total_difference
+                marker.position = PreviewRangeSlider.date_difference(self.markers[0].date,
+                                                                     marker.date) / total_difference
     
     def update_graphic(self):
         self.canvas.after.clear()
         with self.canvas.after:
             Color(0, 1, 0, .25)
             for marker in self.markers:
-                Rectangle(size=(1, self.height * .5),
-                          pos=(self.width * marker.position, self.height + self.height * .25))
+                Rectangle(size=(1, self.height),
+                          pos=(self.width * marker.position, self.pos[1]))
     
     def date_difference(d1, d2):
         diff = d2 - d1
