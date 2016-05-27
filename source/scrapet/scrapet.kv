@@ -1,6 +1,7 @@
 BoxLayout:
     orientation: 'vertical'    
     ActionBar:
+        pos_hint: {'top':1}
         ActionView:
             use_separator: True
             ActionPrevious:
@@ -9,63 +10,13 @@ BoxLayout:
             ActionButton:
                 text: 'Settings'
                 on_release: app.open_settings()
-    ScrollView:
-        GridLayout:
-            cols: 1
-            size_hint_y: None
-            height: self.minimum_height
 
-            GridLayout:
-                cols: 2    
-                size_hint_y: None
-                height: self.minimum_height
-                CheckBox:
-                    text: 'Button text'
-                    active: True
-                    size_hint_y: None
-                    size_hint_x: None
-                    width: '50dp'
-                Label:
-                    text: 'strings that are long ' * 10
-                    text_size: self.width, None
-                    height: self.texture_size[1]
-
-            GridLayout:
-                cols: 2    
-                size_hint_y: None
-                height: self.minimum_height
-                CheckBox:
-                    text: 'Button text'
-                    active: True
-                    size_hint_y: None
-                    size_hint_x: None
-                    width: '50dp'
-                Label:
-                    text: 'strings that are long ' * 10
-                    text_size: self.width, None
-                    height: self.texture_size[1]
-
-            GridLayout:
-                cols: 2    
-                size_hint_y: None
-                height: self.minimum_height
-                CheckBox:
-                    text: 'Button text'
-                    active: True
-                    size_hint_y: None
-                    size_hint_x: None
-                    width: '50dp'
-                Label:
-                    text: 'strings that are long ' * 10
-                    text_size: self.width, None
-                    height: self.texture_size[1]
-
-
-    BoxLayout:
-        orientation: 'horizontal'
+    Widget:
+    Button:
+        text: 'Run'
         size_hint_y: None
         height: '50dp'
-
-        Button:
-            text: 'Run'    
-        ProgressBar:
+        
+    ProgressBar:
+        size_hint_y: None
+        height: '50dp'
