@@ -27,6 +27,9 @@ class ScrapetApp(App):
         settings.add_json_panel('Data Persistence',
                                 self.config,
                                 data=settings_persistence_json)
+        settings.add_json_panel('Scrape Parameters',
+                                self.config,
+                                data=settings_persistence_json)
 
 if __name__ == '__main__':
     ScrapetApp().run()
