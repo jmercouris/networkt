@@ -6,25 +6,38 @@ settings_twitter_json = json.dumps([
      'desc': 'Twitter Key',
      'section': 'twython-configuration',
      'key': 'key'},
-
+    
     {'type': 'string',
      'title': 'Secret',
      'desc': 'Twitter Secret',
      'section': 'twython-configuration',
      'key': 'secret'},
-
+    
     {'type': 'string',
      'title': 'Token',
      'desc': 'String description text',
      'section': 'twython-configuration',
      'key': 'token'},
-
+    
     {'type': 'string',
      'title': 'Token Secret',
      'desc': 'Twitter token secret',
      'section': 'twython-configuration',
      'key': 'token_secret'},
+    ])
 
+settings_persistence_json = json.dumps([
+    {'type': 'path',
+     'title': 'Database Directory',
+     'desc': 'Directory where your database will be created',
+     'section': 'persistence-configuration',
+     'key': 'database_path'},
+    
+    {'type': 'path',
+     'title': 'Graph Directory',
+     'desc': 'Directory where your graphs will be stored',
+     'section': 'persistence-configuration',
+     'key': 'graph_path'},
     ])
 
 settings_json = json.dumps([
