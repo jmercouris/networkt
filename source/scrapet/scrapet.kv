@@ -1,7 +1,6 @@
 BoxLayout:
     orientation: 'vertical'    
     ActionBar:
-        pos_hint: {'top':1}
         ActionView:
             use_separator: True
             ActionPrevious:
@@ -21,16 +20,7 @@ BoxLayout:
                 text_size: self.width, None
                 size_hint_y: None
                 height: self.texture_size[1]
-            GridLayout:
-                cols: 2    
-                size_hint_y: None
-                height: self.minimum_height
-                Button:
-                    text: 'Button text'
-                    size_hint_y: None
-                Button:
-                    text: 'Button text'
-                    size_hint_y: None
+
             GridLayout:
                 cols: 2    
                 size_hint_y: None
@@ -42,5 +32,24 @@ BoxLayout:
                     text: 'Button text'
                     size_hint_y: None
 
-                                                        
+            GridLayout:
+                cols: 2    
+                size_hint_y: None
+                height: self.minimum_height
+                Button:
+                    text: 'Button text'
+                    size_hint_y: None
+                    height: '50dp'
+                Button:
+                    size_hint_y: None
+                    height: '50dp'
+                    text: 'Button text'
 
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: None
+        height: '50dp'
+
+        Button:
+            text: 'Run'    
+        ProgressBar:

@@ -1,7 +1,6 @@
 from kivy.app import App
 from kivy.uix.settings import SettingsWithSidebar
 from scrapet.settings_panel import settings_twitter_json
-from kivy.uix.scrollview import ScrollView
 
 
 class ScrapetApp(App):
