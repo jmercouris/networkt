@@ -1,10 +1,46 @@
-ActionBar:
-    pos_hint: {'top':1}
-    ActionView:
-        use_separator: True
-        ActionPrevious:
-            title: 'Scrapet'
-            with_previous: False
-        ActionButton:
-            text: 'Settings'
-            on_release: app.open_settings()
+BoxLayout:
+    orientation: 'vertical'    
+    ActionBar:
+        pos_hint: {'top':1}
+        ActionView:
+            use_separator: True
+            ActionPrevious:
+                title: 'Scrapet'
+                with_previous: False
+            ActionButton:
+                text: 'Settings'
+                on_release: app.open_settings()
+    ScrollView:
+        GridLayout:
+            cols: 1
+            size_hint_y: None
+            height: self.minimum_height
+
+            Label:
+                text: '2 strings that are long ' * 100
+                text_size: self.width, None
+                size_hint_y: None
+                height: self.texture_size[1]
+            GridLayout:
+                cols: 2    
+                size_hint_y: None
+                height: self.minimum_height
+                Button:
+                    text: 'Button text'
+                    size_hint_y: None
+                Button:
+                    text: 'Button text'
+                    size_hint_y: None
+            GridLayout:
+                cols: 2    
+                size_hint_y: None
+                height: self.minimum_height
+                Button:
+                    text: 'Button text'
+                    size_hint_y: None
+                Button:
+                    text: 'Button text'
+                    size_hint_y: None
+
+                                                        
+
