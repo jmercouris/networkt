@@ -1,5 +1,32 @@
 import json
 
+settings_twitter_json = json.dumps([
+    {'type': 'string',
+     'title': 'Key',
+     'desc': 'Twitter Key',
+     'section': 'twython-configuration',
+     'key': 'key'},
+
+    {'type': 'string',
+     'title': 'Secret',
+     'desc': 'Twitter Secret',
+     'section': 'twython-configuration',
+     'key': 'secret'},
+
+    {'type': 'string',
+     'title': 'Token',
+     'desc': 'String description text',
+     'section': 'twython-configuration',
+     'key': 'token'},
+
+    {'type': 'string',
+     'title': 'Token Secret',
+     'desc': 'Twitter token secret',
+     'section': 'twython-configuration',
+     'key': 'token_secret'},
+
+    ])
+
 settings_json = json.dumps([
     {'type': 'title',
      'title': 'example title'},
