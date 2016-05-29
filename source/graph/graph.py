@@ -15,6 +15,17 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
+class Graph(object):
+    """Documentation for Graph
+
+    """
+    def __init__(self, DATABASE_NAME, graph_path):
+        engine = create_engine(DATABASE_NAME)
+        Base.metadata.bind = engine
+        DBSession = sessionmaker(bind=engine)
+        self.session = DBSession()
+
+
 # Main Function
 def main(root_user='FactoryBerlin'):
     persist_graph(root_user, root_user)

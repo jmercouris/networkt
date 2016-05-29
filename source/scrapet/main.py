@@ -45,14 +45,16 @@ class ScrapetApp(App):
         OAUTH_TOKEN_SECRET = self.config.get('twython-configuration', 'token_secret')
         DATABASE_NAME = 'sqlite:///{}/data_store.db'.format(
             self.config.get('persistence-configuration', 'database_path'))
+        graph_path = self.config.get('persistence-configuration', 'graph_path')
         # Scrape Specific Configuration Details
         root_user = self.config.get('scrape-configuration', 'root_user')
         root_user_follower_limit = self.config.get('scrape-configuration', 'root_user_follower_limit')
         name_list_path = self.config.get('scrape-configuration', 'name_list_path')
+
         
         main_execution(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
                        root_user=root_user, root_user_follower_limit=root_user_follower_limit,
-                       name_list_path=name_list_path)
+                       name_list_path=name_list_path, graph_path=graph_path)
 
 
 if __name__ == '__main__':
