@@ -16,13 +16,13 @@ class ScrapetApp(App):
             'token_secret': 'token secret',
         })
         config.setdefaults('persistence-configuration', {
-            'database_path': '~/Documents',
-            'graph_path': '~/Documents',
+            'database_path': '',
+            'graph_path': '',
         })
         config.setdefaults('scrape-configuration', {
             'root_user': 'Root User',
             'root_user_follower_limit': '200',
-            'name_list_path': '~/Documents',
+            'name_list_path': '',
         })
     
     def build_settings(self, settings):
