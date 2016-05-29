@@ -9,11 +9,8 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
          root_user='FactoryBerlin'):
     network_scrape = NetworkScrape(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME)
     network_scrape.persist_user(root_user)
-    print(root_user)
-    
-    # session = create_database_session()
+
     # root_user_object = session.query(Node).filter_by(screen_name=root_user).first()
-    # pull_remote_graph_friend(root_user, scope_depth=10)
     # pull_remote_graph_follow(root_user, scope_depth=10)
     # persist_graph(root_user, root_user)
     # pull_remote_status(root_user)
@@ -21,11 +18,6 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
 
 if __name__ == "__main__":
     main()
-
-    # ##########################################################################
-    # # Save the Root User to the Database
-    # persist_user(root_user)
-    # print('Root User: {} Persisted.'.format(root_user))
     
     # ##########################################################################
     # # Pull the Graph for the Root User
