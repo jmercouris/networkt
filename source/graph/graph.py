@@ -24,50 +24,38 @@ class Graph(object):
         Base.metadata.bind = engine
         DBSession = sessionmaker(bind=engine)
         self.session = DBSession()
-
-
-# Main Function
-def main(root_user='FactoryBerlin'):
-    persist_graph(root_user, root_user)
-
-
-def persist_graph(screen_name, file_name):
-    graph = load_graph_from_database(screen_name)
-    nx.write_gml(graph, 'data/graph/' + file_name + '.gml')
-
-
-def load_graph_from_database(screen_name):
-    graph = nx.DiGraph()
-    root_user_object = session.query(Node).filter_by(screen_name=screen_name).first()
-    graph = traverse(root_user_object, 0, 1, {}, graph)
+        self.graph_path = graph_path
+        
+    def persist_graph(self, screen_name, file_name):
+        graph = self.load_graph_from_database(screen_name)
+        nx.write_gml(graph, '{}/{}.gml'.format(self.graph_path, file_name))
     
-    return graph
-
-
-def get_statuses_for_screen_name(screen_name):
-    element = session.query(Node).filter_by(screen_name=screen_name).first()
-    return element.statuses
-
-
-def traverse(node, depth, depth_limit, cache, graph):
-    cache[node] = None
-    if (depth > depth_limit):
+    def load_graph_from_database(self, screen_name):
+        graph = nx.DiGraph()
+        root_user_object = self.session.query(Node).filter_by(screen_name=screen_name).first()
+        graph = self.traverse(root_user_object, 0, 1, {}, graph)
         return graph
-    graph.add_node(node.screen_name, node.construct_dictionary())
-    for reference in node.pointer_nodes():
-        graph.add_edge(node.screen_name, reference.screen_name)
-        if reference in cache:
-            continue
-        graph = nx.compose(graph, traverse(reference, depth+1, depth_limit, cache, graph))
     
-    for reference in node.reference_nodes():
-        graph.add_edge(reference.screen_name, node.screen_name)
-        if reference in cache:
-            continue
-        graph = nx.compose(graph, traverse(reference, depth+1, depth_limit, cache, graph))
+    def get_statuses_for_screen_name(self, screen_name):
+        element = self.session.query(Node).filter_by(screen_name=screen_name).first()
+        return element.statuses
     
-    return graph
+    def traverse(self, node, depth, depth_limit, cache, graph):
+        cache[node] = None
+        if (depth > depth_limit):
+            return graph
+        graph.add_node(node.screen_name, node.construct_dictionary())
+        for reference in node.pointer_nodes():
+            graph.add_edge(node.screen_name, reference.screen_name)
+            if reference in cache:
+                continue
+            graph = nx.compose(graph, self.traverse(reference, depth+1, depth_limit, cache, graph))
+        
+        for reference in node.reference_nodes():
+            graph.add_edge(reference.screen_name, node.screen_name)
+            if reference in cache:
+                continue
+            graph = nx.compose(graph, self.traverse(reference, depth+1, depth_limit, cache, graph))
+        
+        return graph
 
-
-if __name__ == "__main__":
-    main()

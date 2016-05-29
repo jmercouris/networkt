@@ -6,6 +6,7 @@ data_backup
 
 # Ignore Databases
 *.db
+*backup
 
 # Ignore virutalenv
 environment
