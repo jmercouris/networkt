@@ -3,26 +3,21 @@
 # from graph.initialize import Node
 # from graph.graph import persist_graph
 from graph.network_scrape import NetworkScrape
+# from math import floor
 
 
 def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
-         root_user='FactoryBerlin'):
+         root_user='FactoryBerlin', root_user_follower_limit=200):
     network_scrape = NetworkScrape(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME)
     network_scrape.persist_user(root_user)
-
-    # root_user_object = session.query(Node).filter_by(screen_name=root_user).first()
-    # pull_remote_graph_follow(root_user, scope_depth=10)
-    # persist_graph(root_user, root_user)
-    # pull_remote_status(root_user)
+    print('Persisted Root User')
+    # network_scrape.pull_remote_graph_follow(root_user, scope_limit=floor(int(root_user_follower_limit) / 200) + 1)
+    network_scrape.pull_remote_graph_follow(root_user)
+    print('Persisted Root user follower graph')
 
 
 if __name__ == "__main__":
     main()
-    
-    # ##########################################################################
-    # # Pull the Graph for the Root User
-    # pull_remote_graph_follow(root_user)
-    # print('Root User: {} follower graph extracted.'.format(root_user))
     
     # ##########################################################################
     # # Perform level 0 filtering on user - determine if their 1th degree network
@@ -67,6 +62,3 @@ if __name__ == "__main__":
     #         for node in root_node.reference_nodes():
     #             pull_remote_graph_friend(node.screen_name)
     #             print(root_node.screen_name, node.screen_name)
-    
-    # ##########################################################################
-    # # Persist graphs of all filtered users

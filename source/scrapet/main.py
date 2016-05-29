@@ -46,9 +46,10 @@ class ScrapetApp(App):
             self.config.get('persistence-configuration', 'database_path'))
         # Scrape Specific Configuration Details
         root_user = self.config.get('scrape-configuration', 'root_user')
+        root_user_follower_limit = self.config.get('scrape-configuration', 'root_user_follower_limit')
         
         main_execution(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
-                       root_user=root_user)
+                       root_user=root_user, root_user_follower_limit=root_user_follower_limit)
 
 
 if __name__ == '__main__':
