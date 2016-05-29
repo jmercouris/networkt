@@ -1,7 +1,3 @@
-# from graph.network_scrape import persist_user, pull_remote_graph_follow, pull_remote_graph_friend
-# from graph.initialize import create_database_session
-# from graph.initialize import Node
-# from graph.graph import persist_graph
 from graph.network_scrape import NetworkScrape
 # from math import floor
 
