@@ -48,11 +48,11 @@ settings_scrape_json = json.dumps([
      'section': 'scrape-configuration',
      'key': 'root_user'},
     
-    # {'type': 'numeric',
-    #  'title': 'Root User Friend Count',
-    #  'desc': 'How many friends from the root user to pull',
-    #  'section': 'scrape-configuration',
-    #  'key': 'root_user_friend_count'},
+    {'type': 'numeric',
+     'title': 'Root User Follower Count',
+     'desc': 'How many followers from the root user to pull',
+     'section': 'scrape-configuration',
+     'key': 'root_user_follower_limit'},
     
     # {'type': 'numeric',
     #  'title': 'Root User Friend Follower Count',
