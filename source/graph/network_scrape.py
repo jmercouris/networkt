@@ -38,28 +38,69 @@ class NetworkScrape(object):
         self.session = DBSession()
     
     def persist_user(self, screen_name):
-        user_object = self.session.query(Node).filter_by(
-            screen_name=screen_name).first()
+        user_object = self.session.query(Node).filter_by(screen_name=screen_name).first()
         if (user_object is None):
             instance = Node(twitter.lookup_user(screen_name=screen_name)[0])
             self.session.add(instance)
             self.session.commit()
+    
+    def pull_remote_graph_follow(self, screen_name, scope_limit=1, scope_depth=200):
+        user_object = self.session.query(Node).filter_by(screen_name=screen_name).first()
+        if (len(user_object.pointer_nodes()) < 5):
+            self.pull_remote_graph(screen_name, scope_limit, scope_depth,
+                                   self.twitter.get_followers_list, self.edge_check_reference, edge_reference)
+    
+    def pull_remote_graph_friend(self, screen_name, scope_limit=1, scope_depth=200):
+        user_object = self.session.query(Node).filter_by(screen_name=screen_name).first()
+        if (len(user_object.reference_nodes()) < 5):
+            self.pull_remote_graph(screen_name, scope_limit, scope_depth,
+                                   self.twitter.get_friends_list, self.edge_check_point, edge_point)
+    
+    def edge_check_point(self, instance, user_object):
+        if (self.session.query(Edge).filter_by(reference_id=instance.id, pointer_id=user_object.id).first() is None):
+            return True
+        else:
+            return False
+    
+    def edge_check_reference(self, instance, user_object):
+        if (self.session.query(Edge).filter_by(reference_id=user_object.id, pointer_id=instance.id).first() is None):
+            return True
+        else:
+            return False
+    
+    def pull_remote_graph(self, screen_name, scope_limit, scope_depth,
+                          twitter_function, edge_check_function, edge_function):
+        user_object = self.session.query(Node).filter_by(screen_name=screen_name).first()
+        next_cursor = -1
+        
+        while(next_cursor and scope_limit):
+            scope_limit -= 1
+            search = twitter_function(screen_name=screen_name, count=scope_depth, cursor=next_cursor)
+            for result in search['users']:
+                instance = self.session.query(Node).filter_by(screen_name=result['screen_name']).first()
+                if (instance is None):
+                    instance = Node(result)
+                    self.session.add(instance)
+                if edge_check_function(instance, user_object):
+                    edge_function(instance, user_object)
+                next_cursor = search["next_cursor"]
+            self.session.commit()
+            time.sleep(65)
 
 
 def main(root_user='FactoryBerlin'):
     network_scrape = NetworkScrape(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME)
     network_scrape.persist_user(root_user)
-    
-    pull_remote_status(root_user)
-    pull_remote_graph_follow(root_user, scope_depth=10)
-    pull_remote_graph_friend(root_user, scope_depth=10)
-    root_user_object = session.query(Node).filter_by(screen_name=root_user).first()
-    for node in root_user_object.pointer_nodes():
-        pull_remote_graph_friend(node.screen_name, scope_depth=10)
-        pull_remote_graph_follow(node.screen_name, scope_depth=10)
-    for node in root_user_object.reference_nodes():
-        pull_remote_graph_friend(node.screen_name, scope_depth=10)
-        pull_remote_graph_follow(node.screen_name, scope_depth=10)
+    network_scrape.pull_remote_graph_follow(root_user, scope_depth=10)
+
+    # pull_remote_graph_friend(root_user, scope_depth=10)
+    # root_user_object = session.query(Node).filter_by(screen_name=root_user).first()
+    # for node in root_user_object.pointer_nodes():
+    #     pull_remote_graph_friend(node.screen_name, scope_depth=10)
+    #     pull_remote_graph_follow(node.screen_name, scope_depth=10)
+    # for node in root_user_object.reference_nodes():
+    #     pull_remote_graph_friend(node.screen_name, scope_depth=10)
+    #     pull_remote_graph_follow(node.screen_name, scope_depth=10)
 
 
 def pull_remote_status(screen_name, scope_depth=200):
@@ -73,55 +114,6 @@ def pull_remote_status(screen_name, scope_depth=200):
         if (instance is None):
             user_object.statuses.append(Status(status))
     session.commit()
-
-
-def pull_remote_graph(screen_name, scope_limit, scope_depth, twitter_function, edge_check_function, edge_function):
-    user_object = session.query(Node).filter_by(screen_name=screen_name).first()
-    next_cursor = -1
-
-    while(next_cursor and scope_limit):
-        scope_limit -= 1
-        search = twitter_function(screen_name=screen_name, count=scope_depth, cursor=next_cursor)
-        for result in search['users']:
-            instance = session.query(Node).filter_by(screen_name=result['screen_name']).first()
-            if (instance is None):
-                instance = Node(result)
-                session.add(instance)
-            if edge_check_function(instance, user_object):
-                edge_function(instance, user_object)
-        next_cursor = search["next_cursor"]
-        session.commit()
-        time.sleep(65)
-
-
-def edge_check_point(instance, user_object):
-    if (session.query(Edge).filter_by(reference_id=instance.id, pointer_id=user_object.id).first() is None):
-        return True
-    else:
-        return False
-
-
-def edge_check_reference(instance, user_object):
-    if (session.query(Edge).filter_by(reference_id=user_object.id, pointer_id=instance.id).first() is None):
-        return True
-    else:
-        return False
-
-
-def pull_remote_graph_friend(screen_name, scope_limit=1, scope_depth=200):
-    user_object = session.query(Node).filter_by(
-        screen_name=screen_name).first()
-    if (len(user_object.reference_nodes()) < 5):
-        pull_remote_graph(screen_name, scope_limit, scope_depth,
-                          twitter.get_friends_list, edge_check_point, edge_point)
-
-
-def pull_remote_graph_follow(screen_name, scope_limit=1, scope_depth=200):
-    user_object = session.query(Node).filter_by(
-        screen_name=screen_name).first()
-    if (len(user_object.pointer_nodes()) < 5):
-        pull_remote_graph(screen_name, scope_limit, scope_depth,
-                          twitter.get_followers_list, edge_check_reference, edge_reference)
 
 
 if __name__ == "__main__":
