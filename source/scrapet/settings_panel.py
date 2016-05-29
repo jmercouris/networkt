@@ -53,12 +53,12 @@ settings_scrape_json = json.dumps([
      'desc': 'How many followers from the root user to pull',
      'section': 'scrape-configuration',
      'key': 'root_user_follower_limit'},
-    
-    # {'type': 'numeric',
-    #  'title': 'Root User Friend Follower Count',
-    #  'desc': 'How many followers from the root users friends to pull',
-    #  'section': 'scrape-configuration',
-    #  'key': 'root_user_friend_follower_count'},
+
+    {'type': 'path',
+     'title': 'Valid Names',
+     'desc': 'File containing list of valid names',
+     'section': 'scrape-configuration',
+     'key': 'name_list_path'},
     
     # {'type': 'numeric',
     #  'title': 'Transnational Threshold',

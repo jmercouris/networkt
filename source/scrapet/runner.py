@@ -1,31 +1,32 @@
 from graph.network_scrape import NetworkScrape
+
 # from math import floor
 
 
 def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
-         root_user='FactoryBerlin', root_user_follower_limit=200):
+         root_user='FactoryBerlin', root_user_follower_limit=200,
+         name_list_path=''):
     network_scrape = NetworkScrape(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME)
-    network_scrape.persist_user(root_user)
-    print('Persisted Root User')
-    # network_scrape.pull_remote_graph_follow(root_user, scope_limit=floor(int(root_user_follower_limit) / 200) + 1)
-    network_scrape.pull_remote_graph_follow(root_user)
-    print('Persisted Root user follower graph')
 
+    # ##########################################################################
+    # # Persist the root user
+    # network_scrape.persist_user(root_user)
+    # print('Persisted Root User')
+
+    # ##########################################################################
+    # # Persist the root user's follower list
+    # # network_scrape.pull_remote_graph_follow(root_user, scope_limit=floor(int(root_user_follower_limit) / 200) + 1)
+    # network_scrape.pull_remote_graph_follow(root_user)
+    # print('Persisted Root user follower graph')
+
+    # ##########################################################################
+    # # Perform degree 0 filtering to decide whether to pulll 1st degree network
+    # network_scrape.filter_0(root_user, location=name_list_path)
+    # print('Root User: {} follower graph filtered. [Filter level 0]'.format(root_user))
+    
 
 if __name__ == "__main__":
     main()
-    
-    # ##########################################################################
-    # # Perform level 0 filtering on user - determine if their 1th degree network
-    # # is something that should be retrieved
-    # root_user_object = session.query(Node).filter_by(
-    #     screen_name=root_user).first()
-    # name_list = filter_node.load_name_list_into_memory()  # Load list of valid names
-    # for node in root_user_object.pointer_nodes():
-    #     node.filter_0 = filter_node.filter_0(node, name_list)
-    # session.commit()
-    # print(
-    #     'Root User: {} follower graph filtered. [Filter level 0]'.format(root_user))
     
     # ##########################################################################
     # # Pull partial graphs of all filtered users following root user

@@ -1,27 +1,9 @@
-import configparser
 import time
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from graph.initialize import Base, Node, Edge, Status, edge_point, edge_reference
+from graph.filter_node import load_name_list_into_memory, filter_0
 from twython import Twython
-
-
-settings = configparser.ConfigParser()
-settings.read('configuration.ini')
-
-APP_KEY = settings.get('twython-configuration', 'key')
-APP_SECRET = settings.get('twython-configuration', 'secret')
-OAUTH_TOKEN = settings.get('twython-configuration', 'token')
-OAUTH_TOKEN_SECRET = settings.get('twython-configuration', 'token_secret')
-DATABASE_NAME = settings.get('database-configuration', 'database_name')
-
-twitter = Twython(APP_KEY, APP_SECRET,
-                  OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
-
-engine = create_engine(DATABASE_NAME)
-Base.metadata.bind = engine
-DBSession = sessionmaker(bind=engine)
-session = DBSession()
 
 
 class NetworkScrape(object):
@@ -40,7 +22,7 @@ class NetworkScrape(object):
     def persist_user(self, screen_name):
         user_object = self.session.query(Node).filter_by(screen_name=screen_name).first()
         if (user_object is None):
-            instance = Node(twitter.lookup_user(screen_name=screen_name)[0])
+            instance = Node(self.twitter.lookup_user(screen_name=screen_name)[0])
             self.session.add(instance)
             self.session.commit()
     
@@ -98,22 +80,13 @@ class NetworkScrape(object):
             if (instance is None):
                 user_object.statuses.append(Status(status))
         self.session.commit()
-
-
-def main(root_user='FactoryBerlin'):
-    network_scrape = NetworkScrape(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME)
-    network_scrape.persist_user(root_user)
-    network_scrape.pull_remote_graph_follow(root_user, scope_depth=10)
-
-    # pull_remote_graph_friend(root_user, scope_depth=10)
-    # root_user_object = session.query(Node).filter_by(screen_name=root_user).first()
-    # for node in root_user_object.pointer_nodes():
-    #     pull_remote_graph_friend(node.screen_name, scope_depth=10)
-    #     pull_remote_graph_follow(node.screen_name, scope_depth=10)
-    # for node in root_user_object.reference_nodes():
-    #     pull_remote_graph_friend(node.screen_name, scope_depth=10)
-    #     pull_remote_graph_follow(node.screen_name, scope_depth=10)
-
-
-if __name__ == "__main__":
-    main()
+    
+    def get_user_from_data_store(self, screen_name):
+        return self.session.query(Node).filter_by(screen_name=screen_name).first()
+    
+    def filter_0(self, root_user, location=''):
+        root_user_object = self.get_user_from_data_store(root_user)
+        name_list = load_name_list_into_memory(location=location)  # Load list of valid names
+        for node in root_user_object.pointer_nodes():
+            node.filter_0 = filter_0(node, name_list)
+        self.session.commit()
