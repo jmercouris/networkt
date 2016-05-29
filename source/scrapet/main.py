@@ -1,6 +1,7 @@
 from kivy.app import App
 from kivy.uix.settings import SettingsWithSidebar
 from scrapet.settings_panel import settings_twitter_json, settings_persistence_json, settings_scrape_json
+from scrapet.runner import main as main_execution
 
 
 class ScrapetApp(App):
@@ -30,9 +31,14 @@ class ScrapetApp(App):
         settings.add_json_panel('Data Persistence',
                                 self.config,
                                 data=settings_persistence_json)
-        # settings.add_json_panel('Scrape Parameters',
-        #                         self.config,
-        #                         data=settings_scrape_json)
+        settings.add_json_panel('Scrape Parameters',
+                                self.config,
+                                data=settings_scrape_json)
+    
+    def run_button(self, *args):
+        root_user = self.config.get('scrape-configuration', 'root_user')
+        main_execution(root_user=root_user)
+
 
 if __name__ == '__main__':
     ScrapetApp().run()
