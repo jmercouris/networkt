@@ -4,7 +4,7 @@ from graph.graph import Graph
 
 
 def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
-         root_user='FactoryBerlin', root_user_follower_limit=200,
+         root_user='', root_user_follower_limit=200,
          name_list_path='', graph_path=''):
     network_scrape = NetworkScrape(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME)
     
@@ -30,7 +30,7 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
     root_user_object = network_scrape.get_user_from_data_store(root_user)
     for node in root_user_object.pointer_nodes():
         if (node.filter_0):
-            network_scrape.pull_remote_graph_friend(node.screen_name)
+            # network_scrape.pull_remote_graph_friend(node.screen_name)
             graph.persist_graph(node.screen_name, node.screen_name)
     print('Root User: {} follower graphs extracted.'.format(root_user))
     
