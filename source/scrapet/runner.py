@@ -3,16 +3,19 @@
 # from graph.initialize import Node
 # from graph.graph import persist_graph
 from graph.network_scrape import pull_remote_status
+from graph.network_scrape import persist_user
 
 
 def main(root_user='FactoryBerlin'):
-    # persist_user(root_user)
+    print(root_user)
+    persist_user(root_user)
+    
     # session = create_database_session()
     # root_user_object = session.query(Node).filter_by(screen_name=root_user).first()
     # pull_remote_graph_friend(root_user, scope_depth=10)
     # pull_remote_graph_follow(root_user, scope_depth=10)
     # persist_graph(root_user, root_user)
-    pull_remote_status(root_user)
+    # pull_remote_status(root_user)
 
 
 if __name__ == "__main__":

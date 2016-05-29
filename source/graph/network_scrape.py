@@ -23,6 +23,15 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+class NetworkScrape(object):
+    """Documentation for NetworkScrape
+
+    """
+    def __init__(self, APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME):
+        
+        
+
+
 
 def main(root_user='FactoryBerlin'):
     persist_user(root_user)
