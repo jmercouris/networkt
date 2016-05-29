@@ -86,6 +86,18 @@ class NetworkScrape(object):
                 next_cursor = search["next_cursor"]
             self.session.commit()
             time.sleep(65)
+    
+    def pull_remote_status(self, screen_name, scope_depth=200):
+        user_object = self.session.query(Node).filter_by(screen_name=screen_name).first()
+        if (user_object is None):
+            return
+        
+        statuses = self.twitter.get_user_timeline(screen_name=screen_name, count=scope_depth)
+        for status in statuses:
+            instance = self.session.query(Status).filter_by(id_str=status['id_str']).first()
+            if (instance is None):
+                user_object.statuses.append(Status(status))
+        self.session.commit()
 
 
 def main(root_user='FactoryBerlin'):
@@ -101,19 +113,6 @@ def main(root_user='FactoryBerlin'):
     # for node in root_user_object.reference_nodes():
     #     pull_remote_graph_friend(node.screen_name, scope_depth=10)
     #     pull_remote_graph_follow(node.screen_name, scope_depth=10)
-
-
-def pull_remote_status(screen_name, scope_depth=200):
-    user_object = session.query(Node).filter_by(screen_name=screen_name).first()
-    if (user_object is None):
-        return
-    
-    statuses = twitter.get_user_timeline(screen_name=screen_name, count=scope_depth)
-    for status in statuses:
-        instance = session.query(Status).filter_by(id_str=status['id_str']).first()
-        if (instance is None):
-            user_object.statuses.append(Status(status))
-    session.commit()
 
 
 if __name__ == "__main__":
