@@ -40,6 +40,41 @@ settings_persistence_json = json.dumps([
      'key': 'graph_path'},
     ])
 
+
+settings_scrape_json = json.dumps([
+    {'type': 'string',
+     'title': 'Root User',
+     'desc': 'Root user/ hub of network to scrape',
+     'section': 'scrape-configuration',
+     'key': 'root_user'},
+    
+    {'type': 'numeric',
+     'title': 'Root User Friend Count',
+     'desc': 'How many friends from the root user to pull',
+     'section': 'scrape-configuration',
+     'key': 'root_user_friend_count'},
+    
+    {'type': 'numeric',
+     'title': 'Root User Friend Follower Count',
+     'desc': 'How many followers from the root users friends to pull',
+     'section': 'scrape-configuration',
+     'key': 'root_user_friend_follower_count'},
+    
+    {'type': 'numeric',
+     'title': 'Transnational Threshold',
+     'desc': 'What percentage of this user follower network have to be transnational',
+     'section': 'scrape-configuration',
+     'key': 'transnational_percentage'},
+    
+    {'type': 'numeric',
+     'title': 'Transnational Friends',
+     'desc': 'How many transnational friends friends',
+     'section': 'scrape-configuration',
+     'key': 'transnational_friend_count'},
+    
+    ])
+
+
 settings_json = json.dumps([
     {'type': 'title',
      'title': 'example title'},
