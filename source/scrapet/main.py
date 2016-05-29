@@ -22,6 +22,7 @@ class ScrapetApp(App):
         config.setdefaults('scrape-configuration', {
             'root_user': 'Root User',
             'root_user_follower_limit': '200',
+            'name_list_path': '~/Documents',
         })
     
     def build_settings(self, settings):
@@ -47,9 +48,11 @@ class ScrapetApp(App):
         # Scrape Specific Configuration Details
         root_user = self.config.get('scrape-configuration', 'root_user')
         root_user_follower_limit = self.config.get('scrape-configuration', 'root_user_follower_limit')
+        name_list_path = self.config.get('scrape-configuration', 'name_list_path')
         
         main_execution(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
-                       root_user=root_user, root_user_follower_limit=root_user_follower_limit)
+                       root_user=root_user, root_user_follower_limit=root_user_follower_limit,
+                       name_list_path=name_list_path)
 
 
 if __name__ == '__main__':
