@@ -1,6 +1,6 @@
 from kivy.app import App
 from kivy.uix.settings import SettingsWithSidebar
-from scrapet.settings_panel import settings_twitter_json, settings_persistence_json
+from scrapet.settings_panel import settings_twitter_json, settings_persistence_json, settings_scrape_json
 
 
 class ScrapetApp(App):
@@ -18,6 +18,9 @@ class ScrapetApp(App):
             'database_path': '~/Documents',
             'graph_path': '~/Documents',
         })
+        config.setdefaults('scrape-configuration', {
+            'root_user': 'Root User'
+        })
     
     def build_settings(self, settings):
         self.use_kivy_settings = False
@@ -27,9 +30,9 @@ class ScrapetApp(App):
         settings.add_json_panel('Data Persistence',
                                 self.config,
                                 data=settings_persistence_json)
-        settings.add_json_panel('Scrape Parameters',
-                                self.config,
-                                data=settings_persistence_json)
+        # settings.add_json_panel('Scrape Parameters',
+        #                         self.config,
+        #                         data=settings_scrape_json)
 
 if __name__ == '__main__':
     ScrapetApp().run()
