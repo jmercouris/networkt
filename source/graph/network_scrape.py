@@ -23,18 +23,33 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+
 class NetworkScrape(object):
     """Documentation for NetworkScrape
 
     """
     def __init__(self, APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME):
+        self.twitter = Twython(APP_KEY, APP_SECRET,
+                               OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
         
-        
-
+        engine = create_engine(DATABASE_NAME)
+        Base.metadata.bind = engine
+        DBSession = sessionmaker(bind=engine)
+        self.session = DBSession()
+    
+    def persist_user(self, screen_name):
+        user_object = self.session.query(Node).filter_by(
+            screen_name=screen_name).first()
+        if (user_object is None):
+            instance = Node(twitter.lookup_user(screen_name=screen_name)[0])
+            self.session.add(instance)
+            self.session.commit()
 
 
 def main(root_user='FactoryBerlin'):
-    persist_user(root_user)
+    network_scrape = NetworkScrape(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME)
+    network_scrape.persist_user(root_user)
+    
     pull_remote_status(root_user)
     pull_remote_graph_follow(root_user, scope_depth=10)
     pull_remote_graph_friend(root_user, scope_depth=10)
@@ -45,15 +60,6 @@ def main(root_user='FactoryBerlin'):
     for node in root_user_object.reference_nodes():
         pull_remote_graph_friend(node.screen_name, scope_depth=10)
         pull_remote_graph_follow(node.screen_name, scope_depth=10)
-
-
-def persist_user(screen_name):
-    user_object = session.query(Node).filter_by(
-        screen_name=screen_name).first()
-    if (user_object is None):
-        instance = Node(twitter.lookup_user(screen_name=screen_name)[0])
-        session.add(instance)
-        session.commit()
 
 
 def pull_remote_status(screen_name, scope_depth=200):

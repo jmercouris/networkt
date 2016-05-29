@@ -36,8 +36,15 @@ class ScrapetApp(App):
                                 data=settings_scrape_json)
     
     def run_button(self, *args):
+        APP_KEY = self.config.get('twython-configuration', 'key')
+        APP_SECRET = self.config.get('twython-configuration', 'secret')
+        OAUTH_TOKEN = self.config.get('twython-configuration', 'token')
+        OAUTH_TOKEN_SECRET = self.config.get('twython-configuration', 'token_secret')
+        DATABASE_NAME = 'sqlite:///{}/data_store.db'.format(self.config.get('persistence-configuration', 'database_path'))
         root_user = self.config.get('scrape-configuration', 'root_user')
-        main_execution(root_user=root_user)
+        
+        main_execution(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
+                       root_user=root_user)
 
 
 if __name__ == '__main__':

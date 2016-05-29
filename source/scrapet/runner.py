@@ -2,13 +2,14 @@
 # from graph.initialize import create_database_session
 # from graph.initialize import Node
 # from graph.graph import persist_graph
-from graph.network_scrape import pull_remote_status
-from graph.network_scrape import persist_user
+from graph.network_scrape import NetworkScrape
 
 
-def main(root_user='FactoryBerlin'):
+def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
+         root_user='FactoryBerlin'):
+    network_scrape = NetworkScrape(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME)
+    network_scrape.persist_user(root_user)
     print(root_user)
-    persist_user(root_user)
     
     # session = create_database_session()
     # root_user_object = session.query(Node).filter_by(screen_name=root_user).first()
