@@ -5,6 +5,7 @@ from graph.graph import Graph
 
 def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
          root_user='', root_user_follower_limit=200,
+         filter_graph_follower_limit=200,
          extended_graph_follower_limit=200,
          name_list_path='', graph_path=''):
     # TODO: Use Optionals

@@ -38,6 +38,13 @@ settings_persistence_json = json.dumps([
      'desc': 'Directory where your graphs will be stored',
      'section': 'persistence-configuration',
      'key': 'graph_path'},
+    
+    {'type': 'path',
+     'title': 'Valid Names',
+     'desc': 'File containing list of valid names',
+     'section': 'scrape-configuration',
+     'key': 'name_list_path'},
+    
     ])
 
 
@@ -53,16 +60,16 @@ settings_scrape_json = json.dumps([
      'desc': 'FactoryBerlin -> (How many Followers)',
      'section': 'scrape-configuration',
      'key': 'root_user_follower_limit'},
-
-    {'type': 'path',
-     'title': 'Valid Names',
-     'desc': 'File containing list of valid names',
-     'section': 'scrape-configuration',
-     'key': 'name_list_path'},
-
+    
     {'type': 'numeric',
-     'title': 'Extended Graph Follower Count',
-     'desc': 'FactoryBerlin -> Filtered Follower -> (How many Followers)',
+     'title': 'Root User Follower Follower Count',
+     'desc': 'FactoryBerlin -> Follower -> (How many Followers)',
+     'section': 'scrape-configuration',
+     'key': 'filter_graph_follower_limit'},
+    
+    {'type': 'numeric',
+     'title': 'Root User Follower  Follower Follower Count',
+     'desc': 'FactoryBerlin -> Filtered Follower -> Follower -> (How many Followers)',
      'section': 'scrape-configuration',
      'key': 'extended_graph_follower_limit'},
     
