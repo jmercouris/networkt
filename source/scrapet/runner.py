@@ -5,7 +5,9 @@ from graph.graph import Graph
 
 def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
          root_user='', root_user_follower_limit=200,
+         extended_graph_follower_limit=200,
          name_list_path='', graph_path=''):
+    # TODO: Use Optionals
     network_scrape = NetworkScrape(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME)
     
     ##########################################################################
@@ -46,7 +48,7 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
     for root_node in root_user_object.pointer_nodes():
         if (root_node.filter_0 and root_node.filter_1):
             for node in root_node.reference_nodes():
-                network_scrape.pull_remote_graph_friend(node.screen_name)
+                network_scrape.pull_remote_graph_follow(node.screen_name)
 
 
 if __name__ == "__main__":

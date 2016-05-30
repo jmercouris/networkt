@@ -44,13 +44,13 @@ settings_persistence_json = json.dumps([
 settings_scrape_json = json.dumps([
     {'type': 'string',
      'title': 'Root User',
-     'desc': 'Root user/ hub of network to scrape',
+     'desc': 'Root user/hub of network to scrape (FactoryBerlin)',
      'section': 'scrape-configuration',
      'key': 'root_user'},
     
     {'type': 'numeric',
      'title': 'Root User Follower Count',
-     'desc': 'How many followers from the root user to pull',
+     'desc': 'FactoryBerlin -> (How many Followers)',
      'section': 'scrape-configuration',
      'key': 'root_user_follower_limit'},
 
@@ -59,50 +59,11 @@ settings_scrape_json = json.dumps([
      'desc': 'File containing list of valid names',
      'section': 'scrape-configuration',
      'key': 'name_list_path'},
-    
-    # {'type': 'numeric',
-    #  'title': 'Transnational Threshold',
-    #  'desc': 'What percentage of this user follower network have to be transnational',
-    #  'section': 'scrape-configuration',
-    #  'key': 'transnational_percentage'},
-    
-    # {'type': 'numeric',
-    #  'title': 'Transnational Friends',
-    #  'desc': 'How many transnational friends friends',
-    #  'section': 'scrape-configuration',
-    #  'key': 'transnational_friend_count'},
+
+    {'type': 'numeric',
+     'title': 'Extended Graph Follower Count',
+     'desc': 'FactoryBerlin -> Filtered Follower -> (How many Followers)',
+     'section': 'scrape-configuration',
+     'key': 'extended_graph_follower_limit'},
     
     ])
-
-
-settings_json = json.dumps([
-    {'type': 'title',
-     'title': 'example title'},
-    {'type': 'bool',
-     'title': 'A boolean setting',
-     'desc': 'Boolean description text',
-     'section': 'example',
-     'key': 'boolexample'},
-    {'type': 'numeric',
-     'title': 'A numeric setting',
-     'desc': 'Numeric description text',
-     'section': 'example',
-     'key': 'numericexample'},
-    {'type': 'options',
-     'title': 'An options setting',
-     'desc': 'Options description text',
-     'section': 'example',
-     'key': 'optionsexample',
-     'options': ['option1', 'option2', 'option3']},
-    {'type': 'string',
-     'title': 'A string setting',
-     'desc': 'String description text',
-     'section': 'example',
-     'key': 'stringexample'},
-    {'type': 'path',
-     'title': 'A path setting',
-     'desc': 'Path description text',
-     'section': 'example',
-     'key': 'pathexample'}])
-
-  
