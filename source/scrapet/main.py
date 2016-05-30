@@ -24,6 +24,7 @@ class ScrapetApp(App):
             'root_user_follower_limit': '200',
             'name_list_path': '',
             'extended_graph_follower_limit': '200',
+            'filter_graph_follower_limit': 200,
         })
     
     def build_settings(self, settings):
@@ -51,11 +52,13 @@ class ScrapetApp(App):
         root_user = self.config.get('scrape-configuration', 'root_user')
         root_user_follower_limit = self.config.get('scrape-configuration', 'root_user_follower_limit')
         name_list_path = self.config.get('scrape-configuration', 'name_list_path')
+        filter_graph_follower_limit = self.config.get('scrape-configuration', 'filter_graph_follower_limit')
         extended_graph_follower_limit = self.config.get('scrape-configuration', 'extended_graph_follower_limit')
-        
+
         main_execution(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
                        root_user=root_user, root_user_follower_limit=root_user_follower_limit,
                        extended_graph_follower_limit=extended_graph_follower_limit,
+                       filter_graph_follower_limit=filter_graph_follower_limit,
                        name_list_path=name_list_path, graph_path=graph_path)
 
 
