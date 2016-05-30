@@ -1,18 +1,7 @@
-import configparser
 import networkx as nx
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from graph.initialize import Base, Node
-
-settings = configparser.ConfigParser()
-settings.read('configuration.ini')
-
-DATABASE_NAME = settings.get('database-configuration', 'database_name')
-
-engine = create_engine(DATABASE_NAME)
-Base.metadata.bind = engine
-DBSession = sessionmaker(bind=engine)
-session = DBSession()
 
 
 class Graph(object):
