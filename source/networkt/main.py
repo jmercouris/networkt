@@ -18,7 +18,6 @@ from networkt.range_slider import RangeSlider
 from kivy.factory import Factory
 
 
-
 class NetworktUI(Widget):
     def __init__(self, **kwargs):
         super(NetworktUI, self).__init__()
@@ -252,6 +251,7 @@ class NetworktApp(App):
         # Generate a simple graph
         self.nodes = {}
         root_user = 'FactoryBerlin'
+        # Generate Graph Object
         graph = load_graph_from_database(root_user)
         layout = nx.spring_layout(graph)
         # Generate the list of nodes with positions

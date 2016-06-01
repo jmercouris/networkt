@@ -8,16 +8,15 @@ class Graph(object):
     """Documentation for Graph
 
     """
-    def __init__(self, DATABASE_NAME, graph_path):
+    def __init__(self, DATABASE_NAME):
         engine = create_engine(DATABASE_NAME)
         Base.metadata.bind = engine
         DBSession = sessionmaker(bind=engine)
         self.session = DBSession()
-        self.graph_path = graph_path
-        
-    def persist_graph(self, screen_name, file_name):
+    
+    def persist_graph(self, screen_name, graph_path, file_name):
         graph = self.load_graph_from_database(screen_name)
-        nx.write_gml(graph, '{}/{}.gml'.format(self.graph_path, file_name))
+        nx.write_gml(graph, '{}/{}.gml'.format(graph_path, file_name))
     
     def load_graph_from_database(self, screen_name):
         graph = nx.DiGraph()
