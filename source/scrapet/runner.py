@@ -34,7 +34,7 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
     for node in root_user_object.pointer_nodes():
         if (node.filter_0):
             network_scrape.pull_remote_graph_friend(node.screen_name)
-            graph.persist_graph(node.screen_name, node.screen_name)
+            graph.persist_graph(node.screen_name, graph_path, node.screen_name)
     print('Root User: {} follower graphs extracted.'.format(root_user))
     
     ##########################################################################
