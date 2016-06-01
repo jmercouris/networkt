@@ -9,7 +9,7 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
          extended_graph_follower_limit=200,
          name_list_path='', graph_path=''):
     network_scrape = NetworkScrape(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME)
-    
+
     ##########################################################################
     # Persist the root user
     network_scrape.persist_user(root_user)
