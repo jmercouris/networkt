@@ -1,6 +1,6 @@
 from graph.network_scrape import NetworkScrape
 from graph.graph import Graph
-# from math import floor
+from math import ceil as ceiling
 
 
 def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
@@ -8,7 +8,6 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
          filter_graph_follower_limit=200,
          extended_graph_follower_limit=200,
          name_list_path='', graph_path=''):
-    # TODO: Use Optionals
     network_scrape = NetworkScrape(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME)
     
     ##########################################################################
@@ -18,22 +17,23 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
     
     ##########################################################################
     # Persist the root user's follower list
-    # network_scrape.pull_remote_graph_follow(root_user, scope_limit=floor(int(root_user_follower_limit) / 200) + 1)
-    network_scrape.pull_remote_graph_follow(root_user)
+    network_scrape.pull_remote_graph_follow(root_user,
+                                            scope_limit=ceiling(root_user_follower_limit / 200))
     print('Persisted Root user follower graph')
     
     ##########################################################################
-    # Perform degree 0 filtering to decide whether to pulll 0th degree network
+    # Perform degree 0 filtering to decide whether to pull 0th degree network
     network_scrape.filter_0(root_user, location=name_list_path)
     print('Root User: {} follower graph filtered. [Filter level 0]'.format(root_user))
     
     ##########################################################################
     # Pull partial graphs of all filtered users following root user
-    graph = Graph(DATABASE_NAME, graph_path)
+    graph = Graph(DATABASE_NAME)
     root_user_object = network_scrape.get_user_from_data_store(root_user)
     for node in root_user_object.pointer_nodes():
         if (node.filter_0):
-            network_scrape.pull_remote_graph_friend(node.screen_name)
+            network_scrape.pull_remote_graph_friend(node.screen_name,
+                                                    scope_limit=ceiling(filter_graph_follower_limit / 200))
             graph.persist_graph(node.screen_name, graph_path, node.screen_name)
     print('Root User: {} follower graphs extracted.'.format(root_user))
     
@@ -49,7 +49,8 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
     for root_node in root_user_object.pointer_nodes():
         if (root_node.filter_0 and root_node.filter_1):
             for node in root_node.reference_nodes():
-                network_scrape.pull_remote_graph_follow(node.screen_name)
+                network_scrape.pull_remote_graph_follow(node.screen_name,
+                                                        scope_limit=ceiling(extended_graph_follower_limit / 200))
 
 
 if __name__ == "__main__":

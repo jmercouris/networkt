@@ -10,7 +10,7 @@ from kivy.core.window import Window
 from kivy.uix.stencilview import StencilView
 from kivy.metrics import dp
 from math import pow
-from graph.graph import get_statuses_for_screen_name, load_graph_from_database
+from graph.graph import Graph
 from networkt.status import Status, by_date_key
 from networkt.node import Node
 from networkt.camera import Camera
@@ -252,7 +252,8 @@ class NetworktApp(App):
         self.nodes = {}
         root_user = 'FactoryBerlin'
         # Generate Graph Object
-        graph = load_graph_from_database(root_user)
+        graph_object = Graph('sqlite://///Users/jmercouris/Documents/TUB/Transnational/source/data/data_store.db')
+        graph = graph_object.load_graph_from_database(root_user)
         layout = nx.spring_layout(graph)
         # Generate the list of nodes with positions
         for node in layout:
@@ -265,7 +266,7 @@ class NetworktApp(App):
         # Generate graph metadata
         for node in self.nodes:
             nodei = self.nodes[node]
-            for status in get_statuses_for_screen_name(nodei.screen_name):
+            for status in graph_object.get_statuses_for_screen_name(nodei.screen_name):
                 nodei.statuses.append(Status(status, sender=nodei))
         # Invoke Update
         self.nodes['0'] = Node(graph.node[root_user])

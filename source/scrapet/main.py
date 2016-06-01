@@ -50,11 +50,11 @@ class ScrapetApp(App):
         graph_path = self.config.get('persistence-configuration', 'graph_path')
         # Scrape Specific Configuration Details
         root_user = self.config.get('scrape-configuration', 'root_user')
-        root_user_follower_limit = self.config.get('scrape-configuration', 'root_user_follower_limit')
         name_list_path = self.config.get('scrape-configuration', 'name_list_path')
-        filter_graph_follower_limit = self.config.get('scrape-configuration', 'filter_graph_follower_limit')
-        extended_graph_follower_limit = self.config.get('scrape-configuration', 'extended_graph_follower_limit')
-
+        root_user_follower_limit = int(self.config.get('scrape-configuration', 'root_user_follower_limit'))
+        filter_graph_follower_limit = int(self.config.get('scrape-configuration', 'filter_graph_follower_limit'))
+        extended_graph_follower_limit = int(self.config.get('scrape-configuration', 'extended_graph_follower_limit'))
+        
         main_execution(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
                        root_user=root_user, root_user_follower_limit=root_user_follower_limit,
                        extended_graph_follower_limit=extended_graph_follower_limit,
