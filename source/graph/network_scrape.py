@@ -59,7 +59,7 @@ class NetworkScrape(object):
             scope_limit -= 1
             search = twitter_function(screen_name=screen_name, count=scope_depth, cursor=next_cursor)
             for result in search['users']:
-                instance = self.session.query(Node).filter_by(screen_name=result['screen_name']).first()
+                instance = self.session.query(Node).filter_by(id_str=result['id_str']).first()
                 if (instance is None):
                     instance = Node(result)
                     self.session.add(instance)

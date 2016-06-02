@@ -57,7 +57,11 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
             for node in root_node.reference_nodes():
                 network_scrape.pull_remote_graph_follow(node.screen_name,
                                                         scope_limit=ceiling(extended_graph_follower_limit / 200))
-
+    
+    ##########################################################################
+    # Pull statuses of all filtered users
+    # TODO:
+    network_scrape.pull_remote_status(root_user)
 
 if __name__ == "__main__":
     settings = configparser.ConfigParser()
