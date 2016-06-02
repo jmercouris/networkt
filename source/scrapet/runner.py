@@ -1,3 +1,4 @@
+import configparser
 from graph.network_scrape import NetworkScrape
 from graph.graph import Graph
 from graph.initialize import create_database
@@ -59,6 +60,26 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
 
 
 if __name__ == "__main__":
-    pass
-    # Load Config File and Execute Main
-    # main()
+    settings = configparser.ConfigParser()
+    settings.read('scrapet.ini')
+
+    # Network Scrape Parameters
+    APP_KEY = settings.get('twython-configuration', 'key')
+    APP_SECRET = settings.get('twython-configuration', 'secret')
+    OAUTH_TOKEN = settings.get('twython-configuration', 'token')
+    OAUTH_TOKEN_SECRET = settings.get('twython-configuration', 'token_secret')
+    DATABASE_NAME = 'sqlite:///{}/data_store.db'.format(settings.get('persistence-configuration', 'database_path'))
+    graph_path = settings.get('persistence-configuration', 'graph_path')
+    # Scrape Specific Configuration Details
+    root_user = settings.get('scrape-configuration', 'root_user')
+    name_list_path = settings.get('scrape-configuration', 'name_list_path')
+    root_user_follower_limit = int(settings.get('scrape-configuration', 'root_user_follower_limit'))
+    filter_graph_follower_limit = int(settings.get('scrape-configuration', 'filter_graph_follower_limit'))
+    extended_graph_follower_limit = int(settings.get('scrape-configuration', 'extended_graph_follower_limit'))
+        
+    main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
+         root_user=root_user, root_user_follower_limit=root_user_follower_limit,
+         extended_graph_follower_limit=extended_graph_follower_limit,
+         filter_graph_follower_limit=filter_graph_follower_limit,
+         name_list_path=name_list_path, graph_path=graph_path)
+
