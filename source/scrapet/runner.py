@@ -1,5 +1,6 @@
 from graph.network_scrape import NetworkScrape
 from graph.graph import Graph
+from graph.initialize import create_database
 from math import ceil as ceiling
 
 
@@ -9,7 +10,11 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
          extended_graph_follower_limit=200,
          name_list_path='', graph_path=''):
     network_scrape = NetworkScrape(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME)
-
+    
+    ##########################################################################
+    # Create the database
+    create_database(DATABASE_NAME)
+    
     ##########################################################################
     # Persist the root user
     network_scrape.persist_user(root_user)
