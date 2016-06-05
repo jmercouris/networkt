@@ -73,14 +73,16 @@ class NetworkScrape(object):
         user_object = self.session.query(Node).filter_by(screen_name=screen_name).first()
         if (user_object is None):
             return
-        
-        statuses = self.twitter.get_user_timeline(screen_name=screen_name, count=scope_depth)
-        for status in statuses:
-            instance = self.session.query(Status).filter_by(id_str=status['id_str']).first()
-            if (instance is None):
-                user_object.statuses.append(Status(status))
-        self.session.commit()
-        time.sleep(5)
+        try:
+            statuses = self.twitter.get_user_timeline(screen_name=screen_name, count=scope_depth)
+            for status in statuses:
+                instance = self.session.query(Status).filter_by(id_str=status['id_str']).first()
+                if (instance is None):
+                    user_object.statuses.append(Status(status))
+            self.session.commit()
+        except:
+            pass
+        time.sleep(7)
     
     def get_user_from_data_store(self, screen_name):
         return self.session.query(Node).filter_by(screen_name=screen_name).first()
