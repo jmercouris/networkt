@@ -8,7 +8,6 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.orm import sessionmaker
 import configparser
 
-
 Base = declarative_base()
 
 
@@ -147,8 +146,10 @@ class Status(Base):
     
     def __init__(self, dictionary):
         if dictionary.get('coordinates', None) is not None:
-            self.coordinate_longitude = dictionary.get('coordinates', None)[0]
-            self.coordinate_latitude = dictionary.get('coordinates', None)[1]
+            coordinate = dictionary.get('coordinates', None)
+            sub_coordinate = coordinate.get('coordinates', None)
+            self.coordinate_longitude = sub_coordinate[0]
+            self.coordinate_latitude = sub_coordinate[1]
         self.created_at = dictionary.get('created_at', None)
         self.favorite_count = int(dictionary.get('favorite_count') or -1)
         self.id_str = dictionary.get('id_str', None)

@@ -11,7 +11,8 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
          extended_graph_follower_limit=200,
          name_list_path='', graph_path=''):
     network_scrape = NetworkScrape(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME)
-    
+    graph = Graph(DATABASE_NAME)
+
     ##########################################################################
     # Create the database
     create_database(DATABASE_NAME)
@@ -34,7 +35,6 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
     
     ##########################################################################
     # Pull partial graphs of all filtered users following root user
-    graph = Graph(DATABASE_NAME)
     root_user_object = network_scrape.get_user_from_data_store(root_user)
     for node in root_user_object.pointer_nodes():
         if (node.filter_0):
@@ -61,12 +61,13 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
     
     ##########################################################################
     # Pull statuses of all filtered user networks
+    root_user_object = network_scrape.get_user_from_data_store(root_user)
     for root_node in root_user_object.pointer_nodes():
         if (root_node.filter_0 and root_node.filter_1):
             network_scrape.pull_remote_status(root_node.screen_name)
-            for node in root_node.reference_nodes:
+            for node in root_node.reference_nodes():
                 network_scrape.pull_remote_status(node.screen_name)
-            for node in root_node.pointer_nodes:
+            for node in root_node.pointer_nodes():
                 network_scrape.pull_remote_status(node.screen_name)
     
     ##########################################################################
