@@ -54,9 +54,10 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
     root_user_object = network_scrape.get_user_from_data_store(root_user)
     for root_node in root_user_object.pointer_nodes():
         if (root_node.filter_0 and root_node.filter_1):
-            for node in root_node.reference_nodes():
-                network_scrape.pull_remote_graph_follow(node.screen_name,
-                                                        scope_limit=ceiling(extended_graph_follower_limit / 200))
+            network_scrape.pull_remote_graph_follow(root_node.screen_name,
+                                                    scope_limit=ceiling(extended_graph_follower_limit / 200))
+            network_scrape.pull_remote_graph_friend(root_node.screen_name,
+                                                    scope_limit=ceiling(extended_graph_follower_limit / 200))
     
     ##########################################################################
     # Pull statuses of all filtered users

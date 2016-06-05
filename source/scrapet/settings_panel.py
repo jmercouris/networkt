@@ -62,14 +62,14 @@ settings_scrape_json = json.dumps([
      'key': 'root_user_follower_limit'},
     
     {'type': 'numeric',
-     'title': 'Root User Follower Follower Count',
+     'title': 'Root User Filter Follower Follower Count',
      'desc': 'FactoryBerlin -> Follower -> (How many Followers)',
      'section': 'scrape-configuration',
      'key': 'filter_graph_follower_limit'},
     
     {'type': 'numeric',
      'title': 'Root User Follower  Follower Follower Count',
-     'desc': 'FactoryBerlin -> Filtered Follower -> Follower -> (How many Followers)',
+     'desc': 'FactoryBerlin -> Filtered Follower -> (How many Followers) (How many Friends)',
      'section': 'scrape-configuration',
      'key': 'extended_graph_follower_limit'},
     
