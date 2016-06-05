@@ -80,6 +80,7 @@ class NetworkScrape(object):
             if (instance is None):
                 user_object.statuses.append(Status(status))
         self.session.commit()
+        time.sleep(5)
     
     def get_user_from_data_store(self, screen_name):
         return self.session.query(Node).filter_by(screen_name=screen_name).first()
