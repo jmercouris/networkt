@@ -250,7 +250,7 @@ class NetworktApp(App):
     def load_graph(self):
         # Generate a simple graph
         self.nodes = {}
-        root_user = 'FactoryBerlin'
+        root_user = 'daffunn'
         # Generate Graph Object
         graph_object = Graph('sqlite://///Users/jmercouris/Documents/TUB/Transnational/source/data/data_store.db')
         graph = graph_object.load_graph_from_database(root_user)
