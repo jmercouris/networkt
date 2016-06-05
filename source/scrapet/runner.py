@@ -60,9 +60,21 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
                                                     scope_limit=ceiling(extended_graph_follower_limit / 200))
     
     ##########################################################################
-    # Pull statuses of all filtered users
-    # TODO:
-    network_scrape.pull_remote_status(root_user)
+    # Pull statuses of all filtered user networks
+    for root_node in root_user_object.pointer_nodes():
+        if (root_node.filter_0 and root_node.filter_1):
+            network_scrape.pull_remote_status(root_node.screen_name)
+            for node in root_node.reference_nodes:
+                network_scrape.pull_remote_status(node.screen_name)
+            for node in root_node.pointer_nodes:
+                network_scrape.pull_remote_status(node.screen_name)
+    
+    ##########################################################################
+    # Persist Graphs of all filtered user networks
+    for root_node in root_user_object.pointer_nodes():
+        if (root_node.filter_0 and root_node.filter_1):
+            graph.persist_graph(root_node.screen_name, graph_path, root_node.screen_name)
+
 
 if __name__ == "__main__":
     settings = configparser.ConfigParser()
