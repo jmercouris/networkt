@@ -77,6 +77,7 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
             graph.persist_graph(root_node.screen_name, graph_path, root_node.screen_name)
     graph.persist_graph(root_user_object.screen_name, graph_path, root_user_object.screen_name)
 
+
 if __name__ == "__main__":
     settings = configparser.ConfigParser()
     settings.read('scrapet.ini')
