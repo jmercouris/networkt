@@ -7,7 +7,7 @@ class Camera(object):
         self.position = (0, 0)
         self.zoom = 250
         self.move_speed = 12
-        self.zoom_factor = 30
+        self.zoom_factor = 50
     
     def shift_up(self):
         self.position = (self.position[0], self.position[1] + self.move_speed)

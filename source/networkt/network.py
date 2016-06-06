@@ -29,27 +29,27 @@ class Network(StencilView):
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
         if (text == 'w'):
             self.camera.shift_down()
-            self.update_node_positions()
+            self.update_object_positions()
             return True
         elif (text == 'a'):
             self.camera.shift_right()
-            self.update_node_positions()
+            self.update_object_positions()
             return True
         elif (text == 's'):
             self.camera.shift_up()
-            self.update_node_positions()
+            self.update_object_positions()
             return True
         elif (text == 'd'):
             self.camera.shift_left()
-            self.update_node_positions()
+            self.update_object_positions()
             return True
         elif (text == 'e'):
             self.camera.zoom_in()
-            self.update_node_positions()
+            self.update_object_positions()
             return True
         elif (text == 'q'):
             self.camera.zoom_out()
-            self.update_node_positions()
+            self.update_object_positions()
             return True
         
         return False
@@ -58,19 +58,19 @@ class Network(StencilView):
         # Handle Mouse Zoom
         if touch.button is 'scrollup' and self.collide_point(*touch.pos):
             self.camera.zoom_out()
-            self.update_node_positions()
+            self.update_object_positions()
             return True
         if touch.button is 'scrolldown' and self.collide_point(*touch.pos):
             self.camera.zoom_in()
 
-            self.update_node_positions()
+            self.update_object_positions()
             return True
     
     def on_touch_move(self, touch):
         # Handle Mouse Drag
         if self.collide_point(*touch.opos):
             self.camera.shift_offset((touch.dpos[0], touch.dpos[1]))
-            self.update_node_positions()
+            self.update_object_positions()
     
     def on_touch_up(self, touch):
         # Handle Clicks Within Nodes
@@ -90,7 +90,7 @@ class Network(StencilView):
         position = (dp(position[0]), dp(position[1]))
         return position
     
-    def update_node_positions(self):
+    def update_object_positions(self):
         for node in self.nodes:
             nodei = self.nodes[node]
             nodei.render_position = self.translate_render(nodei.position)
@@ -120,7 +120,6 @@ class Network(StencilView):
             Color(0, 1, 0)
             for node in self.nodes:
                 nodei = self.nodes[node]
-
                 for status in nodei.active_statuses:
                     Line(circle=(status.render_position[0], status.render_position[1], dp(status.radius)))
     
