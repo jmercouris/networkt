@@ -84,36 +84,35 @@ class Network(StencilView):
                 if (dp(squared_radius) > squared_x + squared_y):
                     self.selected_node = nodei
     
-    def update_node_positions(self):
-        for node in self.nodes:
-            nodei = self.nodes[node]
-            nodei.render_position = self.translate_render(nodei.position)
-            nodei.representation.circle = (nodei.render_position[0], nodei.render_position[1], nodei.radius)
-    
     def translate_render(self, position):
         position = (int(position[0] * self.camera.zoom) + 50, int(position[1] * self.camera.zoom) + 200)
         position = (position[0] + self.camera.position[0], position[1] + self.camera.position[1])
         position = (dp(position[0]), dp(position[1]))
         return position
     
+    def update_node_positions(self):
+        for node in self.nodes:
+            nodei = self.nodes[node]
+            nodei.render_position = self.translate_render(nodei.position)
+            nodei.representation.circle = (nodei.render_position[0], nodei.render_position[1], nodei.radius)
+        
     def on_nodes(self, *args):
         self.update_graphic()
     
     def update_graphic(self):
         self.canvas.clear()
-        green = InstructionGroup()
-        green.add(Color(0, 1, 0, 0.5))
+        instruction_group = InstructionGroup()
+        instruction_group.add(Color(0, 1, 0, 0.5))
         for node in self.nodes:
             nodei = self.nodes[node]
-            green.add(nodei.representation)
+            instruction_group.add(nodei.representation)
         
-        self.canvas.add(green)
+        self.canvas.add(instruction_group)
         
         with self.canvas:
             Color(0, 1, 0)
             for node in self.nodes:
                 nodei = self.nodes[node]
-                nodei.representation
                 # Draw All Edges
                 for edge in nodei.edges:
                     Line(points=(nodei.render_position[0], nodei.render_position[1],
