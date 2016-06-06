@@ -5,6 +5,7 @@ from kivy.properties import DictProperty, StringProperty, ObjectProperty
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
 from graph.graph import Graph
+from kivy.graphics import Line
 from networkt.status import Status
 from networkt.node import Node
 from kivy.factory import Factory
@@ -74,6 +75,8 @@ class NetworktApp(App):
         # Add edges to every node in graph
         for edge in graph.edges():
             self.nodes[edge[0]].edges.append(self.nodes[edge[1]])
+            # Generate Placeholder Lines for updating
+            self.nodes[edge[0]].edges_representation.append(Line(points=[0, 0, 100, 100]))
         # Generate graph metadata
         for node in self.nodes:
             nodei = self.nodes[node]

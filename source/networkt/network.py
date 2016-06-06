@@ -96,6 +96,12 @@ class Network(StencilView):
             nodei.render_position = self.translate_render(nodei.position)
             nodei.representation.circle = (nodei.render_position[0], nodei.render_position[1], nodei.radius)
         
+        for node in self.nodes:
+            nodei = self.nodes[node]
+            for index, edge in enumerate(nodei.edges):
+                nodei.edges_representation[index].points = (nodei.render_position[0], nodei.render_position[1],
+                                                            edge.render_position[0], edge.render_position[1])
+    
     def on_nodes(self, *args):
         self.update_graphic()
     
@@ -106,6 +112,8 @@ class Network(StencilView):
         for node in self.nodes:
             nodei = self.nodes[node]
             instruction_group.add(nodei.representation)
+            for edge in nodei.edges_representation:
+                instruction_group.add(edge)
         
         self.canvas.add(instruction_group)
         
@@ -113,11 +121,7 @@ class Network(StencilView):
             Color(0, 1, 0)
             for node in self.nodes:
                 nodei = self.nodes[node]
-                # Draw All Edges
-                for edge in nodei.edges:
-                    Line(points=(nodei.render_position[0], nodei.render_position[1],
-                                 edge.render_position[0], edge.render_position[1]))
-                # Draw All Statuses
+
                 for status in nodei.active_statuses:
                     Line(circle=(status.render_position[0], status.render_position[1], dp(status.radius)))
     
