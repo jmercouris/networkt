@@ -13,6 +13,7 @@ class Node(object):
         self.render_position = (0, 0)
         self.representation = Line(circle=(self.render_position[0], self.render_position[1], self.radius))
         self.edges = []
+        self.edges_representation = []
         self.statuses = []
         self.active_statuses = []
         # Data Store Specific
