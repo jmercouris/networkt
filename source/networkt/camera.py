@@ -6,7 +6,7 @@ class Camera(object):
         super(Camera, self).__init__()
         self.position = (0, 0)
         self.zoom = 250
-        self.move_speed = 10
+        self.move_speed = 12
         self.zoom_factor = 30
     
     def shift_up(self):
@@ -26,6 +26,13 @@ class Camera(object):
     
     def zoom_in(self):
         self.zoom = self.zoom + self.zoom_factor
+        self.shift_down()
+        self.shift_left()
     
     def zoom_out(self):
         self.zoom = self.zoom - self.zoom_factor
+        self.shift_up()
+        self.shift_right()
+    
+    def shift_to(self, position):
+        self.position = position

@@ -25,7 +25,7 @@ class NetworktUI(Widget):
     
     def update(self, dt):
         self.network.update_logic()
-        self.network.update_graphic()
+        # self.network.update_graphic()
 
 
 class ScrollableLabel(ScrollView):
@@ -180,6 +180,7 @@ class Network(StencilView):
             return True
         if touch.button is 'scrolldown' and self.collide_point(*touch.pos):
             self.camera.zoom_in()
+
             self.update_node_positions()
             return True
     
@@ -250,7 +251,7 @@ class NetworktApp(App):
     def load_graph(self):
         # Generate a simple graph
         self.nodes = {}
-        root_user = 'daffunn'
+        root_user = 'FactoryBerlin'
         # Generate Graph Object
         graph_object = Graph('sqlite://///Users/jmercouris/Documents/TUB/Transnational/source/data/data_store.db')
         graph = graph_object.load_graph_from_database(root_user)
