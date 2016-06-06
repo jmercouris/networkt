@@ -114,7 +114,6 @@ class Network(StencilView):
             instruction_group.add(nodei.representation)
             for edge in nodei.edges_representation:
                 instruction_group.add(edge)
-        
         self.canvas.add(instruction_group)
         
         with self.canvas:
