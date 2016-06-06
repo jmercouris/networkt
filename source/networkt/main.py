@@ -17,7 +17,6 @@ class NetworktUI(Widget):
     
     def update(self, dt):
         self.network.update_logic()
-        # self.network.update_graphic()
 
 
 class ScrollableLabel(ScrollView):

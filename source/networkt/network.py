@@ -3,6 +3,7 @@ from kivy.properties import DictProperty, ObjectProperty, NumericProperty
 from kivy.core.window import Window
 from networkt.camera import Camera
 from kivy.graphics import Color, Line
+from kivy.graphics.instructions import InstructionGroup
 from kivy.metrics import dp
 from math import pow
 
@@ -87,7 +88,7 @@ class Network(StencilView):
         for node in self.nodes:
             nodei = self.nodes[node]
             nodei.render_position = self.translate_render(nodei.position)
-        self.update_graphic()
+            nodei.representation.circle = (nodei.render_position[0], nodei.render_position[1], nodei.radius)
     
     def translate_render(self, position):
         position = (int(position[0] * self.camera.zoom) + 50, int(position[1] * self.camera.zoom) + 200)
@@ -95,14 +96,24 @@ class Network(StencilView):
         position = (dp(position[0]), dp(position[1]))
         return position
     
+    def on_nodes(self, *args):
+        self.update_graphic()
+    
     def update_graphic(self):
         self.canvas.clear()
+        green = InstructionGroup()
+        green.add(Color(0, 1, 0, 0.5))
+        for node in self.nodes:
+            nodei = self.nodes[node]
+            green.add(nodei.representation)
+        
+        self.canvas.add(green)
+        
         with self.canvas:
             Color(0, 1, 0)
             for node in self.nodes:
                 nodei = self.nodes[node]
-                # Draw All Nodes
-                Line(circle=(nodei.render_position[0], nodei.render_position[1], dp(nodei.radius)))
+                nodei.representation
                 # Draw All Edges
                 for edge in nodei.edges:
                     Line(points=(nodei.render_position[0], nodei.render_position[1],
