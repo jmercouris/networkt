@@ -11,6 +11,7 @@ class Node(object):
         self.position = (0, 0)
         self.radius = 10.0
         self.render_position = (0, 0)
+        self.representation = Line(circle=(self.render_position[0], self.render_position[1], self.radius))
         self.edges = []
         self.statuses = []
         self.active_statuses = []
@@ -31,7 +32,6 @@ class Node(object):
         self.verified = bool(dictionary.get('verified', False) or False)
         self.id_str = dictionary.get('idstr', None)
         self.id = int(self.id_str or -1)
-        self.representation = Line(circle=(self.render_position[0], self.render_position[1], self.radius))
     
     def act(self):
         tmp_active_statuses = []
