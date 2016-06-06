@@ -1,15 +1,12 @@
 import networkx as nx
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.graphics import Rectangle, Color
-from kivy.properties import DictProperty, StringProperty, ObjectProperty, ListProperty, NumericProperty
+from kivy.properties import DictProperty, StringProperty, ObjectProperty
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
-from kivy.uix.slider import Slider
 from graph.graph import Graph
-from networkt.status import Status, by_date_key
+from networkt.status import Status
 from networkt.node import Node
-from networkt.range_slider import RangeSlider
 from kivy.factory import Factory
 
 
@@ -25,49 +22,6 @@ class NetworktUI(Widget):
 
 class ScrollableLabel(ScrollView):
     text = StringProperty('')
-
-
-class PreviewRangeSlider(RangeSlider):
-    nodes = DictProperty({})
-    markers = ListProperty([])
-    
-    def __init__(self, **kwargs):
-        super(PreviewRangeSlider, self).__init__(**kwargs)
-    
-    def on_nodes(self, *args):
-        self.update_logic()
-        self.update_graphic()
-    
-    def on_width(self, *args):
-        self.update_logic()
-        self.update_graphic()
-    
-    def update_logic(self):
-        tmp_list = []
-        for node in self.nodes:
-            nodei = self.nodes[node]
-            for status in nodei.statuses:
-                tmp_list.append(status)
-        self.markers = sorted(tmp_list, key=by_date_key)
-        
-        if len(self.markers) > 0:
-            total_difference = PreviewRangeSlider.date_difference(self.markers[0].date, self.markers[-1].date)
-            for marker in self.markers:
-                marker.position = PreviewRangeSlider.date_difference(self.markers[0].date,
-                                                                     marker.date) / total_difference
-    
-    def update_graphic(self):
-        self.canvas.after.clear()
-        with self.canvas.after:
-            Color(0, 1, 0, .25)
-            for marker in self.markers:
-                Rectangle(size=(1, self.height),
-                          pos=(self.width * marker.position, self.pos[1]))
-    
-    def date_difference(d1, d2):
-        diff = d2 - d1
-        diff_minutes = (diff.days * 24 * 60) + (diff.seconds/60)
-        return(diff_minutes)
 
 
 class Inspector(ScrollableLabel):
@@ -95,6 +49,7 @@ class NetworktApp(App):
     Factory.register('RangeSlider', module='networkt.range_slider')
     Factory.register('Network', module='networkt.network')
     Factory.register('PreviewSlider', module='networkt.preview_slider')
+    Factory.register('PreviewRangeSlider', module='networkt.preview_range_slider')
     
     def build(self):
         self.networktUI = NetworktUI()
