@@ -46,7 +46,7 @@ class PreviewRangeSlider(RangeSlider):
         # Digitize
         if len(tmp_list) > 0:
             histogram = numpy.histogram(tmp_list, bins=100)
-            divisor = max(histogram[0])  # The Largest Possible value
+            divisor = max(histogram[0])  # The Largest Possible value - relative opacity
             index = 0
             for element in histogram[0]:
                 marker = Marker(index/len(histogram[0]), element / divisor)
