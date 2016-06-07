@@ -13,6 +13,8 @@ class Marker(object):
         self.position = position
         self.opacity = opacity * opacity_scale_factor
         self.representation = Rectangle(size=(0, 0), pos=(0, 0))
+        self.sub_representation = Rectangle(size=(0, 0), pos=(0, 0))
+        self.active = False
 
 
 class PreviewRangeSlider(RangeSlider):
