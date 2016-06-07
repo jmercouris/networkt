@@ -21,6 +21,7 @@ class Status(object):
         self.coordinate_latitude = src_status_object.coordinate_latitude
         self.created_at = src_status_object.created_at
         self.date = src_status_object.date
+        self.timestamp = self.date.timestamp()
         self.favorite_count = src_status_object.favorite_count
         self.id_str = src_status_object.id_str
         self.in_reply_to_screen_name = src_status_object.in_reply_to_screen_name
