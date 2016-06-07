@@ -62,7 +62,7 @@ class PreviewRangeSlider(RangeSlider):
     def update_object_positions(self):
         for marker in self.markers:
             marker.representation.size = (self.width / len(self.markers), self.height)
-            marker.representation.pos = (marker.position * self.width, self.height)
+            marker.representation.pos = (marker.position * self.width, self.pos[1])
     
     def date_difference(d1, d2):
         diff = d2 - d1
