@@ -17,6 +17,9 @@ class PreviewSlider(Slider):
     def update_logic(self):
         pass
     
+    def on_width(self, *args):
+        pass
+    
     def update_graphic(self):
         self.active_markers = []
         for marker in self.markers:
@@ -30,5 +33,5 @@ class PreviewSlider(Slider):
         with self.canvas.after:
             Color(0, 1, 0, .5)
             for marker in self.active_markers:
-                Rectangle(size=(1, self.height),
+                Rectangle(size=(self.width / len(self.active_markers), self.height),
                           pos=(self.width * marker.sub_position, self.pos[1]))
