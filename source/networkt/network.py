@@ -21,6 +21,7 @@ class Network(StencilView):
         self._keyboard = Window.request_keyboard(self._keyboard_closed, self, 'text')
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
         self.camera = Camera()
+        self.event_stack = []
     
     def _keyboard_closed(self):
         self._keyboard.unbind(on_key_down=self._on_keyboard_down)
@@ -103,7 +104,17 @@ class Network(StencilView):
                                                             edge.render_position[0], edge.render_position[1])
     
     def on_nodes(self, *args):
+        self.populate_event_stack()
         self.update_graphic()
+    
+    def populate_event_stack(self):
+        self.event_stack = []
+        for node in self.nodes:
+            nodei = self.nodes[node]
+            for status in nodei.statuses:
+                self.event_stack.append(status)
+        # Sort event stack
+        self.event_stack.sort()
     
     def update_graphic(self):
         self.canvas.clear()
@@ -117,7 +128,6 @@ class Network(StencilView):
         self.canvas.add(instruction_group)
     
     def update_logic(self):
-        print('Running')
         for node in self.nodes:
             nodei = self.nodes[node]
             nodei.act()

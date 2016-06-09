@@ -56,11 +56,31 @@ class Status(object):
         return_string = """\
         {}
         {}
+        {}
         """.format(
             self.sender.screen_name,
+            self.date,
             self.text,
         )
         return dedent(return_string)
+    
+    def __lt__(self, other):
+        return self.timestamp < other.timestamp
+
+    def __gt__(self, other):
+        return self.timestamp > other.timestamp
+
+    def __eq__(self, other):
+        return self.timestamp == other.timestamp
+
+    def __le__(self, other):
+        return self.timestamp <= other.timestamp
+
+    def __ge__(self, other):
+        return self.timestamp >= other.timestamp
+
+    def __ne__(self, other):
+        return self.timestamp != other.timestamp
 
 
 # Key by Date for Sorting

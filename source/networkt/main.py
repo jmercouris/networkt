@@ -91,6 +91,8 @@ class NetworktApp(App):
             nodei = self.nodes[node]
             for status in graph_object.get_statuses_for_screen_name(nodei.screen_name):
                 nodei.statuses.append(Status(status, sender=nodei))
+            # Sort node statuses
+            nodei.statuses.sort()
         # Invoke Update
         self.nodes['0'] = Node(graph.node[root_user])
         self.nodes.pop('0', 0)
