@@ -1,7 +1,7 @@
 import networkx as nx
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.properties import DictProperty, StringProperty, ObjectProperty
+from kivy.properties import DictProperty, StringProperty, ObjectProperty, BooleanProperty
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
 from graph.graph import Graph
@@ -12,12 +12,21 @@ from kivy.factory import Factory
 
 
 class NetworktUI(Widget):
+    running = BooleanProperty(False)
+    
     def __init__(self, **kwargs):
         super(NetworktUI, self).__init__()
         self.network = self.ids.network
     
+    def run_button(self, *args):
+        self.running = True
+    
+    def pause_button(self, *args):
+        self.running = False
+    
     def update(self, dt):
-        self.network.update_logic()
+        if (self.running):
+            self.network.update_logic()
 
 
 class ScrollableLabel(ScrollView):
@@ -85,7 +94,7 @@ class NetworktApp(App):
         # Invoke Update
         self.nodes['0'] = Node(graph.node[root_user])
         self.nodes.pop('0', 0)
-
+    
 
 if __name__ == '__main__':
     NetworktApp().run()

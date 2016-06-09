@@ -117,6 +117,7 @@ class Network(StencilView):
         self.canvas.add(instruction_group)
     
     def update_logic(self):
+        print('Running')
         for node in self.nodes:
             nodei = self.nodes[node]
             nodei.act()
