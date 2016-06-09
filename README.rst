@@ -7,10 +7,10 @@ ___________________
 3. Run:
 
    A. $ pushd dist
-   B. $ hdiutil create ./*.dmg -srcfolder *.app -ov
+   B. $ hdiutil create ./program.dmg -srcfolder program.app -ov
    C. $ popd
 
-You will now have a *.dmg available in the dist directory.
+You will now have a program.dmg available in the dist directory.
 
 
 
