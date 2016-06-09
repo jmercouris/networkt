@@ -54,6 +54,7 @@ class Statuses(ScrollableLabel):
 
 
 class NetworktApp(App):
+    icon = 'static/img/icon.png'
     nodes = DictProperty({})
     Factory.register('RangeSlider', module='networkt.range_slider')
     Factory.register('Network', module='networkt.network')
