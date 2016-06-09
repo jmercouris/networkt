@@ -2,7 +2,7 @@ from kivy.uix.stencilview import StencilView
 from kivy.properties import DictProperty, ObjectProperty, NumericProperty
 from kivy.core.window import Window
 from networkt.camera import Camera
-from kivy.graphics import Color, Line
+from kivy.graphics import Color
 from kivy.graphics.instructions import InstructionGroup
 from kivy.metrics import dp
 from math import pow
@@ -62,7 +62,7 @@ class Network(StencilView):
             return True
         if touch.button is 'scrolldown' and self.collide_point(*touch.pos):
             self.camera.zoom_in()
-
+            
             self.update_object_positions()
             return True
     
@@ -115,13 +115,6 @@ class Network(StencilView):
             for edge in nodei.edges_representation:
                 instruction_group.add(edge)
         self.canvas.add(instruction_group)
-        
-        with self.canvas:
-            Color(0, 1, 0)
-            for node in self.nodes:
-                nodei = self.nodes[node]
-                for status in nodei.active_statuses:
-                    Line(circle=(status.render_position[0], status.render_position[1], dp(status.radius)))
     
     def update_logic(self):
         for node in self.nodes:

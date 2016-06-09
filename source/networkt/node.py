@@ -1,5 +1,7 @@
 from textwrap import dedent
 from kivy.graphics import Line
+from kivy.metrics import dp
+from kivy.graphics import Color
 
 
 class Node(object):
@@ -11,7 +13,7 @@ class Node(object):
         self.position = (0, 0)
         self.radius = 10.0
         self.render_position = (0, 0)
-        self.representation = Line(circle=(self.render_position[0], self.render_position[1], self.radius))
+        self.representation = Line(circle=(self.render_position[0], self.render_position[1], dp(self.radius)))
         self.edges = []
         self.edges_representation = []
         self.statuses = []

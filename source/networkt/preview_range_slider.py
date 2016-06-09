@@ -31,7 +31,7 @@ class PreviewRangeSlider(RangeSlider):
     
     def on_width(self, *args):
         self.update_object_positions()
-
+        
     def on_height(self, *args):
         self.update_object_positions()
     
