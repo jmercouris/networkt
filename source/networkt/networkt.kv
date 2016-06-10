@@ -70,18 +70,19 @@
                 nodes: app.nodes
 
             PreviewSlider:
+                id: preview_slider
                 start: preview_range_slider.value1
                 end: preview_range_slider.value2
                 markers: preview_range_slider.markers
+                time_start: preview_range_slider.time_start
+                time_end: preview_range_slider.time_end
 
             BoxLayout:
                 orientation: 'horizontal'
                 Button:
+                    id: run_button
                     text: 'Play'
-                    on_release: root.run_button()
-                Button:
-                    text: 'Pause'
-                    on_release: root.pause_button()
+                    on_release: root.run_button_release()
                 Label:
                     text: 'Speed'    
                 Slider:

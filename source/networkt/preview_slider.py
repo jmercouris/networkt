@@ -8,6 +8,10 @@ class PreviewSlider(Slider):
     start = NumericProperty(0)
     end = NumericProperty(100)
     markers = ListProperty([])
+    time_start = NumericProperty(0)
+    time_end = NumericProperty(0)
+    time_slice_start = NumericProperty(0)
+    time_slice_end = NumericProperty(0)
     
     def __init__(self, **kwargs):
         super(PreviewSlider, self).__init__(**kwargs)
@@ -23,6 +27,9 @@ class PreviewSlider(Slider):
     def on_end(self, *args):
         self.update_logic()
         self.update_object_positions()
+    
+    def step_time(self):
+        print('Time Step')
     
     def update_logic(self):
         self.active_markers = []
