@@ -16,6 +16,7 @@ class PreviewSlider(Slider):
     def __init__(self, **kwargs):
         super(PreviewSlider, self).__init__(**kwargs)
         self.active_markers = []
+        self.step_resolution = 5
     
     def on_markers(self, *args):
         self.update_graphic()
@@ -29,7 +30,7 @@ class PreviewSlider(Slider):
         self.update_object_positions()
     
     def step_time(self):
-        print('Time Step')
+        pass
     
     def update_logic(self):
         self.active_markers = []
