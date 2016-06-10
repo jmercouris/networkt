@@ -35,6 +35,14 @@ class PreviewRangeSlider(RangeSlider):
     def on_height(self, *args):
         self.update_object_positions()
     
+    # On Start of Time Slice
+    def on_value1(self, *args):
+        pass
+    
+    # On End of Time Slice
+    def on_value2(self, *args):
+        pass
+    
     def update_logic(self):
         # Generate List of All Markers
         tmp_list = []

@@ -1,6 +1,6 @@
 from kivy.uix.slider import Slider
 from kivy.properties import ListProperty, NumericProperty
-from kivy.graphics import Color, Rectangle
+from kivy.graphics import Color
 from kivy.graphics.instructions import InstructionGroup
 
 
