@@ -142,4 +142,3 @@ class Network(StencilView):
                                        bisect_left(self.event_stack, StatusIndex(self.time_slice_end))]
         for event in slice_stack:
             pass
-
