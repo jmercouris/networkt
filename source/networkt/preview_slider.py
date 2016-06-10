@@ -9,17 +9,27 @@ class PreviewSlider(Slider):
     end = NumericProperty(100)
     markers = ListProperty([])
     time_start = NumericProperty(0)
-    time_end = NumericProperty(0)
+    time_end = NumericProperty(100)
     time_slice_start = NumericProperty(0)
     time_slice_end = NumericProperty(0)
     
     def __init__(self, **kwargs):
         super(PreviewSlider, self).__init__(**kwargs)
         self.active_markers = []
-        self.step_resolution = 5
+        self.step_resolution = 1
+        self.calculate_time_resolution()
     
     def on_markers(self, *args):
         self.update_graphic()
+    
+    def on_time_start(self, *args):
+        self.calculate_time_resolution()
+    
+    def on_time_end(self, *args):
+        self.calculate_time_resolution()
+    
+    def calculate_time_resolution(self):
+        self.time_resolution = (self.time_end - self.time_start) / (self.max / self.step_resolution)
     
     def on_start(self, *args):
         self.update_logic()
@@ -30,7 +40,12 @@ class PreviewSlider(Slider):
         self.update_object_positions()
     
     def step_time(self):
-        pass
+        self.value += self.step_resolution
+        if (self.value >= self.max):
+            self.value = self.min
+        # Calculate Time Range to Query Network Data Structure
+        self.time_slice_start = self.time_resolution * self.value
+        self.time_slice_end = self.time_slice_start + self.time_resolution
     
     def update_logic(self):
         self.active_markers = []

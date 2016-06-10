@@ -27,9 +27,12 @@ class NetworktUI(Widget):
         else:
             self.run_button.text = 'Play'
             
-    def update(self, dt):
+    def update_logic(self, dt):
         if (self.running):
             self.network.update_logic()
+    
+    def update_time(self, dt):
+        if (self.running):
             self.preview_slider.step_time()
 
 
@@ -68,7 +71,8 @@ class NetworktApp(App):
     def build(self):
         self.networktUI = NetworktUI()
         self.load_graph()
-        Clock.schedule_interval(self.networktUI.update, 1.0 / 30.0)
+        Clock.schedule_interval(self.networktUI.update_logic, 1.0 / 30.0)
+        Clock.schedule_interval(self.networktUI.update_time, 1.0 / 5.0)
         network = self.networktUI.ids.network
         network.update_object_positions()
         return self.networktUI

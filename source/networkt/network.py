@@ -15,6 +15,8 @@ class Network(StencilView):
     nodes = DictProperty({})
     selected_node = ObjectProperty(None)
     time = NumericProperty(0)
+    time_slice_start = NumericProperty(0)
+    time_slice_end = NumericProperty(0)
     
     def __init__(self, **kwargs):
         super(Network, self).__init__(**kwargs)
@@ -131,3 +133,8 @@ class Network(StencilView):
         for node in self.nodes:
             nodei = self.nodes[node]
             nodei.act()
+    
+    # Fire Events within the Time Slice
+    def on_time_slice_start(self, *args):
+        pass
+
