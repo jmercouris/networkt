@@ -1,6 +1,6 @@
 import numpy
 from networkt.range_slider import RangeSlider
-from kivy.properties import DictProperty, ListProperty
+from kivy.properties import DictProperty, ListProperty, NumericProperty
 from kivy.graphics import Color, Rectangle
 from kivy.graphics.instructions import InstructionGroup
 
@@ -20,6 +20,10 @@ class Marker(object):
 class PreviewRangeSlider(RangeSlider):
     nodes = DictProperty({})
     markers = ListProperty([])
+    time_start = NumericProperty(0)
+    time_end = NumericProperty(0)
+    absolute_time_start = NumericProperty(0)
+    absolute_time_end = NumericProperty(0)
     
     def __init__(self, **kwargs):
         super(PreviewRangeSlider, self).__init__(**kwargs)
@@ -37,11 +41,13 @@ class PreviewRangeSlider(RangeSlider):
     
     # On Start of Time Slice
     def on_value1(self, *args):
-        pass
+        self.time_start = ((self.absolute_time_end - self.absolute_time_start) * self.value1_normalized)\
+                          + self.absolute_time_start
     
     # On End of Time Slice
     def on_value2(self, *args):
-        pass
+        self.time_end = ((self.absolute_time_end - self.absolute_time_start) * self.value2_normalized)\
+                        + self.absolute_time_start
     
     def update_logic(self):
         # Generate List of All Markers
@@ -56,6 +62,10 @@ class PreviewRangeSlider(RangeSlider):
         
         # Digitize
         if len(tmp_list) > 0:
+            # Get Dates of Oldest and Newest Status
+            self.absolute_time_start = min(tmp_list)
+            self.absolute_time_end = max(tmp_list)
+            
             histogram = numpy.histogram(tmp_list, bins=100)
             divisor = max(histogram[0])  # The Largest Possible value - relative opacity
             index = 0
