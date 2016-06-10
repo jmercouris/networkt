@@ -83,6 +83,15 @@ class Status(object):
         return self.timestamp != other.timestamp
 
 
+class StatusIndex(object):
+    """Documentation for StatusIndex
+
+    """
+    def __init__(self, timestamp):
+        super(StatusIndex, self).__init__()
+        self.timestamp = timestamp
+
+
 # Key by Date for Sorting
 def by_date_key(status):
     return status.date

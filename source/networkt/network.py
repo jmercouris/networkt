@@ -6,6 +6,8 @@ from kivy.graphics import Color
 from kivy.graphics.instructions import InstructionGroup
 from kivy.metrics import dp
 from math import pow
+from bisect import bisect_left, bisect_right
+from networkt.status import StatusIndex
 
 
 class Network(StencilView):
@@ -135,6 +137,9 @@ class Network(StencilView):
             nodei.act()
     
     # Fire Events within the Time Slice
-    def on_time_slice_start(self, *args):
-        pass
+    def on_time_slice_end(self, *args):
+        slice_stack = self.event_stack[bisect_right(self.event_stack, StatusIndex(self.time_slice_start)) - 1:
+                                       bisect_left(self.event_stack, StatusIndex(self.time_slice_end))]
+        for event in slice_stack:
+            pass
 
