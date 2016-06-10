@@ -17,16 +17,20 @@ class NetworktUI(Widget):
     def __init__(self, **kwargs):
         super(NetworktUI, self).__init__()
         self.network = self.ids.network
+        self.preview_slider = self.ids.preview_slider
+        self.run_button = self.ids.run_button
     
-    def run_button(self, *args):
-        self.running = True
-    
-    def pause_button(self, *args):
-        self.running = False
-    
+    def run_button_release(self, *args):
+        self.running = not self.running
+        if (self.running):
+            self.run_button.text = 'Pause'
+        else:
+            self.run_button.text = 'Play'
+            
     def update(self, dt):
         if (self.running):
             self.network.update_logic()
+            self.preview_slider.step_time()
 
 
 class ScrollableLabel(ScrollView):
