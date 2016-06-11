@@ -123,7 +123,7 @@ class Network(StencilView):
     def update_graphic(self):
         self.canvas.clear()
         instruction_group = InstructionGroup()
-        instruction_group.add(Color(0, 1, 0, 0.5))
+        instruction_group.add(Color(0, .75, 0, 1))
         for node in self.nodes:
             nodei = self.nodes[node]
             instruction_group.add(nodei.representation)
