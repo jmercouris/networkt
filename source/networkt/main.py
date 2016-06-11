@@ -71,7 +71,7 @@ class NetworktApp(App):
     def build(self):
         self.networktUI = NetworktUI()
         self.load_graph()
-        Clock.schedule_interval(self.networktUI.update_logic, 1.0 / 30.0)
+        Clock.schedule_interval(self.networktUI.update_logic, 1.0 / 15.0)
         Clock.schedule_interval(self.networktUI.update_time, 1.0 / 5.0)
         network = self.networktUI.ids.network
         network.update_object_positions()
