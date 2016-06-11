@@ -14,7 +14,7 @@ class Status(object):
         self.radius = 5.0
         self.render_position = sender.render_position
         self.representation = Line(circle=(self.render_position[0], self.render_position[1], self.radius))
-        self.steps = 30
+        self.steps = 50
         if (receiver is not None):
             self.receiver = receiver
             self.calculate_delta(steps=self.steps)
@@ -38,7 +38,7 @@ class Status(object):
         self.text = src_status_object.text
         self.truncated = src_status_object.truncated
     
-    def calculate_delta(self, steps=30):
+    def calculate_delta(self, steps=50):
         self.delta_x = (self.receiver.render_position[0] - self.sender.render_position[0]) / steps
         self.delta_y = (self.receiver.render_position[1] - self.sender.render_position[1]) / steps
     
