@@ -26,6 +26,14 @@ class Network(StencilView):
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
         self.camera = Camera()
         self.event_stack = []
+        # Messages Instruction Group
+        self.interaction_instruction_group = InstructionGroup()
+        self.interaction_instruction_group.add(Color(0, .75, 0, 1))
+        self.canvas.add(self.interaction_instruction_group)
+        # Node Instruction Group
+        self.node_instruction_group = InstructionGroup()
+        self.node_instruction_group.add(Color(0, .75, 0, 1))
+        self.canvas.add(self.node_instruction_group)
     
     def _keyboard_closed(self):
         self._keyboard.unbind(on_key_down=self._on_keyboard_down)
@@ -121,15 +129,13 @@ class Network(StencilView):
         self.event_stack.sort()
     
     def update_graphic(self):
-        self.canvas.clear()
-        instruction_group = InstructionGroup()
-        instruction_group.add(Color(0, .75, 0, 1))
+        self.node_instruction_group.clear()
+        self.node_instruction_group.add(Color(0, .75, 0, 1))
         for node in self.nodes:
             nodei = self.nodes[node]
-            instruction_group.add(nodei.representation)
+            self.node_instruction_group.add(nodei.representation)
             for edge in nodei.edges_representation:
-                instruction_group.add(edge)
-        self.canvas.add(instruction_group)
+                self.node_instruction_group.add(edge)
     
     def update_logic(self):
         for node in self.nodes:
@@ -141,4 +147,4 @@ class Network(StencilView):
         slice_stack = self.event_stack[bisect_right(self.event_stack, StatusIndex(self.time_slice_start)) - 1:
                                        bisect_left(self.event_stack, StatusIndex(self.time_slice_end))]
         for event in slice_stack:
-            print('event')
+            pass
