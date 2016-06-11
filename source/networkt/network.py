@@ -141,4 +141,4 @@ class Network(StencilView):
         slice_stack = self.event_stack[bisect_right(self.event_stack, StatusIndex(self.time_slice_start)) - 1:
                                        bisect_left(self.event_stack, StatusIndex(self.time_slice_end))]
         for event in slice_stack:
-            pass
+            print('event')
