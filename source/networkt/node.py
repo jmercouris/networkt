@@ -1,7 +1,6 @@
 from textwrap import dedent
 from kivy.graphics import Line
 from kivy.metrics import dp
-from kivy.graphics import Color
 
 
 class Node(object):
@@ -42,7 +41,13 @@ class Node(object):
             if (status.is_alive()):
                 status.act()
                 tmp_active_statuses.append(status)
-        self.active_statuses = tmp_active_statuses
+            else:
+                self.interaction_instruction_group.remove(status.representation)
+            self.active_statuses = tmp_active_statuses
+    
+    def event_start(self, event):
+        self.interaction_instruction_group.add(event.representation)
+        self.active_statuses.append(event)
     
     def __str__(self):
         return_string = """\

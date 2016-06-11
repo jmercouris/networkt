@@ -130,9 +130,10 @@ class Network(StencilView):
     
     def update_graphic(self):
         self.node_instruction_group.clear()
-        self.node_instruction_group.add(Color(0, .75, 0, 1))
+        self.node_instruction_group.add(Color(0, .50, 0, 1))
         for node in self.nodes:
             nodei = self.nodes[node]
+            nodei.interaction_instruction_group = self.interaction_instruction_group
             self.node_instruction_group.add(nodei.representation)
             for edge in nodei.edges_representation:
                 self.node_instruction_group.add(edge)
@@ -147,4 +148,8 @@ class Network(StencilView):
         slice_stack = self.event_stack[bisect_right(self.event_stack, StatusIndex(self.time_slice_start)) - 1:
                                        bisect_left(self.event_stack, StatusIndex(self.time_slice_end))]
         for event in slice_stack:
-            pass
+            if (len(event.sender.edges) > 0):
+                event.receiver = event.sender.edges[0]
+                event.refresh_position()
+                event.calculate_delta()
+                event.sender.event_start(event)

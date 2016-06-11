@@ -1,4 +1,5 @@
 from textwrap import dedent
+from kivy.graphics import Line
 
 
 class Status(object):
@@ -10,12 +11,13 @@ class Status(object):
         # Rendering Specific
         self.sender = sender
         self.position = sender.render_position
-        self.render_position = sender.render_position
-        self.steps = 10
         self.radius = 5.0
+        self.render_position = sender.render_position
+        self.representation = Line(circle=(self.render_position[0], self.render_position[1], self.radius))
+        self.steps = 30
         if (receiver is not None):
             self.receiver = receiver
-            self.calculate_delta()
+            self.calculate_delta(steps=self.steps)
         # Datastore specific
         self.coordinate_longitude = src_status_object.coordinate_longitude
         self.coordinate_latitude = src_status_object.coordinate_latitude
@@ -36,14 +38,18 @@ class Status(object):
         self.text = src_status_object.text
         self.truncated = src_status_object.truncated
     
-    def calculate_delta(self):
-        self.delta_x = (self.receiver.render_position[0] - self.sender.render_position[0]) / self.steps
-        self.delta_y = (self.receiver.render_position[1] - self.sender.render_position[1]) / self.steps
+    def calculate_delta(self, steps=30):
+        self.delta_x = (self.receiver.render_position[0] - self.sender.render_position[0]) / steps
+        self.delta_y = (self.receiver.render_position[1] - self.sender.render_position[1]) / steps
+    
+    def refresh_position(self):
+        self.position = self.sender.render_position
     
     def act(self):
         if (self.steps > 0):
             self.position = (self.position[0] + self.delta_x, self.position[1] + self.delta_y)
             self.render_position = (int(self.position[0]), int(self.position[1]))
+            self.representation.circle = (self.render_position[0], self.render_position[1], self.radius)
             self.steps = self.steps - 1
     
     def is_alive(self):
@@ -90,8 +96,3 @@ class StatusIndex(object):
     def __init__(self, timestamp):
         super(StatusIndex, self).__init__()
         self.timestamp = timestamp
-
-
-# Key by Date for Sorting
-def by_date_key(status):
-    return status.date
