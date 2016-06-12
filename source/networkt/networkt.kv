@@ -83,13 +83,20 @@
             BoxLayout:
                 orientation: 'horizontal'
                 Button:
+                    size: ('100dp', self.parent.height)
+                    size_hint: (None, None)
+                    image_source: 'static/img/play.png'
                     id: run_button
-                    text: 'Play'
                     on_release: root.run_button_release()
-                Label:
-                    text: 'Speed'    
-                Slider:
+                    Image:
+                        source: run_button.image_source
+                        size: self.parent.size
 
+                Label:
+                    text: 'Speed'
+                    size: (self.texture_size[0] + 25, self.parent.height)
+                    size_hint: (None, None)
+                Slider:
                 
             
 
