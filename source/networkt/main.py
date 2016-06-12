@@ -9,6 +9,7 @@ from kivy.graphics import Line
 from networkt.status import Status
 from networkt.node import Node
 from kivy.factory import Factory
+from kivy.uix.recycleview import RecycleView
 
 
 class NetworktUI(Widget):
@@ -40,11 +41,11 @@ class ScrollableLabel(ScrollView):
     text = StringProperty('')
 
 
-class Inspector(ScrollableLabel):
+class Inspector(RecycleView):
     selected_node = ObjectProperty(None)
-    
+
     def on_selected_node(self, *args):
-        self.text = self.selected_node.__str__()
+        self.data = self.selected_node.get_data_representation()
 
 
 class Statuses(ScrollableLabel):

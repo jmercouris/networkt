@@ -1,3 +1,23 @@
+<Row@BoxLayout>:
+    canvas.before:
+        Color:
+            rgba: 0.25, 0.25, 0.25, 1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    tag: ''
+    data: ''
+    orientation: 'vertical'
+    padding: '5dp'
+    Label:
+        text: '[b]' + root.tag + '[/b]'
+        markup: True
+        text_size: self.width, self.height
+    Label:
+        shorten: True
+        text: root.data
+        text_size: self.width, self.height
+
 <ScrollableLabel>:
     Label:
         size_hint_y: None
@@ -8,6 +28,7 @@
         padding_x: '5dp'
         color: [1,1,1,1]
         markup: True
+
 
 <NetworktUI>:
     BoxLayout:
@@ -47,8 +68,20 @@
                 AccordionItem:
                     title: 'Inspector'
                     Inspector:
-                        text: 'Select a node from the network.'
-                        selected_node: network.selected_node
+                        id: rv
+                        selected_node: network.selected_node                        
+                        scroll_type: ['bars', 'content']
+                        scroll_wheel_distance: dp(114)
+                        bar_width: dp(10)
+                        viewclass: 'Row'
+                        RecycleBoxLayout:
+                            id: recycleLayout
+                            default_size: None, dp(56)
+                            default_size_hint: 1, None
+                            size_hint_y: None
+                            height: self.minimum_height
+                            orientation: 'vertical'
+                            spacing: dp(2)
 
                 AccordionItem:
                     title: 'Statuses'

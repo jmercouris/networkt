@@ -98,3 +98,22 @@ class Node(object):
             self.id,
         )
         return dedent(return_string)
+    
+    def get_data_representation(self):
+        tmp_data = [{'tag': 'Name', 'data': str(self.name)},
+                    {'tag': 'Screen Name', 'data': str(self.screen_name)},
+                    {'tag': 'Followers Count', 'data': str(self.followers_count)},
+                    {'tag': 'Friends Count', 'data': str(self.friends_count)},
+                    {'tag': 'Language', 'data': str(self.lang)},
+                    {'tag': 'Location', 'data': str(self.location)},
+                    {'tag': 'Time Zone', 'data': str(self.time_zone)},
+                    {'tag': 'UTC Offset', 'data': str(self.utc_offset)},
+                    {'tag': 'Created at', 'data': str(self.created_at)},
+                    {'tag': 'Description', 'data': str(self.description)},
+                    {'tag': 'Statuses Count', 'data': str(self.statuses_count)},
+                    {'tag': 'Favorites Count', 'data': str(self.favorites_count)},
+                    {'tag': 'Listed Count', 'data': str(self.listed_count)},
+                    {'tag': 'Verified', 'data': str(self.verified)},
+                    {'tag': 'ID', 'data': str(self.id)},
+                    ]
+        return tmp_data
