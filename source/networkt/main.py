@@ -23,10 +23,10 @@ class NetworktUI(Widget):
     def run_button_release(self, *args):
         self.running = not self.running
         if (self.running):
-            self.run_button.text = 'Pause'
+            self.run_button.image_source = 'static/img/pause.png'
         else:
-            self.run_button.text = 'Play'
-            
+            self.run_button.image_source = 'static/img/play.png'
+    
     def update_logic(self, dt):
         if (self.running):
             self.network.update_logic()
