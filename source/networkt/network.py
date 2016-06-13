@@ -147,6 +147,7 @@ class Network(StencilView):
     def on_time_slice_end(self, *args):
         slice_stack = self.event_stack[bisect_right(self.event_stack, StatusIndex(self.time_slice_start)) - 1:
                                        bisect_left(self.event_stack, StatusIndex(self.time_slice_end))]
+        print('start:{} end:{} events:{}'.format(self.time_slice_start, len(slice_stack)))
         for event in slice_stack:
             if (len(event.sender.edges) > 0):
                 event.receiver = event.sender.edges[0]
