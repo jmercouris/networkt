@@ -49,9 +49,8 @@ class PreviewSlider(Slider):
         if (self.value >= self.max):
             self.value = self.min
         # Calculate Time Range to Query Network Data Structure
-        self.time_slice_start = (self.time_resolution * self.value) + self.time_start
-        self.time_slice_end = self.time_slice_start + self.time_resolution
-        print(self.time_slice_start, self.time_slice_end)
+        self.time_slice_start = int((self.time_resolution * self.value) + self.time_start)
+        self.time_slice_end = int(self.time_slice_start + (self.time_resolution * self.step_resolution))
     
     def update_logic(self):
         self.active_markers = []
