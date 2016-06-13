@@ -145,10 +145,12 @@ class Network(StencilView):
     
     # Fire Events within the Time Slice
     def on_time_slice_end(self, *args):
-        slice_stack = self.event_stack[bisect_right(self.event_stack, StatusIndex(self.time_slice_start)) - 1:
-                                       bisect_left(self.event_stack, StatusIndex(self.time_slice_end))]
-        print('start:{} end:{} events:{}'.format(self.time_slice_start, len(slice_stack)))
+        slice_stack = self.event_stack[bisect_right(self.event_stack, StatusIndex(self.time_slice_start)):
+                                       bisect_right(self.event_stack, StatusIndex(self.time_slice_end))-1]
+
+        print('start:{} end:{} events:{}'.format(self.time_slice_start, self.time_slice_end, len(slice_stack)))
         for event in slice_stack:
+            print('{}\n{}'.format(event.date, event.text))
             if (len(event.sender.edges) > 0):
                 event.receiver = event.sender.edges[0]
                 event.refresh_position()
