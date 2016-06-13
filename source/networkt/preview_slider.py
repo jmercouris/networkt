@@ -11,7 +11,8 @@ class PreviewSlider(Slider):
     time_start = NumericProperty(0)
     time_end = NumericProperty(100)
     time_slice_start = NumericProperty(0)
-    time_slice_end = NumericProperty(0)
+    time_slice_end = NumericProperty(10)
+    rate = NumericProperty(10)
     
     def __init__(self, **kwargs):
         super(PreviewSlider, self).__init__(**kwargs)
@@ -22,15 +23,23 @@ class PreviewSlider(Slider):
     def on_markers(self, *args):
         self.update_graphic()
     
+    def on_rate(self, *args):
+        self.calculate_step_resolution()
+    
     def on_time_start(self, *args):
-        self.calculate_time_resolution()
+        self.calculate_step_resolution()
     
     def on_time_end(self, *args):
-        self.calculate_time_resolution()
+        self.calculate_step_resolution()
     
     def calculate_time_resolution(self):
         self.time_resolution = (self.time_end - self.time_start) / (self.max / self.step_resolution)
     
+    def calculate_step_resolution(self):
+        if (self.time_end > 0 and self.time_start > 0):
+            self.step_resolution = (self.max / ((self.time_end - self.time_start) / self.rate))
+            print(self.rate, self.step_resolution)
+
     def on_start(self, *args):
         self.update_logic()
         self.update_object_positions()

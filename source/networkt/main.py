@@ -1,8 +1,9 @@
 import networkx as nx
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.properties import DictProperty, StringProperty, ObjectProperty, BooleanProperty
+from kivy.properties import DictProperty, StringProperty, ObjectProperty, BooleanProperty, NumericProperty
 from kivy.uix.scrollview import ScrollView
+from kivy.uix.slider import Slider
 from kivy.uix.widget import Widget
 from graph.graph import Graph
 from kivy.graphics import Line
@@ -43,9 +44,23 @@ class ScrollableLabel(ScrollView):
 
 class Inspector(RecycleView):
     selected_node = ObjectProperty(None)
-
+    
     def on_selected_node(self, *args):
         self.data = self.selected_node.get_data_representation()
+
+
+class SpeedSlider(Slider):
+    rate = NumericProperty(0)
+    
+    def __init__(self, **kwargs):
+        super(SpeedSlider, self).__init__()
+        self.minimum_rate = 60
+        self.maximum_rate = 86400
+        self.min = self.minimum_rate
+        self.max = self.maximum_rate
+    
+    def on_value(self, *args):
+        self.rate = self.value
 
 
 class Statuses(ScrollableLabel):
