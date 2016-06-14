@@ -10,7 +10,7 @@ class Node(object):
     def __init__(self, dictionary):
         # Rendering Specific
         self.position = (0, 0)
-        self.radius = 10.0
+        self.radius = dp(10.0)
         self.render_position = (0, 0)
         self.representation = Line(circle=(self.render_position[0], self.render_position[1], dp(self.radius)))
         self.edges = []

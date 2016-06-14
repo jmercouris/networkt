@@ -49,6 +49,19 @@ class Inspector(RecycleView):
         self.data = self.selected_node.get_data_representation()
 
 
+class Timeline(RecycleView):
+    selected_node = ObjectProperty(None)
+    
+    # def on_selected_node(self, *args):
+    #     self.data = self.selected_node.get_data_representation()
+    
+    def on_selected_node(self, *args):
+        tmp_data = []
+        for status in self.selected_node.statuses:
+            tmp_data.append(status.get_data_representation())
+        self.data = tmp_data
+
+
 class SpeedSlider(Slider):
     rate = NumericProperty(0)
     
@@ -61,19 +74,6 @@ class SpeedSlider(Slider):
     
     def on_value(self, *args):
         self.rate = self.value
-
-
-class Statuses(ScrollableLabel):
-    selected_node = ObjectProperty(None)
-    
-    def on_selected_node(self, *args):
-        statuses_string = ''
-        limit = 20
-        for status in self.selected_node.statuses:
-            if(limit > 0):
-                statuses_string = statuses_string + status.__str__() + '\n'
-                limit = limit - 1
-        self.text = statuses_string
 
 
 class NetworktApp(App):

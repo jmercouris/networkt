@@ -8,6 +8,7 @@ from kivy.metrics import dp
 from math import pow
 from bisect import bisect_right
 from networkt.status import StatusIndex
+from kivy.metrics import dp
 
 
 class Network(StencilView):

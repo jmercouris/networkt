@@ -77,21 +77,24 @@ class Status(object):
     
     def __lt__(self, other):
         return self.timestamp < other.timestamp
-
+    
     def __gt__(self, other):
         return self.timestamp > other.timestamp
-
+    
     def __eq__(self, other):
         return self.timestamp == other.timestamp
-
+    
     def __le__(self, other):
         return self.timestamp <= other.timestamp
-
+    
     def __ge__(self, other):
         return self.timestamp >= other.timestamp
-
+    
     def __ne__(self, other):
         return self.timestamp != other.timestamp
+    
+    def get_data_representation(self):
+        return {'date': str(self.date), 'data': str(self.text)}
 
 
 class StatusIndex(object):
