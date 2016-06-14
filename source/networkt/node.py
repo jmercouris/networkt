@@ -46,6 +46,7 @@ class Node(object):
             self.active_statuses = tmp_active_statuses
     
     def event_start(self, event):
+        event.initialize()
         self.interaction_instruction_group.add(event.representation)
         self.active_statuses.append(event)
     

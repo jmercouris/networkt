@@ -8,16 +8,14 @@ class Status(object):
     """
     def __init__(self, src_status_object, sender=None, receiver=None):
         super(Status, self).__init__()
-        # Rendering Specific
+        # Initialization
         self.sender = sender
+        self.receiver = receiver
+        self.initialize()
+        # Rendering Specific
         self.position = sender.render_position
-        self.radius = 5.0
         self.render_position = sender.render_position
         self.representation = Line(circle=(self.render_position[0], self.render_position[1], self.radius))
-        self.steps = 50
-        if (receiver is not None):
-            self.receiver = receiver
-            self.calculate_delta(steps=self.steps)
         # Datastore specific
         self.coordinate_longitude = src_status_object.coordinate_longitude
         self.coordinate_latitude = src_status_object.coordinate_latitude
@@ -37,6 +35,13 @@ class Status(object):
         self.source = src_status_object.source
         self.text = src_status_object.text
         self.truncated = src_status_object.truncated
+    
+    def initialize(self):
+        self.steps = 50
+        self.radius = 5.0
+        self.refresh_position()
+        if (self.receiver is not None):
+            self.calculate_delta(steps=self.steps)
     
     def calculate_delta(self, steps=50):
         self.delta_x = (self.receiver.render_position[0] - self.sender.render_position[0]) / steps
