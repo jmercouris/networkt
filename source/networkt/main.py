@@ -106,7 +106,7 @@ class NetworktApp(App):
         root_user = 'daffunn'
         # Generate Graph Object
         graph_object = Graph('sqlite://///Users/jmercouris/Documents/TUB/Transnational/source/data/data_store.db')
-        graph = graph_object.load_graph_from_database(root_user)
+        graph = graph_object.load_graph_from_database(root_user, depth_limit=0)
         layout = nx.spring_layout(graph)
         # Generate the list of nodes with positions
         for node in layout:
