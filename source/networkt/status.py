@@ -1,5 +1,6 @@
 from textwrap import dedent
 from kivy.graphics import Line
+from kivy.metrics import dp
 
 
 class Status(object):
@@ -38,7 +39,7 @@ class Status(object):
     
     def initialize(self):
         self.steps = 50
-        self.radius = 5.0
+        self.radius = dp(5.0)
         self.refresh_position()
         if (self.receiver is not None):
             self.calculate_delta(steps=self.steps)
