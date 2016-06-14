@@ -104,6 +104,22 @@
 
                 AccordionItem:
                     title: 'Statuses'
+                    Statuses:
+                        selected_node: network.selected_node                        
+                        scroll_type: ['bars', 'content']
+                        scroll_wheel_distance: dp(114)
+                        bar_width: dp(10)
+                        viewclass: 'Status'
+                        RecycleBoxLayout:
+                            default_size: None, dp(56)
+                            default_size_hint: 1, None
+                            size_hint_y: None
+                            height: self.minimum_height
+                            orientation: 'vertical'
+                            spacing: dp(2)
+
+                AccordionItem:
+                    title: 'Conversation'
                     Timeline:
                         selected_node: network.selected_node                        
                         scroll_type: ['bars', 'content']
@@ -117,6 +133,7 @@
                             height: self.minimum_height
                             orientation: 'vertical'
                             spacing: dp(2)
+
 
                 # AccordionItem:
                 #     title: 'Conversation'
