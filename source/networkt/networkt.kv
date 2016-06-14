@@ -25,19 +25,39 @@
         Rectangle:
             size: self.size
             pos: self.pos
+    user: ''
     date: ''
     data: ''
     orientation: 'vertical'
     padding: '5dp'
-    Label:
-        text: '[b]' + root.date + '[/b]'
-        markup: True
-        text_size: self.width, self.height
-    Label:
-        shorten: True
-        text: root.data
-        text_size: self.width, self.height
 
+    Label:
+        text: 'User:[b]' + root.user + '[/b]'
+        shorten: True
+        shorten_from: 'right'
+        markup: True
+        size_hint_y: None
+        text_size: self.width, None
+        height: self.texture_size[1]
+
+    Label:
+        text: 'Date: [b]' + root.date + '[/b]'
+        shorten: True
+        shorten_from: 'right'
+        markup: True
+        size_hint_y: None
+        text_size: self.width, None
+        height: self.texture_size[1]
+
+    Label:
+        text: root.data
+        size_hint_y: None
+        text_size: self.width, None
+        height: self.texture_size[1]
+        padding_y: '5dp'
+
+    # Widget to Occupy Extra Space and push all other elements up
+    Widget:
 
 <ScrollableLabel>:
     Label:
@@ -108,7 +128,7 @@
                         bar_width: dp(10)
                         viewclass: 'Status'
                         RecycleBoxLayout:
-                            default_size: None, dp(56)
+                            default_size: None, dp(140)
                             default_size_hint: 1, None
                             size_hint_y: None
                             height: self.minimum_height
@@ -124,7 +144,7 @@
                         bar_width: dp(10)
                         viewclass: 'Status'
                         RecycleBoxLayout:
-                            default_size: None, dp(56)
+                            default_size: None, dp(140)
                             default_size_hint: 1, None
                             size_hint_y: None
                             height: self.minimum_height

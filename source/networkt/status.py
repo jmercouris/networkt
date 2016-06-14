@@ -94,7 +94,7 @@ class Status(object):
         return self.timestamp != other.timestamp
     
     def get_data_representation(self):
-        return {'date': str(self.date), 'data': str(self.text)}
+        return {'user': str(self.sender.screen_name), 'date': str(self.date), 'data': str(self.text)}
 
 
 class StatusIndex(object):
