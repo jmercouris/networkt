@@ -6,7 +6,7 @@ from kivy.graphics import Color
 from kivy.graphics.instructions import InstructionGroup
 from kivy.metrics import dp
 from math import pow
-from bisect import bisect_left, bisect_right
+from bisect import bisect_right
 from networkt.status import StatusIndex
 
 
@@ -150,7 +150,7 @@ class Network(StencilView):
 
         print('start:{} end:{} events:{}'.format(self.time_slice_start, self.time_slice_end, len(slice_stack)))
         for event in slice_stack:
-            print('{}\n{}'.format(event.date, event.text))
+            # print('{}\n{}'.format(event.date, event.text))
             if (len(event.sender.edges) > 0):
                 event.receiver = event.sender.edges[0]
                 event.refresh_position()

@@ -23,7 +23,7 @@ class PreviewSlider(Slider):
     def on_markers(self, *args):
         self.update_graphic()
     
-    def on_rate(self, *args):
+    def on_time_resolution(self, *args):
         self.calculate_step_resolution()
     
     def on_time_start(self, *args):
