@@ -64,9 +64,17 @@ class Timeline(RecycleView):
     
     def on_selected_node(self, *args):
         tmp_data = []
-        for status in self.selected_node.statuses:
-            tmp_data.append(status.get_data_representation())
-        self.data = tmp_data
+        # Add Own Statuses
+        tmp_data = tmp_data + self.selected_node.statuses
+        # Gather All Statuses
+        for edge in self.selected_node.inbound_edges:
+            tmp_data = tmp_data + edge.statuses
+        tmp_data.sort()
+        # Generate Data
+        tmp_data_representation = []
+        for status in tmp_data:
+            tmp_data_representation.append(status.get_data_representation())
+        self.data = tmp_data_representation
 
 
 class SpeedSlider(Slider):
@@ -115,7 +123,10 @@ class NetworktApp(App):
             self.nodes[nodei.screen_name] = nodei
         # Add edges to every node in graph
         for edge in graph.edges():
+            # Add Outbound edges
             self.nodes[edge[0]].edges.append(self.nodes[edge[1]])
+            # Add Inbound edges
+            self.nodes[edge[1]].inbound_edges.append(self.nodes[edge[0]])
             # Generate Placeholder Lines for updating
             self.nodes[edge[0]].edges_representation.append(Line(points=[0, 0, 100, 100]))
         # Generate graph metadata

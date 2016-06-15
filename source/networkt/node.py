@@ -13,6 +13,7 @@ class Node(object):
         self.radius = dp(10.0)
         self.render_position = (0, 0)
         self.representation = Line(circle=(self.render_position[0], self.render_position[1], dp(self.radius)))
+        self.inbound_edges = []
         self.edges = []
         self.edges_representation = []
         self.statuses = []
