@@ -11,16 +11,18 @@ from pprint import pprint
  
 def process_text(text, stem=True):
     """ Tokenize text and stem words removing punctuation """
-    text = text.translate(None, string.punctuation)
+    transtable = {ord(s): None for s in string.punctuation}
+    transtable[ord('/')] = u''
+    text = text.translate(transtable)
     tokens = word_tokenize(text)
- 
+    
     if stem:
         stemmer = PorterStemmer()
         tokens = [stemmer.stem(t) for t in tokens]
- 
+        
     return tokens
- 
- 
+
+
 def cluster_texts(texts, clusters=3):
     """ Transform texts to Tf-Idf coordinates and cluster texts using K-Means """
     vectorizer = TfidfVectorizer(tokenizer=process_text,
@@ -42,6 +44,11 @@ def cluster_texts(texts, clusters=3):
  
  
 if __name__ == "__main__":
-    articles = ['article about stuff', 'another cool article', 'this is what articles are made of']
-    clusters = cluster_texts(articles, 7)
+    articles = ['article about stuff',
+                'another cool article',
+                'this is what articles are made of',
+                'another cool article',
+                'another cool article lol']
+
+    clusters = cluster_texts(articles, 5)
     pprint(dict(clusters))
