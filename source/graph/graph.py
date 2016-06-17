@@ -1,7 +1,7 @@
 import networkx as nx
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from graph.initialize import Base, Node
+from graph.initialize import Base, Node, Status
 
 
 class Graph(object):
@@ -27,6 +27,9 @@ class Graph(object):
         root_user_object = self.session.query(Node).filter_by(screen_name=screen_name).first()
         graph = self.traverse(root_user_object, 0, depth_limit, {}, graph)
         return graph
+    
+    def load_statuses(self, lang='en'):
+        return self.session.query(Status).filter_by(lang=lang)
     
     def traverse(self, node, depth, depth_limit, cache, graph):
         cache[node] = None

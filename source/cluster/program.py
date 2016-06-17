@@ -1,14 +1,16 @@
 import string
 import collections
- 
+from configparser import ConfigParser
+from graph.graph import Graph
 from nltk import word_tokenize
+from nltk import FreqDist
 from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords
 from sklearn.cluster import KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
-from pprint import pprint
- 
- 
+import re
+
+
 def process_text(text, stem=True):
     """ Tokenize text and stem words removing punctuation """
     transtable = {ord(s): None for s in string.punctuation}
@@ -44,11 +46,38 @@ def cluster_texts(texts, clusters=3):
  
  
 if __name__ == "__main__":
-    articles = ['article about stuff',
-                'another cool article',
-                'this is what articles are made of',
-                'another cool article',
-                'another cool article lol']
+    config = ConfigParser()
+    config.read('configuration.ini')
+    DATABASE_NAME = 'sqlite:///{}/data_store.db'.format(config.get('persistence-configuration', 'database_path'))
+    graph = Graph(DATABASE_NAME)
+    statuses = graph.load_statuses()
+    articles = []
 
-    clusters = cluster_texts(articles, 5)
-    pprint(dict(clusters))
+    for status in statuses:
+        articles.append(status.text)
+    
+    # articles = ['article about stuff',
+    #             'another cool article',
+    #             'this is what articles are made of',
+    #             'another cool article',
+    #             'another cool article lol']
+
+    clusters = cluster_texts(articles, 20)
+    clusteri = dict(clusters)
+    
+    for key in clusteri:
+        print('Key: ', key)
+        key_articles_index = list(clusteri[key])
+        
+        cluster_data = ''
+        for index in key_articles_index:
+            cluster_data += articles[index]
+        
+        # Only Non Stop Words
+        stop_words = set(stopwords.words('english'))
+        cluster_data = [word for word in cluster_data if word not in stop_words]
+        
+        freq = FreqDist(cluster_data)
+        print(list(freq.items())[:10])
+
+
