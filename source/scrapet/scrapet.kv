@@ -11,7 +11,11 @@ BoxLayout:
                 text: 'Settings'
                 on_release: app.open_settings()
 
-    Widget:
+    TextInput:
+        multiline: True
+        readonly: True
+        background_color: (0,0,0,1)
+        foreground_color: (1,1,1,1)
 
     ProgressBar:
         size_hint_y: None
