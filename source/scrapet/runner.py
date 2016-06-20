@@ -3,9 +3,10 @@ from graph.network_scrape import NetworkScrape
 from graph.graph import Graph
 from graph.initialize import create_database
 from math import ceil as ceiling
+from scrapet.logger import Logger
 
 
-def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
+def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LOGGER,
          root_user='', root_user_follower_limit=200,
          filter_graph_follower_limit=200,
          extended_graph_follower_limit=200,
@@ -78,10 +79,26 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
     graph.persist_graph(root_user_object.screen_name, graph_path, root_user_object.screen_name)
 
 
+class LoggerConsole(Logger):
+    """Documentation for LoggerConsole
+    
+    """
+    def __init__(self, args):
+        super(LoggerConsole, self).__init__()
+        self.args = args
+        
+    def update_progress(self, percent_complete):
+        print('percent complete', percent_complete)
+    
+    # Importance is a number from 0-1
+    def log_event(self, importance, text):
+        print(importance, text)
+
+
 if __name__ == "__main__":
     settings = configparser.ConfigParser()
     settings.read('scrapet.ini')
-
+    
     # Network Scrape Parameters
     APP_KEY = settings.get('twython-configuration', 'key')
     APP_SECRET = settings.get('twython-configuration', 'secret')
@@ -96,7 +113,7 @@ if __name__ == "__main__":
     filter_graph_follower_limit = int(settings.get('scrape-configuration', 'filter_graph_follower_limit'))
     extended_graph_follower_limit = int(settings.get('scrape-configuration', 'extended_graph_follower_limit'))
         
-    main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
+    main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LoggerConsole(),
          root_user=root_user, root_user_follower_limit=root_user_follower_limit,
          extended_graph_follower_limit=extended_graph_follower_limit,
          filter_graph_follower_limit=filter_graph_follower_limit,
