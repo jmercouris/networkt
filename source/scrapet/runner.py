@@ -21,7 +21,8 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
     ##########################################################################
     # Persist the root user
     network_scrape.persist_user(root_user)
-    print('Persisted Root User')
+    LOGGER.log_event(0, 'Persisted Root User: ' + root_user)
+    LOGGER.update_progress(.1)
     
     ##########################################################################
     # Persist the root user's follower list
