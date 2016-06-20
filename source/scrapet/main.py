@@ -2,6 +2,22 @@ from kivy.app import App
 from kivy.uix.settings import SettingsWithSidebar
 from scrapet.settings_panel import settings_twitter_json, settings_persistence_json, settings_scrape_json
 from scrapet.runner import main as main_execution
+from scrapet.logger import Logger
+
+
+class LoggerGraphical(Logger):
+    """Documentation for LoggerConsole
+    
+    """
+    def __init__(self):
+        super(LoggerGraphical, self).__init__()
+    
+    def update_progress(self, percent_complete):
+        print('percent complete', percent_complete)
+    
+    # Importance is a number from 0-1
+    def log_event(self, importance, text):
+        print(importance, text)
 
 
 class ScrapetApp(App):
@@ -55,7 +71,7 @@ class ScrapetApp(App):
         filter_graph_follower_limit = int(self.config.get('scrape-configuration', 'filter_graph_follower_limit'))
         extended_graph_follower_limit = int(self.config.get('scrape-configuration', 'extended_graph_follower_limit'))
         
-        main_execution(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME,
+        main_execution(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LoggerGraphical(),
                        root_user=root_user, root_user_follower_limit=root_user_follower_limit,
                        extended_graph_follower_limit=extended_graph_follower_limit,
                        filter_graph_follower_limit=filter_graph_follower_limit,
