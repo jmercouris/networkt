@@ -12,12 +12,14 @@ BoxLayout:
                 on_release: app.open_settings()
 
     Widget:
+
+    ProgressBar:
+        size_hint_y: None
+        height: '50dp'
+
     Button:
         text: 'Run Complete Sequence'
         size_hint_y: None
         height: '50dp'
         on_release: app.run_button()
         
-    # ProgressBar:
-    #     size_hint_y: None
-    #     height: '50dp'
