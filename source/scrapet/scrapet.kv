@@ -1,4 +1,4 @@
-BoxLayout:
+<RootWidget>:
     orientation: 'vertical'    
     ActionBar:
         pos_hint: {'top':1}
@@ -12,12 +12,14 @@ BoxLayout:
                 on_release: app.open_settings()
 
     TextInput:
+        id: text_input
         multiline: True
         readonly: True
         background_color: (0,0,0,1)
         foreground_color: (1,1,1,1)
 
     ProgressBar:
+        id: progress_bar
         size_hint_y: None
         height: '50dp'
 
@@ -25,5 +27,5 @@ BoxLayout:
         text: 'Run Complete Sequence'
         size_hint_y: None
         height: '50dp'
-        on_release: app.run_button()
+        on_release: root.run()
         
