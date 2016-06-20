@@ -51,4 +51,7 @@ class Graph(object):
             graph = nx.compose(graph, self.traverse(reference, depth+1, depth_limit, cache, graph))
         
         return graph
+    
+    def close(self):
+        self.session.close()
 
