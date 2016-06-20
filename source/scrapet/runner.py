@@ -61,8 +61,10 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
         if (root_node.filter_0 and root_node.filter_1):
             network_scrape.pull_remote_graph_follow(root_node.screen_name,
                                                     scope_limit=ceiling(extended_graph_follower_limit / 200))
+            LOGGER.log_event(0, '{} follower subgraph extracted'.format(root_node.screen_name))
             network_scrape.pull_remote_graph_friend(root_node.screen_name,
                                                     scope_limit=ceiling(extended_graph_follower_limit / 200))
+            LOGGER.log_event(0, '{} friend subgraph extracted'.format(root_node.screen_name))
     LOGGER.update_progress(.60)
     
     ##########################################################################
@@ -73,8 +75,10 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
             network_scrape.pull_remote_status(root_node.screen_name)
             for node in root_node.reference_nodes():
                 network_scrape.pull_remote_status(node.screen_name)
+            LOGGER.log_event(0, '{} follower subgraph statuses extracted.'.format(root_node.screen_name))
             for node in root_node.pointer_nodes():
                 network_scrape.pull_remote_status(node.screen_name)
+                LOGGER.log_event(0, '{} friend subgraph statuses extracted.'.format(root_node.screen_name))
     LOGGER.update_progress(.70)
     
     ##########################################################################
