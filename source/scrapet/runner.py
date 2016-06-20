@@ -22,18 +22,20 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
     # Persist the root user
     network_scrape.persist_user(root_user)
     LOGGER.log_event(0, 'Persisted Root User: ' + root_user)
-    LOGGER.update_progress(.1)
+    LOGGER.update_progress(.10)
     
     ##########################################################################
     # Persist the root user's follower list
     network_scrape.pull_remote_graph_follow(root_user,
                                             scope_limit=ceiling(root_user_follower_limit / 200))
-    print('Persisted Root user follower graph')
+    LOGGER.log_event(0, 'Persisted Root user follower graph')
+    LOGGER.update_progress(.15)
     
     ##########################################################################
     # Perform degree 0 filtering to decide whether to pull 0th degree network
     network_scrape.filter_0(root_user, location=name_list_path)
-    print('Root User: {} follower graph filtered. [Filter level 0]'.format(root_user))
+    LOGGER.log_event(0, 'Root User: {} follower graph filtered. [Filter level 0]'.format(root_user))
+    LOGGER.update_progress(.20)
     
     ##########################################################################
     # Pull partial graphs of all filtered users following root user
@@ -42,13 +44,15 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
         if (node.filter_0):
             network_scrape.pull_remote_graph_friend(node.screen_name,
                                                     scope_limit=ceiling(filter_graph_follower_limit / 200))
-    print('Root User: {} follower graphs extracted.'.format(root_user))
+    LOGGER.log_event(0, 'Root User: {} follower graphs extracted.'.format(root_user))
+    LOGGER.update_progress(.30)
     
     ##########################################################################
     # Perform level 1 filtering on root_user - determine if their 1th degree network
     # is something that should be retrieved
     network_scrape.filter_1(root_user)
-    print('Root User: {} follower graphs filtered. [Filter level 1]'.format(root_user))
+    LOGGER.log_event(0, 'Root User: {} follower graphs filtered. [Filter level 1]'.format(root_user))
+    LOGGER.update_progress(.35)
     
     ##########################################################################
     # Pull extended graphs of all filtered users
@@ -59,6 +63,7 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
                                                     scope_limit=ceiling(extended_graph_follower_limit / 200))
             network_scrape.pull_remote_graph_friend(root_node.screen_name,
                                                     scope_limit=ceiling(extended_graph_follower_limit / 200))
+    LOGGER.update_progress(.60)
     
     ##########################################################################
     # Pull statuses of all filtered user networks
@@ -70,6 +75,7 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
                 network_scrape.pull_remote_status(node.screen_name)
             for node in root_node.pointer_nodes():
                 network_scrape.pull_remote_status(node.screen_name)
+    LOGGER.update_progress(.70)
     
     ##########################################################################
     # Persist Graphs of all filtered user networks
@@ -78,6 +84,7 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
         if (root_node.filter_0 and root_node.filter_1):
             graph.persist_graph(root_node.screen_name, graph_path, root_node.screen_name)
     graph.persist_graph(root_user_object.screen_name, graph_path, root_user_object.screen_name)
+    LOGGER.update_progress(1.0)
 
 
 class LoggerConsole(Logger):
