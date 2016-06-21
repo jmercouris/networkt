@@ -190,7 +190,6 @@ def create_database(database_name='sqlite:///data/data_store.db'):
     # Create all tables in the engine. This is equivalent to "Create Table"
     # statements in raw SQL.
     Base.metadata.create_all(engine)
-    print('Database {} Initialized'.format(database_name))
 
 
 def create_database_session(database_name='sqlite:///data/data_store.db'):

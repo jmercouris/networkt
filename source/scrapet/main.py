@@ -59,6 +59,10 @@ class RootWidget(BoxLayout):
 
 
 class ScrapetApp(App):
+    
+    def get_application_config(self):
+        return super(ScrapetApp, self).get_application_config('~/.configy/%(appname)s.ini')
+    
     def build(self):
         self.settings_cls = SettingsWithSidebar
         return RootWidget()
