@@ -61,6 +61,7 @@ class RootWidget(BoxLayout):
 class ScrapetApp(App):
     
     def get_application_config(self):
+        # TODO: Add check if directory exists
         return super(ScrapetApp, self).get_application_config('~/.configy/%(appname)s.ini')
     
     def build(self):
