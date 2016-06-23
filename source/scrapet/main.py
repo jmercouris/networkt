@@ -6,7 +6,7 @@ from scrapet.runner import main as main_execution
 from scrapet.logger import Logger
 from kivy.clock import mainthread
 import _thread
-
+import os
 
 class LoggerGraphical(Logger):
     """Documentation for LoggerConsole
@@ -61,8 +61,9 @@ class RootWidget(BoxLayout):
 class ScrapetApp(App):
     
     def get_application_config(self):
-        # TODO: Add check if directory exists
-        return super(ScrapetApp, self).get_application_config('~/.configy/%(appname)s.ini')
+        filename = os.path.expanduser("{}/{}".format('~/.config/networkt/', 'scrapet.ini'))
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        return super(ScrapetApp, self).get_application_config(filename)
     
     def build(self):
         self.settings_cls = SettingsWithSidebar
