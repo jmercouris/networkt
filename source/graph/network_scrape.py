@@ -71,7 +71,7 @@ class NetworkScrape(object):
     
     def pull_remote_status(self, screen_name, scope_depth=200):
         user_object = self.session.query(Node).filter_by(screen_name=screen_name).first()
-        if (user_object is None):
+        if (user_object is None or len(user_object.statuses) > 0):
             return
         try:
             statuses = self.twitter.get_user_timeline(screen_name=screen_name, count=scope_depth)
