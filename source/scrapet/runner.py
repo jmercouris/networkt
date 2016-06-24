@@ -53,7 +53,7 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
                                                         scope_limit=ceiling(filter_graph_follower_limit / 200))
                 LOGGER.log_event(0, 'Partial Graph: {} extracted.'.format(node.screen_name))
             except:
-                LOGGER.log_event(0, 'Could not extract partial graph: {} extracted.'.format(node.screen_name))
+                LOGGER.log_event(0, 'Could not extract partial graph: {}'.format(node.screen_name))
     LOGGER.log_event(0, 'Root User: {} follower graphs extracted'.format(root_user))
     LOGGER.update_progress(.30)
 
@@ -92,18 +92,18 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
             for node in root_node.reference_nodes():
                 try:
                     network_scrape.pull_remote_status(node.screen_name)
-                    LOGGER.log_event(0, '{} follower: {} statuses extracted'.format(
-                        root_node.screen_name, node.screen_name))
-                except:
-                    LOGGER.log_event(0, '{} follower: {} statuses not extracted'.format(
-                        root_node.screen_name, node.screen_name))
-            for node in root_node.pointer_nodes():
-                try:
-                    network_scrape.pull_remote_status(node.screen_name)
                     LOGGER.log_event(0, '{} friend: {} statuses extracted'.format(
                         root_node.screen_name, node.screen_name))
                 except:
                     LOGGER.log_event(0, '{} friend: {} statuses not extracted'.format(
+                        root_node.screen_name, node.screen_name))
+            for node in root_node.pointer_nodes():
+                try:
+                    network_scrape.pull_remote_status(node.screen_name)
+                    LOGGER.log_event(0, '{} follower: {} statuses extracted'.format(
+                        root_node.screen_name, node.screen_name))
+                except:
+                    LOGGER.log_event(0, '{} follower: {} statuses not extracted'.format(
                         root_node.screen_name, node.screen_name))
     LOGGER.update_progress(.70)
 
