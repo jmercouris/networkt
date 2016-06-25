@@ -50,9 +50,11 @@ if __name__ == "__main__":
     documents = []
     
     for status in statuses[0:5000]:
-        # Apply Transformation to Strip URLS
         tmp_text = status.text
+        # Strip URLs
         tmp_text = re.sub(r"http\S+", "", tmp_text)
+        # Strip the word Retweet
+        tmp_text = re.sub(r"(?i)rt", "", tmp_text)
         documents.append(tmp_text)
     print(len(documents))
     
