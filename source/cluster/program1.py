@@ -49,7 +49,7 @@ if __name__ == "__main__":
     statuses = graph.load_statuses()
     documents = []
     
-    for status in statuses[0:5000]:
+    for status in statuses:
         tmp_text = status.text
         # Strip URLs
         tmp_text = re.sub(r"http\S+", "", tmp_text)
@@ -70,11 +70,10 @@ if __name__ == "__main__":
     
     vocab_frame = pd.DataFrame({'words': totalvocab_tokenized}, index=totalvocab_stemmed)
     print('there are ' + str(vocab_frame.shape[0]) + ' items in vocab_frame')
-    print(vocab_frame.head())
     
     # TF - IDF Generation
     # define vectorizer parameters
-    tfidf_vectorizer = TfidfVectorizer(max_df=0.8, max_features=200000,
+    tfidf_vectorizer = TfidfVectorizer(max_df=0.5, max_features=200000,
                                        min_df=0.005, stop_words='english',
                                        use_idf=True, tokenizer=tokenize_and_stem, ngram_range=(1, 2))
 
@@ -87,19 +86,30 @@ if __name__ == "__main__":
     dist = 1 - cosine_similarity(tfidf_matrix)
     
     # Clustering
-    num_clusters = 20
+    num_clusters = 50
     km = KMeans(n_clusters=num_clusters)
     km.fit(tfidf_matrix)
     clusters = km.labels_.tolist()
-    
+
     print("Top terms per cluster:")
     order_centroids = km.cluster_centers_.argsort()[:, ::-1]
-    
+        
     for i in range(num_clusters):
         print("Cluster %d words:" % i, end='')
         for ind in order_centroids[i, :6]:  # Replace 6 with n words per cluster
             print('%s' % vocab_frame.ix[terms[ind].split(' ')].values.tolist()[0][0], end=', ')
         print('\n')
+        
+    # Print Clusters and Groups
+    for i in range(num_clusters):
+        cluster_print_limit = 5
+        print("\nCluster {}\n".format(i))
+        for idx, value in enumerate(clusters):
+            if (value == i):
+                cluster_print_limit = cluster_print_limit - 1
+                if (not cluster_print_limit):
+                    break
+                print(documents[idx])
 
 
 
