@@ -44,32 +44,35 @@ def cluster_texts(texts, clusters=3):
         clustering[label].append(idx)
  
     return clustering
- 
- 
+
+
+def default_articles():
+    return ['article about stuff',
+            'another cool article',
+            'this is what articles are made of',
+            'another cool article',
+            'article about stuff',
+            'another cool article',
+            'this is what articles are made of',
+            'another cool article lol']
+
+
 if __name__ == "__main__":
-    # config = ConfigParser()
-    # config.read(os.path.expanduser('~/.config/networkt/cluster.ini'))
-    # DATABASE_NAME = 'sqlite:///{}/data_store.db'.format(config.get('persistence-configuration', 'database_path'))
+    config = ConfigParser()
+    config.read(os.path.expanduser('~/.config/networkt/cluster.ini'))
+    DATABASE_NAME = 'sqlite:///{}/data_store.db'.format(config.get('persistence-configuration', 'database_path'))
     
-    # graph = Graph(DATABASE_NAME)
-    # statuses = graph.load_statuses()
-    # articles = []
-    # count = 0
-    # for status in statuses:
-    #     articles.append(status.text)
-
-    articles = ['article about stuff',
-                'another cool article',
-                'this is what articles are made of',
-                'another cool article',
-                'article about stuff',
-                'another cool article',
-                'this is what articles are made of',
-                'another cool article lol']
-
+    graph = Graph(DATABASE_NAME)
+    statuses = graph.load_statuses()
+    articles = []
+    count = 0
+    
+    for status in statuses:
+        articles.append(status.text)
+    
     clusters = cluster_texts(articles, 4)
     clusteri = dict(clusters)
     for key in clusteri:
         print('idx {} cmp {}'.format(key, len(clusteri[key])))
-    pprint(clusteri)
+    # pprint(clusteri)
 
