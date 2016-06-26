@@ -25,9 +25,9 @@ def filter_2(node):
     # Return false for users with insufficient content
     if (not valid_content_length(node)):
         return False
-    # Too much repetition in the user's content
-    if (not valid_content_repetition(node)):
-        return False
+    # # Too much repetition in the user's content
+    # if (not valid_content_repetition(node)):
+    #     return False
     return True
 
 
