@@ -28,8 +28,8 @@ class Graph(object):
         graph = self.traverse(root_user_object, 0, depth_limit, {}, graph)
         return graph
     
-    def load_statuses(self, lang='en'):
-        return self.session.query(Status).filter_by(lang=lang)
+    def load_statuses(self, lang='en', filter_level=2):
+        return self.session.query(Status).join(Node).filter(Status.lang == 'en', Node.filter_2).all()
     
     def traverse(self, node, depth, depth_limit, cache, graph):
         cache[node] = None
