@@ -29,9 +29,11 @@ class Node(Base):
     time_zone = Column(Text)
     utc_offset = Column(Integer)
     verified = Column(Boolean)
+
     # Filtering Levels
     filter_0 = Column(Boolean)
     filter_1 = Column(Boolean)
+    filter_2 = Column(Boolean)
     # Relationship to Status Updates
     statuses = relationship("Status", order_by="Status.date",
                             backref="node", cascade="all, delete")

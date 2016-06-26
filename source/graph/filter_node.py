@@ -13,6 +13,41 @@ def filter_1(node):
     return logical_distribution(node)
 
 
+# Third Degree of Filtering, determine whether their tweets are of any value, or they are a spambot etc
+def filter_2(node):
+    # Return true for verified users
+    if (verified(node)):
+        return True
+    # Return false for users with insufficient content
+    if (not valid_content_length(node)):
+        return False
+    # Ratio of friends to followers is insufficient
+    if (not valid_follower_ratio(node)):
+        return False
+    return True
+
+
+def valid_follower_ratio(node):
+    if (node.followers_count / node.friends_count > 0.1):
+        return True
+    else:
+        return False
+
+
+def valid_content_length(node):
+    if (len(node.statuses) > 50):
+        return True
+    else:
+        return False
+
+
+def verified(node):
+    if (node.verified):
+        return True
+    else:
+        return False
+
+
 def logical_distribution(node):
     time_zone_list = []
     for time_zone in [n.time_zone for n in node.reference_nodes()]:
