@@ -1,4 +1,5 @@
 from collections import Counter
+import difflib
 
 """ Used for filtering nodes as to whether they should be expanded or not """
 
@@ -18,16 +19,35 @@ def filter_2(node):
     # Return true for verified users
     if (verified(node)):
         return True
+    # Ratio of friends to followers is insufficient
+    if (not valid_follower_ratio(node)):
+        return False
     # Return false for users with insufficient content
     if (not valid_content_length(node)):
         return False
-    # Ratio of friends to followers is insufficient
-    if (not valid_follower_ratio(node)):
+    # Too much repetition in the user's content
+    if (not valid_content_repetition(node)):
         return False
     return True
 
 
+def valid_content_repetition(node):
+    for status_a in node.statuses:
+        # Start at -1 because the algorithm will count the original tweet as matching
+        repetition_count = -1
+        for status_b in node.statuses:
+            seq = difflib.SequenceMatcher(a=status_a.text.lower(), b=status_b.text.lower())
+            if (seq.ratio() > .75):
+                repetition_count = repetition_count + 1
+        # If any tweet is repeated more than 50% of the user's tweets, too much repetition
+        if (repetition_count > len(node.statuses) * .5):
+            return False
+    return True
+
+
 def valid_follower_ratio(node):
+    if (node.friends_count <= 0):
+        return False
     if (node.followers_count / node.friends_count > 0.1):
         return True
     else:
