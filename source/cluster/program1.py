@@ -74,8 +74,8 @@ if __name__ == "__main__":
     # TF - IDF Generation
     # define vectorizer parameters
     tfidf_vectorizer = TfidfVectorizer(max_df=0.5, max_features=200000,
-                                       min_df=0.005, stop_words='english',
-                                       use_idf=True, tokenizer=tokenize_and_stem, ngram_range=(1, 2))
+                                       min_df=0.0, stop_words='english',
+                                       use_idf=True, tokenizer=tokenize_and_stem, ngram_range=(1, 3))
 
     tfidf_matrix = tfidf_vectorizer.fit_transform(documents)  # Fit the vectorizer to documents
     # print(tfidf_matrix.shape)
@@ -86,7 +86,7 @@ if __name__ == "__main__":
     dist = 1 - cosine_similarity(tfidf_matrix)
     
     # Clustering
-    num_clusters = 50
+    num_clusters = 20
     km = KMeans(n_clusters=num_clusters)
     km.fit(tfidf_matrix)
     clusters = km.labels_.tolist()
