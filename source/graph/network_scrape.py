@@ -2,7 +2,7 @@ import time
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from graph.initialize import Base, Node, Edge, Status, edge_point, edge_reference
-from graph.filter_node import load_name_list_into_memory, filter_0, filter_1
+from graph.filter_node import load_name_list_into_memory, filter_0, filter_1, filter_2
 from twython import Twython
 
 
@@ -100,4 +100,10 @@ class NetworkScrape(object):
             if (node.filter_0):
                 node.filter_1 = filter_1(node)
         self.session.commit()
+        
+    def filter_2(self):
+        for node in self.session.query(Node).all():
+            node.filter_2 = filter_2(node)
+        self.session.commit()
+
 

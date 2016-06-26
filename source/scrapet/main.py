@@ -8,6 +8,7 @@ from kivy.clock import mainthread
 import _thread
 import os
 
+
 class LoggerGraphical(Logger):
     """Documentation for LoggerConsole
     
