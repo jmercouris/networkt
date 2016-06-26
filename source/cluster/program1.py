@@ -1,43 +1,59 @@
 from configparser import ConfigParser
 from graph.graph import Graph
 import os
-import re
+
+import string
+import collections
+from nltk import word_tokenize
+from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords
-from nltk.stem.snowball import SnowballStemmer
-import nltk
-import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.cluster import KMeans
+from sklearn.feature_extraction.text import TfidfVectorizer
 
-# Load StopWords
-stopwords = stopwords.words('english')
+
+def process_text(text, stem=True):
+    """ Tokenize text and stem words removing punctuation """
+    transtable = {ord(s): None for s in string.punctuation}
+    transtable[ord('/')] = u''
+    text = text.translate(transtable)
+    tokens = word_tokenize(text)
     
-# Load English Stemmer
-stemmer = SnowballStemmer("english")
+    if stem:
+        stemmer = PorterStemmer()
+        tokens = [stemmer.stem(t) for t in tokens]
+        
+    return tokens
 
 
-def tokenize_and_stem(text):
-    # first tokenize by sentence, then by word to ensure that punctuation is caught as it's own token
-    tokens = [word for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
-    filtered_tokens = []
-    # filter out any tokens not containing letters (e.g., numeric tokens, raw punctuation)
-    for token in tokens:
-        if re.search('[a-zA-Z]', token):
-            filtered_tokens.append(token)
-    stems = [stemmer.stem(t) for t in filtered_tokens]
-    return stems
+def cluster_texts(texts, clusters=3):
+    """ Transform texts to Tf-Idf coordinates and cluster texts using K-Means """
+    vectorizer = TfidfVectorizer(tokenizer=process_text,
+                                 stop_words=stopwords.words('english'),
+                                 max_df=0.5,
+                                 min_df=0.1,
+                                 lowercase=True)
+ 
+    tfidf_model = vectorizer.fit_transform(texts)
+    km_model = KMeans(n_clusters=clusters)
+    km_model.fit(tfidf_model)
+ 
+    clustering = collections.defaultdict(list)
+ 
+    for idx, label in enumerate(km_model.labels_):
+        clustering[label].append(idx)
+ 
+    return clustering
 
 
-def tokenize_only(text):
-    # first tokenize by sentence, then by word to ensure that punctuation is caught as it's own token
-    tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
-    filtered_tokens = []
-    # filter out any tokens not containing letters (e.g., numeric tokens, raw punctuation)
-    for token in tokens:
-        if re.search('[a-zA-Z]', token):
-            filtered_tokens.append(token)
-    return filtered_tokens
+def default_articles():
+    return ['article about stuff',
+            'another cool article',
+            'this is what articles are made of',
+            'another cool article',
+            'article about stuff',
+            'another cool article',
+            'this is what articles are made of',
+            'another cool article lol']
 
 
 if __name__ == "__main__":
@@ -47,88 +63,15 @@ if __name__ == "__main__":
     
     graph = Graph(DATABASE_NAME)
     statuses = graph.load_statuses()
-    documents = []
+    articles = []
+    count = 0
     
     for status in statuses:
-        tmp_text = status.text
-        # Strip URLs
-        tmp_text = re.sub(r"http\S+", "", tmp_text)
-        # Strip the word Retweet
-        tmp_text = re.sub(r"(?i)rt", "", tmp_text)
-        documents.append(tmp_text)
-    print(len(documents))
+        articles.append(status.text)
     
-    # Use extend so it's a big flat list of vocab
-    totalvocab_stemmed = []
-    totalvocab_tokenized = []
-    for i in documents:
-        allwords_stemmed = tokenize_and_stem(i)  # for each item in 'documents', tokenize/stem
-        totalvocab_stemmed.extend(allwords_stemmed)  # extend the 'totalvocab_stemmed' list
-    
-        allwords_tokenized = tokenize_only(i)
-        totalvocab_tokenized.extend(allwords_tokenized)
-    
-    vocab_frame = pd.DataFrame({'words': totalvocab_tokenized}, index=totalvocab_stemmed)
-    print('there are ' + str(vocab_frame.shape[0]) + ' items in vocab_frame')
-    
-    # TF - IDF Generation
-    # define vectorizer parameters
-    tfidf_vectorizer = TfidfVectorizer(max_df=0.5, max_features=200000,
-                                       min_df=0.0, stop_words='english',
-                                       use_idf=True, tokenizer=tokenize_and_stem, ngram_range=(1, 3))
-
-    tfidf_matrix = tfidf_vectorizer.fit_transform(documents)  # Fit the vectorizer to documents
-    # print(tfidf_matrix.shape)
-    
-    terms = tfidf_vectorizer.get_feature_names()
-    # print(terms)
-    
-    dist = 1 - cosine_similarity(tfidf_matrix)
-    
-    # Clustering
-    num_clusters = 20
-    km = KMeans(n_clusters=num_clusters)
-    km.fit(tfidf_matrix)
-    clusters = km.labels_.tolist()
-
-    print("Top terms per cluster:")
-    order_centroids = km.cluster_centers_.argsort()[:, ::-1]
-        
-    for i in range(num_clusters):
-        print("Cluster %d words:" % i, end='')
-        for ind in order_centroids[i, :6]:  # Replace 6 with n words per cluster
-            print('%s' % vocab_frame.ix[terms[ind].split(' ')].values.tolist()[0][0], end=', ')
-        print('\n')
-        
-    # Print Clusters and Groups
-    for i in range(num_clusters):
-        cluster_print_limit = 5
-        print("\nCluster {}\n".format(i))
-        for idx, value in enumerate(clusters):
-            if (value == i):
-                cluster_print_limit = cluster_print_limit - 1
-                if (not cluster_print_limit):
-                    break
-                print(documents[idx])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
+    clusters = cluster_texts(articles, 4)
+    clusteri = dict(clusters)
+    for key in clusteri:
+        print('idx {} cmp {}'.format(key, len(clusteri[key])))
+    # pprint(clusteri)
 

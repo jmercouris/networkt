@@ -1,78 +1,128 @@
-from configparser import ConfigParser
-from graph.graph import Graph
-import os
-
-import string
-import collections
-from nltk import word_tokenize
-from nltk.stem import PorterStemmer
-from nltk.corpus import stopwords
-from sklearn.cluster import KMeans
-from sklearn.feature_extraction.text import TfidfVectorizer
-from pprint import pprint
+import sys
+from math import log, sqrt
+from itertools import combinations
 
 
-def process_text(text, stem=True):
-    """ Tokenize text and stem words removing punctuation """
-    transtable = {ord(s): None for s in string.punctuation}
-    transtable[ord('/')] = u''
-    text = text.translate(transtable)
-    tokens = word_tokenize(text)
-    
-    if stem:
-        stemmer = PorterStemmer()
-        tokens = [stemmer.stem(t) for t in tokens]
-        
-    return tokens
+def cosine_distance(a, b):
+    cos = 0.0
+    a_tfidf = a["tfidf"]
+    for token, tfidf in b["tfidf"].items():
+        if token in a_tfidf:
+            cos += tfidf * a_tfidf[token]
+    return cos
 
 
-def cluster_texts(texts, clusters=3):
-    """ Transform texts to Tf-Idf coordinates and cluster texts using K-Means """
-    vectorizer = TfidfVectorizer(tokenizer=process_text,
-                                 stop_words=stopwords.words('english'),
-                                 max_df=0.5,
-                                 min_df=0.1,
-                                 lowercase=True)
- 
-    tfidf_model = vectorizer.fit_transform(texts)
-    km_model = KMeans(n_clusters=clusters)
-    km_model.fit(tfidf_model)
- 
-    clustering = collections.defaultdict(list)
- 
-    for idx, label in enumerate(km_model.labels_):
-        clustering[label].append(idx)
- 
-    return clustering
+def normalize(features):
+    norm = 1.0 / sqrt(sum(i**2 for i in features.values()))
+    for k, v in features.items():
+        features[k] = v * norm
+    return features
 
 
-def default_articles():
-    return ['article about stuff',
-            'another cool article',
-            'this is what articles are made of',
-            'another cool article',
-            'article about stuff',
-            'another cool article',
-            'this is what articles are made of',
-            'another cool article lol']
+def add_tfidf_to(documents):
+    tokens = {}
+    for id, doc in enumerate(documents):
+        tf = {}
+        doc["tfidf"] = {}
+        doc_tokens = doc.get("tokens", [])
+        for token in doc_tokens:
+            tf[token] = tf.get(token, 0) + 1
+        num_tokens = len(doc_tokens)
+        if num_tokens > 0:
+            for token, freq in tf.items():
+                tokens.setdefault(token, []).append(
+                    (id, float(freq) / num_tokens))
+
+    doc_count = float(len(documents))
+    for token, docs in tokens.items():
+        idf = log(doc_count / len(docs))
+        for id, tf in docs:
+            tfidf = tf * idf
+            if tfidf > 0:
+                documents[id]["tfidf"][token] = tfidf
+
+    for doc in documents:
+        doc["tfidf"] = normalize(doc["tfidf"])
 
 
-if __name__ == "__main__":
-    config = ConfigParser()
-    config.read(os.path.expanduser('~/.config/networkt/cluster.ini'))
-    DATABASE_NAME = 'sqlite:///{}/data_store.db'.format(config.get('persistence-configuration', 'database_path'))
-    
-    graph = Graph(DATABASE_NAME)
-    statuses = graph.load_statuses()
-    articles = []
+def choose_cluster(node, cluster_lookup, edges):
+    new = cluster_lookup[node]
+    if node in edges:
+        seen, num_seen = {}, {}
+        for target, weight in edges.get(node, []):
+            seen[cluster_lookup[target]] = seen.get(
+                cluster_lookup[target], 0.0) + weight
+        for k, v in seen.items():
+            num_seen.setdefault(v, []).append(k)
+        new = num_seen[max(num_seen)][0]
+    return new
+
+
+def majorclust(graph):
+    cluster_lookup = dict((node, i) for i, node in enumerate(graph.nodes))
+
     count = 0
-    
-    for status in statuses:
-        articles.append(status.text)
-    
-    clusters = cluster_texts(articles, 4)
-    clusteri = dict(clusters)
-    for key in clusteri:
-        print('idx {} cmp {}'.format(key, len(clusteri[key])))
-    # pprint(clusteri)
+    movements = set()
+    finished = False
+    while not finished:
+        finished = True
+        for node in graph.nodes:
+            new = choose_cluster(node, cluster_lookup, graph.edges)
+            move = (node, cluster_lookup[node], new)
+            if new != cluster_lookup[node] and move not in movements:
+                movements.add(move)
+                cluster_lookup[node] = new
+                finished = False
 
+    clusters = {}
+    for k, v in cluster_lookup.items():
+        clusters.setdefault(v, []).append(k)
+
+    return clusters.values()
+
+
+def get_distance_graph(documents):
+    class Graph(object):
+
+        def __init__(self):
+            self.edges = {}
+
+        def add_edge(self, n1, n2, w):
+            self.edges.setdefault(n1, []).append((n2, w))
+            self.edges.setdefault(n2, []).append((n1, w))
+
+    graph = Graph()
+    doc_ids = range(len(documents))
+    graph.nodes = set(doc_ids)
+    for a, b in combinations(doc_ids, 2):
+        graph.add_edge(a, b, cosine_distance(documents[a], documents[b]))
+    return graph
+
+
+def get_documents():
+    texts = [
+        "foo blub baz",
+        "foo bar baz",
+        "asdf bsdf csdf",
+        "foo bab blub",
+        "csdf hddf kjtz",
+        "123 456 890",
+        "321 890 456 foo",
+        "123 890 uiop",
+    ]
+    return [{"text": text, "tokens": text.split()}
+            for i, text in enumerate(texts)]
+
+
+def main(args):
+    documents = get_documents()
+    add_tfidf_to(documents)
+    dist_graph = get_distance_graph(documents)
+
+    for cluster in majorclust(dist_graph):
+        print("=========")
+        for doc_id in cluster:
+            print(documents[doc_id]["text"])
+
+if __name__ == '__main__':
+    main(sys.argv)
