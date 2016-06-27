@@ -3,7 +3,6 @@ import string
 import collections
 
 from configparser import ConfigParser
-from graph.graph import Graph
 from nltk import word_tokenize
 from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords
@@ -47,25 +46,63 @@ def cluster_texts(texts, clusters=3):
  
     return clustering
 
-if __name__ == "__main__":
+
+def create_session():
     config = ConfigParser()
     config.read(os.path.expanduser('~/.config/networkt/cluster.ini'))
     DATABASE_NAME = 'sqlite:///{}/data_store.db'.format(config.get('persistence-configuration', 'database_path'))
-
     engine = create_engine(DATABASE_NAME)
     Base.metadata.bind = engine
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
-    
-    statuses = session.query(Status).join(Node).filter(Status.lang == 'en', Node.filter_2).all()
-    
-    articles = []
-    for status in statuses[0:100]:
-        articles.append(status.text)
-    
-    clusters = cluster_texts(articles, 20)
-    clusteri = dict(clusters)
-    for key in clusteri:
-        print('idx {} cnt {}'.format(key, len(clusteri[key])))
-    # pprint(clusteri)
+    return session
+
+
+if __name__ == "__main__":
+    session = create_session()
+    transnational_users = session.query(Node).filter_by(filter_1=True).all()
+    for user in transnational_users[0:1]:
+        print(user.screen_name)
+        statuses = []
+        statuses = statuses + user.statuses
+        for node in user.reference_nodes():
+            statuses = statuses + node.statuses
+        for node in user.pointer_nodes():
+            statuses = statuses + node.statuses
+        
+        statuses.sort()
+        documents = [i.text for i in statuses[0:50]]
+        clusters = cluster_texts(documents, 20)
+        clusteri = dict(clusters)
+        for key in clusteri:
+            print('idx {} cnt {}'.format(key, len(clusteri[key])))
+        
+        # Assign Cluster and Corresponding Values
+        for key in clusteri:
+            for idx in clusteri[key]:
+                statuses[idx].cluster = key
+        
+        # Iterate through Transnational Tweets
+        for index, status in enumerate(statuses):
+            # Transnational Tweet - Check for Diffusion
+            if (status.node == user):
+                statuses_before = statuses[index-10:index]
+                statuses_after = statuses[index:index+10]
+                
+                # Filter Before for Friend Relationships
+                statuses_before_filtered = []
+                for statusi in statuses_before:
+                    if statusi.node in user.reference_nodes():
+                        statuses_before_filtered.append(statusi)
+                # Filter After for Follower Relationships
+                statuses_after_filtered = []
+                for statusi in statuses_after:
+                    if statusi.node in user.pointer_nodes():
+                        statuses_after_filtered.append(statusi)
+                
+                # Find Intersection of Before and After With Same Topic
+
+
+
+
 

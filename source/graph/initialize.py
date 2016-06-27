@@ -168,6 +168,24 @@ class Status(Base):
         self.truncated = bool(dictionary.get('truncated', False) or False)
         self.id = int(self.id_str)
         self.date = datetime.strptime(self.created_at, '%a %b %d %H:%M:%S +0000 %Y')
+    
+    def __lt__(self, other):
+        return self.date.timestamp() < other.date.timestamp()
+    
+    def __gt__(self, other):
+        return self.date.timestamp() > other.date.timestamp()
+    
+    def __eq__(self, other):
+        return self.date.timestamp() == other.date.timestamp()
+    
+    def __le__(self, other):
+        return self.date.timestamp() <= other.date.timestamp()
+    
+    def __ge__(self, other):
+        return self.date.timestamp() >= other.date.timestamp()
+    
+    def __ne__(self, other):
+        return self.date.timestamp() != other.date.timestamp()
 
 
 def edge_point(n1, n2):
