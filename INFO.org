@@ -7,16 +7,23 @@
 ** DONE Draw Node Connections
 ** DONE Create Camera/Zoom/Scroll
 ** DONE Add UI Buttons
-** TODO Create Event Stack
-** TODO Node selection by Mouse
-** TODO Camera movement by mouse/scroll wheel
-** TODO Accordion population based on Node selection
+** DONE Create Event Stack
+** DONE Node selection by Mouse
+** DONE Camera movement by mouse/scroll wheel
+** DONE Accordion population based on Node selection
 
 * Scraper
-** Develop Configuration File Standards
-** Break Apart Code into Module
+** DONE Develop Configuration File Standards
+** DONE Break Apart Code into Module
 
 * Graph
 ** DONE Create recursive graph traversal
 *** Wrap Graph Traversal in Helper Function
 *** Clean Graph Traversal Code
+* Cluster
+** Load Tweets in Ascending Date from Graph
+** Cluster Tweets
+** Find all Transnational Tweets by selecting Tweets with a transnational ID
+** Look at tweets with range of before and after of one day
+
+

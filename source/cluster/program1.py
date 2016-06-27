@@ -1,14 +1,17 @@
-from configparser import ConfigParser
-from graph.graph import Graph
 import os
-
 import string
 import collections
+
+from configparser import ConfigParser
+from graph.graph import Graph
 from nltk import word_tokenize
 from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords
 from sklearn.cluster import KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from graph.initialize import Base, Node, Status
 
 
 def process_text(text, stem=True):
@@ -30,7 +33,7 @@ def cluster_texts(texts, clusters=3):
     vectorizer = TfidfVectorizer(tokenizer=process_text,
                                  stop_words=stopwords.words('english'),
                                  max_df=0.5,
-                                 min_df=0.1,
+                                 min_df=0.0,
                                  lowercase=True)
  
     tfidf_model = vectorizer.fit_transform(texts)
@@ -44,34 +47,25 @@ def cluster_texts(texts, clusters=3):
  
     return clustering
 
-
-def default_articles():
-    return ['article about stuff',
-            'another cool article',
-            'this is what articles are made of',
-            'another cool article',
-            'article about stuff',
-            'another cool article',
-            'this is what articles are made of',
-            'another cool article lol']
-
-
 if __name__ == "__main__":
     config = ConfigParser()
     config.read(os.path.expanduser('~/.config/networkt/cluster.ini'))
     DATABASE_NAME = 'sqlite:///{}/data_store.db'.format(config.get('persistence-configuration', 'database_path'))
+
+    engine = create_engine(DATABASE_NAME)
+    Base.metadata.bind = engine
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
     
-    graph = Graph(DATABASE_NAME)
-    statuses = graph.load_statuses()
+    statuses = session.query(Status).join(Node).filter(Status.lang == 'en', Node.filter_2).all()
+    
     articles = []
-    count = 0
-    
-    for status in statuses:
+    for status in statuses[0:100]:
         articles.append(status.text)
     
-    clusters = cluster_texts(articles, 4)
+    clusters = cluster_texts(articles, 20)
     clusteri = dict(clusters)
     for key in clusteri:
-        print('idx {} cmp {}'.format(key, len(clusteri[key])))
+        print('idx {} cnt {}'.format(key, len(clusteri[key])))
     # pprint(clusteri)
 

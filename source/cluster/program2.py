@@ -5,10 +5,10 @@ import re
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
 import nltk
-import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.cluster import KMeans
+from sklearn.metrics.pairwise import cosine_similarity
+import pandas as pd
 
 # Load StopWords
 stopwords = stopwords.words('english')
