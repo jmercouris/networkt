@@ -21,7 +21,6 @@
 *** Wrap Graph Traversal in Helper Function
 *** Clean Graph Traversal Code
 * Cluster
-** Load Tweets in Ascending Date from Graph
 ** Cluster Tweets
 ** Find all Transnational Tweets by selecting Tweets with a transnational ID
 ** Look at tweets with range of before and after of one day
