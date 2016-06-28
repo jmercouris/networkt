@@ -71,8 +71,9 @@ if __name__ == "__main__":
             statuses = statuses + node.statuses
         
         statuses.sort()
-        documents = [i.text for i in statuses[0:50]]
-        clusters = cluster_texts(documents, 20)
+        documents = [i.text for i in statuses]
+        cluster_count = 100
+        clusters = cluster_texts(documents, cluster_count)
         clusteri = dict(clusters)
         for key in clusteri:
             print('idx {} cnt {}'.format(key, len(clusteri[key])))
@@ -94,13 +95,50 @@ if __name__ == "__main__":
                 for statusi in statuses_before:
                     if statusi.node in user.reference_nodes():
                         statuses_before_filtered.append(statusi)
+                statuses_before = statuses_before_filtered
+                
                 # Filter After for Follower Relationships
                 statuses_after_filtered = []
                 for statusi in statuses_after:
                     if statusi.node in user.pointer_nodes():
                         statuses_after_filtered.append(statusi)
+                statuses_after = statuses_after_filtered
                 
-                # Find Intersection of Before and After With Same Topic
+                statuses_before = [i for i in statuses_before if i.cluster == status.cluster]
+                statuses_after = [i for i in statuses_after if i.cluster == status.cluster]
+                
+                # If Statuses of same cluster exist before and after print them
+                if (len(statuses_before) > 0 and len(statuses_after) > 0):
+                    print('=' * 80)
+                    
+                    print('friend statuses before tweet')
+                    print('-' * 80)
+                    for text in [i.text for i in statuses_before]:
+                        print(text)
+                    
+                    print('\ntransnational status')
+                    print('-' * 80)
+                    print(status.text)
+                    
+                    print('\nfollower statuses after tweet')
+                    print('-' * 80)
+                    for text in [i.text for i in statuses_after]:
+                        print(text)
+                    
+                    print('\n')
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
