@@ -10,7 +10,7 @@ from sklearn.cluster import KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from graph.initialize import Base, Node, Status
+from graph.initialize import Base, Node
 
 
 def process_text(text, stem=True):
@@ -87,8 +87,8 @@ if __name__ == "__main__":
         for index, status in enumerate(statuses):
             # Transnational Tweet - Check for Diffusion
             if (status.node == user):
-                statuses_before = statuses[index-10:index]
-                statuses_after = statuses[index:index+10]
+                statuses_before = statuses[index - 10:index]
+                statuses_after = statuses[index:index + 10]
                 
                 # Filter Before for Friend Relationships
                 statuses_before_filtered = []
@@ -126,21 +126,3 @@ if __name__ == "__main__":
                         print(text)
                     
                     print('\n')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
