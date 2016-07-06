@@ -132,10 +132,9 @@ class LoggerConsole(Logger):
     """Documentation for LoggerConsole
     
     """
-    def __init__(self, args):
+    def __init__(self):
         super(LoggerConsole, self).__init__()
-        self.args = args
-        
+    
     def update_progress(self, percent_complete):
         print('percent complete', percent_complete)
     

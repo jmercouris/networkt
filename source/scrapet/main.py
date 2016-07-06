@@ -56,7 +56,7 @@ class RootWidget(BoxLayout):
                   'name_list_path': name_list_path,
                   'graph_path': graph_path}
         
-        _thread.start_new_thread(main_execution,  parameters, kwargs)
+        _thread.start_new_thread(main_execution, parameters, kwargs)
 
 
 class ScrapetApp(App):
