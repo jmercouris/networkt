@@ -2,10 +2,11 @@
 \usepackage[a4paper,width=150mm,top=25mm,bottom=25mm]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
-\graphicspath{ {images/} }
+\graphicspath{ {images/} } % Set Graphics Path to Images directory
 \usepackage{fancyhdr}
 \pagestyle{fancy}
-\usepackage{biblatex}
+\usepackage[backend=bibtex]{biblatex}
+\nocite{*} % Show All References, Cited or not
 \addbibresource{references.bib}
 
 \title{
