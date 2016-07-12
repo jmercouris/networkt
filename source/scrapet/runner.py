@@ -22,9 +22,9 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
     # Persist the root user
     try:
         network_scrape.persist_user(root_user)
-        LOGGER.log_event(0, 'Persisted Root User: ' + root_user)
+        LOGGER.log_event(0, 'Persisted Root user: ' + root_user)
     except:
-        LOGGER.log_event(0, 'Could not persist root user')
+        LOGGER.log_event(0, 'Could not persist Root user')
     LOGGER.update_progress(0.10)
     
     ##########################################################################
@@ -33,30 +33,38 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
         try:
             network_scrape.pull_remote_graph_follow(root_user,
                                                     scope_limit=ceiling(root_user_follower_limit / 200))
-            LOGGER.log_event(0, 'Persisted Root user follower graph')
+            LOGGER.log_event(0, 'Persisted Root User follower graph')
         except:
-            LOGGER.log_event(0, 'Could not pull Root user follower graph')
+            LOGGER.log_event(0, 'Could not pull Root User follower graph')
         LOGGER.update_progress(0.15)
+    else:
+        LOGGER.log_event(0, 'Skipped Root User follower graph retrieval (already done)')
     
     ##########################################################################
     # Perform degree 0 filtering to decide whether to pull 0th degree network
-    network_scrape.filter_0(root_user, location=name_list_path)
-    LOGGER.log_event(0, 'Root User: {} follower graph filtered [Filter level 0]'.format(root_user))
-    LOGGER.update_progress(0.20)
+    if (len(network_scrape.get_filter_nodes('filter_1')) <= 0):
+        network_scrape.filter_0(root_user, location=name_list_path)
+        LOGGER.log_event(0, 'Root User: {} follower graph filtered [Filter level 0]'.format(root_user))
+        LOGGER.update_progress(0.20)
+    else:
+        LOGGER.log_event(0, 'Skipped Root User follower graph filtering (already done)')
     
     ##########################################################################
     # Pull partial graphs of all filtered users following root user
-    root_user_object = network_scrape.get_user_from_data_store(root_user)
-    for node in root_user_object.pointer_nodes():
-        if (node.filter_0):
-            try:
-                network_scrape.pull_remote_graph_friend(node.screen_name,
-                                                        scope_limit=ceiling(filter_graph_follower_limit / 200))
-                LOGGER.log_event(0, 'Partial Graph: {} extracted.'.format(node.screen_name))
-            except:
-                LOGGER.log_event(0, 'Could not extract partial graph: {}'.format(node.screen_name))
-    LOGGER.log_event(0, 'Root User: {} follower graphs extracted'.format(root_user))
-    LOGGER.update_progress(0.30)
+    if (len(network_scrape.get_filter_nodes('filter_1')) <= 0):
+        root_user_object = network_scrape.get_user_from_data_store(root_user)
+        for node in root_user_object.pointer_nodes():
+            if (node.filter_0):
+                try:
+                    network_scrape.pull_remote_graph_friend(node.screen_name,
+                                                            scope_limit=ceiling(filter_graph_follower_limit / 200))
+                    LOGGER.log_event(0, 'Partial Graph: {} extracted.'.format(node.screen_name))
+                except:
+                    LOGGER.log_event(0, 'Could not extract partial graph: {}'.format(node.screen_name))
+        LOGGER.log_event(0, 'Root User: {} follower graphs extracted'.format(root_user))
+        LOGGER.update_progress(0.30)
+    else:
+        LOGGER.log_event(0, 'Skipped pulling partial graphs of filtered users (already done)')
     
     ##########################################################################
     # Perform level 1 filtering on root_user - determine if their 1th degree network
