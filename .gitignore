@@ -288,3 +288,5 @@ TSWLatexianTemp*
 *~[0-9]*
 
 report/*.pdf
+
+report/archive
