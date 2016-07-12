@@ -29,7 +29,7 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
     
     ##########################################################################
     # Persist the root user's follower list
-    if (len(network_scrape.get_filter_nodes('filter_0')) <= 0):
+    if (len(network_scrape.get_filter_nodes('filter_0')) == 0):
         try:
             network_scrape.pull_remote_graph_follow(root_user,
                                                     scope_limit=ceiling(root_user_follower_limit / 200))
@@ -42,7 +42,7 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
     
     ##########################################################################
     # Perform degree 0 filtering to decide whether to pull 0th degree network
-    if (len(network_scrape.get_filter_nodes('filter_1')) <= 0):
+    if (len(network_scrape.get_filter_nodes('filter_1')) == 0):
         network_scrape.filter_0(root_user, location=name_list_path)
         LOGGER.log_event(0, 'Root User: {} follower graph filtered [Filter level 0]'.format(root_user))
         LOGGER.update_progress(0.20)
@@ -51,7 +51,7 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
     
     ##########################################################################
     # Pull partial graphs of all filtered users following root user
-    if (len(network_scrape.get_filter_nodes('filter_1')) <= 0):
+    if (len(network_scrape.get_filter_nodes('filter_1')) == 0):
         root_user_object = network_scrape.get_user_from_data_store(root_user)
         for node in root_user_object.pointer_nodes():
             if (node.filter_0):
