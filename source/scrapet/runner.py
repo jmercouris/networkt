@@ -101,7 +101,6 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
     
     ##########################################################################
     # Pull statuses of all filtered user networks
-    count = 0
     if (network_scrape.nodes_filtered_at_level('filter_2') is None):
         root_user_object = network_scrape.get_user_from_data_store(root_user)
         for root_node in network_scrape.get_users_from_filter_level('filter_1'):
