@@ -4,7 +4,6 @@ from graph.graph import Graph
 from graph.initialize import create_database
 from math import ceil as ceiling
 from scrapet.logger import Logger
-import cProfile
 
 
 def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LOGGER,
@@ -182,9 +181,9 @@ if __name__ == "__main__":
     filter_graph_follower_limit = int(settings.get('scrape-configuration', 'filter_graph_follower_limit'))
     extended_graph_follower_limit = int(settings.get('scrape-configuration', 'extended_graph_follower_limit'))
 
-    cProfile.run("""main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LoggerConsole(),
-    root_user=root_user, root_user_follower_limit=root_user_follower_limit,
-    extended_graph_follower_limit=extended_graph_follower_limit,
-    filter_graph_follower_limit=filter_graph_follower_limit,
-    name_list_path=name_list_path, graph_path=graph_path)""")
+    main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LoggerConsole(),
+         root_user=root_user, root_user_follower_limit=root_user_follower_limit,
+         extended_graph_follower_limit=extended_graph_follower_limit,
+         filter_graph_follower_limit=filter_graph_follower_limit,
+         name_list_path=name_list_path, graph_path=graph_path)
 
