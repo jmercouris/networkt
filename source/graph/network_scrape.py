@@ -74,20 +74,31 @@ class NetworkScrape(object):
         if (user_object is None or len(user_object.statuses) > 0):
             return
         try:
+            # We have recorded 0 Statuses previously for this user, therefore we can reasonably assume
+            # An object of the same credentials does not exist in the database, also it is within a try/catch
             statuses = self.twitter.get_user_timeline(screen_name=screen_name, count=scope_depth)
             for status in statuses:
-                instance = self.session.query(Status).filter_by(id_str=status['id_str']).first()
-                if (instance is None):
-                    user_object.statuses.append(Status(status))
+                user_object.statuses.append(Status(status))
             self.session.commit()
         except:
             pass
         time.sleep(7)
     
+    def statuses_exist(self):
+        return self.session.query(Status).first()
+    
+    def get_user_statuses(self, screen_name):
+        user_object = self.session.query(Node).filter_by(screen_name=screen_name).first()
+        return user_object.statuses
+    
     def get_user_from_data_store(self, screen_name):
         return self.session.query(Node).filter_by(screen_name=screen_name).first()
     
-    def get_filter_nodes(self, filter_level):
+    def nodes_filtered_at_level(self, filter_level):
+        arguments = {filter_level: True}
+        return self.session.query(Node).filter_by(**arguments).first()
+    
+    def get_users_from_filter_level(self, filter_level):
         arguments = {filter_level: True}
         return self.session.query(Node).filter_by(**arguments).all()
     
