@@ -4,6 +4,7 @@ from graph.graph import Graph
 from graph.initialize import create_database
 from math import ceil as ceiling
 from scrapet.logger import Logger
+import cProfile
 
 
 def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LOGGER,
@@ -29,7 +30,7 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
     
     ##########################################################################
     # Persist the root user's follower list
-    if (len(network_scrape.get_filter_nodes('filter_0')) == 0):
+    if (network_scrape.nodes_filtered_at_level('filter_0') is None):
         try:
             network_scrape.pull_remote_graph_follow(root_user,
                                                     scope_limit=ceiling(root_user_follower_limit / 200))
@@ -42,7 +43,7 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
     
     ##########################################################################
     # Perform degree 0 filtering to decide whether to pull 0th degree network
-    if (len(network_scrape.get_filter_nodes('filter_1')) == 0):
+    if (network_scrape.nodes_filtered_at_level('filter_1') is None):
         network_scrape.filter_0(root_user, location=name_list_path)
         LOGGER.log_event(0, 'Root User: {} follower graph filtered [Filter level 0]'.format(root_user))
         LOGGER.update_progress(0.20)
@@ -51,7 +52,7 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
     
     ##########################################################################
     # Pull partial graphs of all filtered users following root user
-    if (len(network_scrape.get_filter_nodes('filter_1')) == 0):
+    if (network_scrape.nodes_filtered_at_level('filter_1') is None):
         root_user_object = network_scrape.get_user_from_data_store(root_user)
         for node in root_user_object.pointer_nodes():
             if (node.filter_0):
@@ -69,34 +70,41 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
     ##########################################################################
     # Perform level 1 filtering on root_user - determine if their 1th degree network
     # is something that should be retrieved
-    network_scrape.filter_1(root_user)
-    LOGGER.log_event(0, 'Root User: {} follower graphs filtered [Filter level 1]'.format(root_user))
-    LOGGER.update_progress(0.35)
+    if (network_scrape.statuses_exist() is None):
+        network_scrape.filter_1(root_user)
+        LOGGER.log_event(0, 'Root User: {} follower graphs filtered [Filter level 1]'.format(root_user))
+        LOGGER.update_progress(0.35)
+    else:
+        LOGGER.log_event(0, 'Skipped filter level 1 of transnational users (already done)')
     
     ##########################################################################
     # Pull extended graphs of all filtered users
-    root_user_object = network_scrape.get_user_from_data_store(root_user)
-    for root_node in root_user_object.pointer_nodes():
-        if (root_node.filter_0 and root_node.filter_1):
-            try:
-                network_scrape.pull_remote_graph_follow(root_node.screen_name,
-                                                        scope_limit=ceiling(extended_graph_follower_limit / 200))
-                LOGGER.log_event(0, '{} follower subgraph extracted'.format(root_node.screen_name))
-            except:
-                LOGGER.log_event(0, '{} follower subgraph could not be extracted'.format(root_node.screen_name))
-            try:
-                network_scrape.pull_remote_graph_friend(root_node.screen_name,
-                                                        scope_limit=ceiling(extended_graph_follower_limit / 200))
-                LOGGER.log_event(0, '{} friend subgraph extracted'.format(root_node.screen_name))
-            except:
-                LOGGER.log_event(0, '{} friend subgraph could not be extracted'.format(root_node.screen_name))
-    LOGGER.update_progress(0.60)
+    if (network_scrape.statuses_exist() is None):
+        root_user_object = network_scrape.get_user_from_data_store(root_user)
+        for root_node in root_user_object.pointer_nodes():
+            if (root_node.filter_0 and root_node.filter_1):
+                try:
+                    network_scrape.pull_remote_graph_follow(root_node.screen_name,
+                                                            scope_limit=ceiling(extended_graph_follower_limit / 200))
+                    LOGGER.log_event(0, '{} follower subgraph extracted'.format(root_node.screen_name))
+                except:
+                    LOGGER.log_event(0, '{} follower subgraph could not be extracted'.format(root_node.screen_name))
+                try:
+                    network_scrape.pull_remote_graph_friend(root_node.screen_name,
+                                                            scope_limit=ceiling(extended_graph_follower_limit / 200))
+                    LOGGER.log_event(0, '{} friend subgraph extracted'.format(root_node.screen_name))
+                except:
+                    LOGGER.log_event(0, '{} friend subgraph could not be extracted'.format(root_node.screen_name))
+        LOGGER.update_progress(0.60)
+    else:
+        LOGGER.log_event(0, 'Skipped subgraph extraction of all filter 1 users (already done)')
     
     ##########################################################################
     # Pull statuses of all filtered user networks
-    root_user_object = network_scrape.get_user_from_data_store(root_user)
-    for root_node in root_user_object.pointer_nodes():
-        if (root_node.filter_0 and root_node.filter_1):
+    count = 0
+    if (network_scrape.nodes_filtered_at_level('filter_2') is None):
+        root_user_object = network_scrape.get_user_from_data_store(root_user)
+        for root_node in network_scrape.get_users_from_filter_level('filter_1'):
             network_scrape.pull_remote_status(root_node.screen_name)
             for node in root_node.reference_nodes():
                 try:
@@ -114,16 +122,21 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
                 except:
                     LOGGER.log_event(0, '{} follower: {} statuses not extracted'.format(
                         root_node.screen_name, node.screen_name))
-    LOGGER.update_progress(0.70)
+        LOGGER.update_progress(0.70)
+    else:
+        LOGGER.log_event(0, 'Skipped statuses extraction (already done)')
     
     ##########################################################################
     # Persist Graphs of all filtered user networks
-    root_user_object = network_scrape.get_user_from_data_store(root_user)
-    for root_node in root_user_object.pointer_nodes():
-        if (root_node.filter_0 and root_node.filter_1):
-            graph.persist_graph(root_node.screen_name, graph_path, root_node.screen_name)
-    graph.persist_graph(root_user_object.screen_name, graph_path, root_user_object.screen_name)
-    LOGGER.update_progress(0.90)
+    if (network_scrape.nodes_filtered_at_level('filter_2') is None):
+        root_user_object = network_scrape.get_user_from_data_store(root_user)
+        for root_node in root_user_object.pointer_nodes():
+            if (root_node.filter_0 and root_node.filter_1):
+                graph.persist_graph(root_node.screen_name, graph_path, root_node.screen_name)
+        graph.persist_graph(root_user_object.screen_name, graph_path, root_user_object.screen_name)
+        LOGGER.update_progress(0.90)
+    else:
+        LOGGER.log_event(0, 'Skipped graph persistence to disk (already done)')
     
     ##########################################################################
     # Perform filter level 2 filtering on all nodes
@@ -169,10 +182,10 @@ if __name__ == "__main__":
     root_user_follower_limit = int(settings.get('scrape-configuration', 'root_user_follower_limit'))
     filter_graph_follower_limit = int(settings.get('scrape-configuration', 'filter_graph_follower_limit'))
     extended_graph_follower_limit = int(settings.get('scrape-configuration', 'extended_graph_follower_limit'))
-        
-    main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LoggerConsole(),
-         root_user=root_user, root_user_follower_limit=root_user_follower_limit,
-         extended_graph_follower_limit=extended_graph_follower_limit,
-         filter_graph_follower_limit=filter_graph_follower_limit,
-         name_list_path=name_list_path, graph_path=graph_path)
+
+    cProfile.run("""main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LoggerConsole(),
+    root_user=root_user, root_user_follower_limit=root_user_follower_limit,
+    extended_graph_follower_limit=extended_graph_follower_limit,
+    filter_graph_follower_limit=filter_graph_follower_limit,
+    name_list_path=name_list_path, graph_path=graph_path)""")
 
