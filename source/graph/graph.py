@@ -41,14 +41,14 @@ class Graph(object):
             graph.add_edge(node.screen_name, reference.screen_name)
             if reference in cache:
                 continue
-            graph = nx.compose(graph, self.traverse(reference, depth+1, depth_limit, cache, graph))
+            graph = nx.compose(graph, self.traverse(reference, depth + 1, depth_limit, cache, graph))
         
         for reference in node.reference_nodes():
             graph.add_node(reference.screen_name, reference.construct_dictionary())
             graph.add_edge(reference.screen_name, node.screen_name)
             if reference in cache:
                 continue
-            graph = nx.compose(graph, self.traverse(reference, depth+1, depth_limit, cache, graph))
+            graph = nx.compose(graph, self.traverse(reference, depth + 1, depth_limit, cache, graph))
         
         return graph
     
