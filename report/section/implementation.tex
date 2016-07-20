@@ -1,6 +1,7 @@
 The breakdown of the implementation section of this paper will break apart every package into a section. Subsequently every single module will be a subsection. At the top of the section will be a brief package definition (what the package does, how it does it) on a high level.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Graph}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 The Graph package contains all of the important definitions for the database structure, access, and extraction of data from twitter.
 \section{The Database Structure}
 The database structure was designed to be as simple and extensible as possible. There are three tables, 'edge', 'node', and 'status'. As you may imagine, the 'edge' table stores all relationships between 'node' objects, the 'node' table stores all nodes, and the 'status' table stores all statuses.
@@ -8,9 +9,156 @@ The database structure was designed to be as simple and extensible as possible. 
 The ORM of choice for this project was SqlAlchemy due to it's highly adaptable nature and clean access to an agnostic SQL backend (you are able to use Sqlite, Postgresql, Mysql... with SqlAlchemy). Unfortunately the nature of SqlAlchemy is that is not a document database, it is a relational database. Other databases such as MongoDB, and Neo4j support graph operations, at the cost of a less clean integration with the Python workflow. Furthermore, MongoDB has been shown to be unreliable, losing records, crashing, etc. For this reason, SQL Alchemy was chosen.
 \subsection{The Declarative Base}
 The Declarative Base.
+\\
+\\
+\subsection{The Declarative Base: The Node Class}
+The Node Class
+\begin{lstlisting}
+  class Node(Base):
+    __tablename__ = 'node'
+    id = Column(Integer, primary_key=True)
+    created_at = Column(Text)
+    description = Column(Text)
+    favorites_count = Column(Integer)
+    followers_count = Column(Integer)
+    friends_count = Column(Integer)
+    id_str = Column(Text)
+    lang = Column(Text)
+    listed_count = Column(Integer)
+    location = Column(Text)
+    name = Column(Text)
+    screen_name = Column(Text)
+    statuses_count = Column(Integer)
+    time_zone = Column(Text)
+    utc_offset = Column(Integer)
+    verified = Column(Boolean)
+
+    # Filtering Levels
+    filter_0 = Column(Boolean)
+    filter_1 = Column(Boolean)
+    filter_2 = Column(Boolean)
+    # Relationship to Status Updates
+    statuses = relationship("Status", order_by="Status.date",
+                            backref="node", cascade="all, delete")
+
+    def __init__(self, dictionary):
+        self.created_at = dictionary.get('created_at', None)
+        self.description = dictionary.get('description', None)
+        self.favorites_count = int(dictionary.get('favourites_count') or -1)
+        self.followers_count = int(dictionary.get('followers_count') or -1)
+        self.friends_count = int(dictionary.get('friends_count') or -1)
+        self.id_str = dictionary.get('id_str', None)
+        self.lang = dictionary.get('lang', None)
+        self.listed_count = int(dictionary.get('listed_count') or -1)
+        self.location = dictionary.get('location', None)
+        self.name = dictionary.get('name', None)
+        self.screen_name = dictionary.get('screen_name', None)
+        self.statuses_count = int(dictionary.get('statuses_count') or -1)
+        self.time_zone = dictionary.get('time_zone', None)
+        self.utc_offset = int(dictionary.get('utc_offset') or -1)
+        self.verified = bool(dictionary.get('verified', False) or False)
+        self.id = int(self.id_str)
+
+    def add_edge(self, *nodes):
+        for node in nodes:
+            Edge(self, node)
+        return self
+
+    def add_edge_reference(self, *nodes):
+        for node in nodes:
+            Edge(node, self)
+        return self
+
+    def pointer_nodes(self):
+        return [i.pointer_node for i in self.reference_edges]
+
+    def reference_nodes(self):
+        return [i.reference_node for i in self.pointer_edges]
+
+    def __str__(self):
+        return self.id_str
+
+    def __hash__(self):
+        return hash(str(self))
+
+    def __eq__(self, other):
+        return self.id_str == other.id_str
+
+    def construct_dictionary(self):
+        return {'createdat': str(self.created_at),
+                'description': str(self.description),
+                'favoritescount': int(self.favorites_count),
+                'followerscount': int(self.followers_count),
+                'friendscount': int(self.friends_count),
+                'idstr': str(self.id_str),
+                'lang': str(self.lang),
+                'listedcount': int(self.listed_count),
+                'location': str(self.location),
+                'name': str(self.name),
+                'screenname': str(self.screen_name),
+                'statusescount': int(self.statuses_count),
+                'timezone': str(self.time_zone),
+                'utcoffset': int(self.utc_offset),
+                'verified': bool(self.verified), }
+\end{lstlisting}
+
+\subsection{The Declarative Base: The Edge Class}
+\begin{lstlisting}
+class Edge(Base):
+    __tablename__ = 'edge'
+
+    reference_id = Column(Integer,
+                          ForeignKey('node.id'),
+                          primary_key=True)
+
+    pointer_id = Column(Integer,
+                        ForeignKey('node.id'),
+                        primary_key=True)
+
+    reference_node = relationship(Node,
+                                  primaryjoin=reference_id == Node.id,
+                                  backref='reference_edges')
+    pointer_node = relationship(Node,
+                                primaryjoin=pointer_id == Node.id,
+                                backref='pointer_edges')
+
+    def __init__(self, n1, n2):
+        self.reference_node = n1
+        self.pointer_node = n2
+\end{lstlisting}
+
+
+\subsection{The Declarative Base: The Status Class}
+\begin{lstlisting}
+class Status(Base):
+    __tablename__ = 'status'
+    id = Column(Integer, primary_key=True)
+    # Parent
+    node_id = Column(Integer, ForeignKey('node.id'))
+    # Fields
+    coordinate_longitude = Column(Text)
+    coordinate_latitude = Column(Text)
+    created_at = Column(Text)
+    date = Column(DateTime)
+    favorite_count = Column(Integer)
+    id_str = Column(Text)
+    in_reply_to_screen_name = Column(Text)
+    in_reply_to_status_id_str = Column(Text)
+    in_reply_to_user_id_str = Column(Text)
+    lang = Column(Text)
+    possibly_sensitive = Column(Boolean)
+    quoted_status_id_str = Column(Text)
+    retweet_count = Column(Integer)
+    retweeted = Column(Boolean)
+    source = Column(Text)
+    text = Column(Text)
+    truncated = Column(Boolean)
+\end{lstlisting}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Scrapet}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Scrapet is the tool that is responsible for pulling the data from the Twitter API and making the appropriate graphs. Scrapet is the core behind all of the tools in the project. Every single project will end up using a Scrapet dump of data for rendering, machine learning, or any other processes necessary for analysis. This tool is composed of a number of components which will be briefly be introduced below. Follow the introduction and description of components, the high level architecture will be explained.
 \subsection{Logger}
 The logger is the most important component of the Scrapet system. The logger is an abstract entity that is either fulfilled as a console logger, or as a GUI logger depending on the flavor and execution method of the Scrapet build. The logger is responsible for reporting on the overall progress and the activity of the system.
@@ -27,6 +175,7 @@ There is a time and place for results, and placeholders. This is it.\cite{latexc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Networkt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Networkt description.
 \subsection{Node}
 Node Description.

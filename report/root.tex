@@ -1,14 +1,39 @@
 \documentclass[a4paper,12pt]{report}
 \usepackage[a4paper,width=150mm,top=25mm,bottom=25mm]{geometry}
 \usepackage[utf8]{inputenc}
-\usepackage{graphicx}
+\usepackage{color, graphicx}
 \graphicspath{ {image/} } % Set Graphics Path to Images directory
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \usepackage[backend=bibtex]{biblatex}
 \nocite{*} % Show All References, Cited or not
 \addbibresource{references.bib}
+\usepackage{listings} %source code highlighting
 
+\definecolor{darkblue}{rgb}{0,0,.4}
+\definecolor{darkred}{rgb}{.4,0,0}
+\definecolor{darkgreen}{rgb}{0,0.4,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Syntax Highlighting Setup
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{darkgreen},
+  stringstyle=\color{darkred},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Begin Document
