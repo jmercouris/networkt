@@ -63,6 +63,9 @@ As alluded to earlier, relational databases do not support graphs or graph opera
 \end{lstlisting}
 
 \subsection{The Declarative Base: The Edge Class}
+
+The Edge class is what makes all of this possible. The Edge class and corresponding Edge table glue everything together. The Edge table is very simple, it contains two fields, \verb|reference_id| and \verb|pointer_id|. Every single row in table represents a relationship between two Nodes. The Node with the \verb|reference_id| is pointing to the Node with the \verb|pointer_id|. This means that the \verb|pointer_id| Node has an outbound edge to the \verb|reference_id| and vice versa.
+
 \begin{lstlisting}
 class Edge(Base):
     __tablename__ = 'edge'
