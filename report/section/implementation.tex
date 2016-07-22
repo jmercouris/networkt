@@ -2,17 +2,17 @@ The breakdown of the implementation section of this paper will break apart every
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Graph}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-The Graph package contains all of the important definitions for the database structure, access, and extraction of data from twitter.
+The Graph package contains all of the important definitions for the database structure, access, and extraction of data from Twitter.
 \section{The Database Structure}
 The database structure was designed to be as simple and extensible as possible. There are three tables, 'edge', 'node', and 'status'. As you may imagine, the 'edge' table stores all relationships between 'node' objects, the 'node' table stores all nodes, and the 'status' table stores all statuses.
 \subsection{ORM \& Design Decisions}
-The ORM of choice for this project was SqlAlchemy due to it's highly adaptable nature and clean access to an agnostic SQL backend (you are able to use Sqlite, Postgresql, Mysql... with SqlAlchemy). Unfortunately the nature of SqlAlchemy is that is not a document database, it is a relational database. Other databases such as MongoDB, and Neo4j support graph operations, at the cost of a less clean integration with the Python workflow. Furthermore, MongoDB has been shown to be unreliable, losing records, crashing, etc. For this reason, SQL Alchemy was chosen.
+The ORM of choice for this project was SqlAlchemy due to its' highly adaptable nature and clean access to an agnostic SQL backend (you are able to use Sqlite, Postgresql, Mysql... with SqlAlchemy). Unfortunately the nature of SqlAlchemy is that is not a document database, it is a relational database. Other databases such as MongoDB, and Neo4j support graph operations, at the cost of a less clean integration with the Python workflow. Furthermore, MongoDB has been shown to be unreliable, losing records, crashing, etc. For this reason, SQL Alchemy was chosen.
 \subsection{The Declarative Base}
-The Declarative Base.
+The Declarative Base is a special feature of SQLAlchemy. By extending the base class and providing some protected members with metadata, we are able to create a table of a given type in SQLAlchemy. In the example below, we have created a class Node that extends Base. For our metadata we have provided \verb|__tablename__| which indicates what the table name within our database will be. Additionally we have defined all of the fields and their types which will automatically be instantiated by SQLAlchemy when the engine is created. Additionally you'll see that we have a one:many relationship defined between a given Node and a set of Statuses. That is, a Node can have multiple Statuses (this represents all of the tweets made by the user).
 \\
 \\
 \subsection{The Declarative Base: The Node Class}
-The Node Class
+The Node Class represents a node within the system. It contains all of the information that is available within the Twitter public API. As is evident there are many fields available.
 \begin{lstlisting}
   class Node(Base):
     __tablename__ = 'node'
@@ -40,25 +40,11 @@ The Node Class
     # Relationship to Status Updates
     statuses = relationship("Status", order_by="Status.date",
                             backref="node", cascade="all, delete")
+\end{lstlisting}
 
-    def __init__(self, dictionary):
-        self.created_at = dictionary.get('created_at', None)
-        self.description = dictionary.get('description', None)
-        self.favorites_count = int(dictionary.get('favourites_count') or -1)
-        self.followers_count = int(dictionary.get('followers_count') or -1)
-        self.friends_count = int(dictionary.get('friends_count') or -1)
-        self.id_str = dictionary.get('id_str', None)
-        self.lang = dictionary.get('lang', None)
-        self.listed_count = int(dictionary.get('listed_count') or -1)
-        self.location = dictionary.get('location', None)
-        self.name = dictionary.get('name', None)
-        self.screen_name = dictionary.get('screen_name', None)
-        self.statuses_count = int(dictionary.get('statuses_count') or -1)
-        self.time_zone = dictionary.get('time_zone', None)
-        self.utc_offset = int(dictionary.get('utc_offset') or -1)
-        self.verified = bool(dictionary.get('verified', False) or False)
-        self.id = int(self.id_str)
+As alluded to earlier, relational databases do not support graphs or graph operations. In order to facilitate that, the Node class contains a set of definitions for the manipulation of a graph. I can add edges, detect inbound edges (reference nodes), and outbound edges (pointer nodes).
 
+\begin{lstlisting}
     def add_edge(self, *nodes):
         for node in nodes:
             Edge(self, node)
@@ -74,32 +60,6 @@ The Node Class
 
     def reference_nodes(self):
         return [i.reference_node for i in self.pointer_edges]
-
-    def __str__(self):
-        return self.id_str
-
-    def __hash__(self):
-        return hash(str(self))
-
-    def __eq__(self, other):
-        return self.id_str == other.id_str
-
-    def construct_dictionary(self):
-        return {'createdat': str(self.created_at),
-                'description': str(self.description),
-                'favoritescount': int(self.favorites_count),
-                'followerscount': int(self.followers_count),
-                'friendscount': int(self.friends_count),
-                'idstr': str(self.id_str),
-                'lang': str(self.lang),
-                'listedcount': int(self.listed_count),
-                'location': str(self.location),
-                'name': str(self.name),
-                'screenname': str(self.screen_name),
-                'statusescount': int(self.statuses_count),
-                'timezone': str(self.time_zone),
-                'utcoffset': int(self.utc_offset),
-                'verified': bool(self.verified), }
 \end{lstlisting}
 
 \subsection{The Declarative Base: The Edge Class}
@@ -128,7 +88,7 @@ class Edge(Base):
 \end{lstlisting}
 
 
-\subsection{The Declarative Base: The Status Class}
+\subsection{The Declarative Base: The  Class}
 \begin{lstlisting}
 class Status(Base):
     __tablename__ = 'status'
