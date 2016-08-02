@@ -2,8 +2,24 @@ What is the relationship between a Transnational Entrepreneur's network and thei
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{The Theoretical Model}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\includegraphics[width=1.0\textwidth]{theoretical_model.png}
-The database structure was designed to be as simple and extensible as possible. There are three tables, 'edge', 'node', and 'status'. As you may imagine, the 'edge' table stores all relationships between 'node' objects, the 'node' table stores all nodes, and the 'status' table stores all statuses.
-\subsection{The Relationships}
-The Declarative Base is a special feature of SQLAlchemy. By extending the base class and providing some protected members with metadata, we are able to create a table of a given type in SQLAlchemy. In the example below, we have created a class Node that extends Base. For our metadata we have provided \verb|__tablename__| which indicates what the table name within our database will be. Additionally we have defined all of the fields and their types which will automatically be instantiated by SQLAlchemy when the engine is created. Additionally you'll see that we have a one:many relationship defined between a given Node and a set of Statuses. That is, a Node can have multiple Statuses (this represents all of the tweets made by the user).
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=1.0\textwidth]{theoretical_model.png}
+  \caption{Knowledge Diffusion is moderated by Network Distribution.}
+\end{figure}
 
+\section{Premises}
+The following premises are things we must accept to answer the research question. They are the set of Hypothesis upon which our research is based.
+\subsection{Premise: Transnational Entrepreneur}
+There exist a set of individuals that fit the criteria of a Transnational Entrepreneur. The criteria are that the entrepreneur leverages two or more networks in their business. 
+\subsection{Premise: Transnational Diffusion}
+The hypothesis postulates that Transnational Entrepreneurs diffuse knowledge across national borders.
+\subsection{Premise: Transnational Diffusion Moderated by Network}
+The frequency of knowledge diffusion across borders within a Transnational Entrepreneur's network is moderated by their network's nationality distribution. The national distribution refers to the relative populations of different populations as constrained by nationality.
+\subsection{Premise: Network Distribution Normalization \& Transnational Diffusion are Positively Correlated}
+The closer the Transnationl Entrepreneur's network demographics are to a normalized distribution, the higher the frequency of transnational diffusion. A normalized distribution is defined within a statistical context. This means that 32\% of a user's network should fall within one distribution, another 32\% within another. Following this same reasoning, 95\% of a given Transnational Entrepreneur's network should fall within four discrete countries.
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=1.0\textwidth]{normal_distribution.png}
+  \caption{Normalized distribution (not drawn to scale).}
+\end{figure}
