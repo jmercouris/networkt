@@ -10,7 +10,7 @@ The Declarative Base is a special feature of SQLAlchemy. By extending the base c
 \\
 \\
 \subsection{The Declarative Base: The Node Class}
-The Node Class represents a node within the system. It contains all of the information that is available within the Twitter public API. As is evident there are many fields available.
+The Node Class represents a node within the system. It contains all of the information that is available within the Twitter public API. The following class description shows which fields are available.
 \begin{lstlisting}
   class Node(Base):
     __tablename__ = 'node'
@@ -40,7 +40,7 @@ The Node Class represents a node within the system. It contains all of the infor
                             backref="node", cascade="all, delete")
 \end{lstlisting}
 
-As alluded to earlier, relational databases do not support graphs or graph operations. In order to facilitate that, the Node class contains a set of definitions for the manipulation of a graph. I can add edges, detect inbound edges (reference nodes), and outbound edges (pointer nodes).
+As alluded to earlier, relational databases do not support graphs or graph operations. In order to facilitate this, the Node class contains a set of definitions for the manipulation of a graph. One can add edges, detect inbound edges (reference nodes), and outbound edges (pointer nodes).
 
 \begin{lstlisting}
     def add_edge(self, *nodes):
@@ -61,7 +61,6 @@ As alluded to earlier, relational databases do not support graphs or graph opera
 \end{lstlisting}
 
 \subsection{The Declarative Base: The Edge Class}
-
 The Edge class is what makes all of this possible. The Edge class and corresponding Edge table glue everything together. The Edge table is very simple, it contains two fields, \verb|reference_id| and \verb|pointer_id|. Every single row in table represents a relationship between two Nodes. The Node with the \verb|reference_id| is pointing to the Node with the \verb|pointer_id|. This means that the \verb|pointer_id| Node has an outbound edge to the \verb|reference_id| and vice versa.
 
 \begin{lstlisting}
@@ -89,7 +88,8 @@ class Edge(Base):
 \end{lstlisting}
 
 
-\subsection{The Declarative Base: The  Class}
+\subsection{The Declarative Base: The  Status Class}
+The Status class is responsible for maintaining all of the statuses of every user within the network. This class is important because it contains all of the data that is fed into our clustering sequence for identifying the diffusion of information. The Status class has a one to many relationship with the Node class, that is- a node object has many status objects.
 \begin{lstlisting}
 class Status(Base):
     __tablename__ = 'status'
