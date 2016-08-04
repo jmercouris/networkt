@@ -4,7 +4,49 @@ There are two initial buckets available for GET requests: 15 calls every 15 minu
 
 Source: \verb|https://dev.twitter.com/rest/public/rate-limiting|
 
-\\
-
+\begin{table}[h]
+\centering
+\begin{tabular}{l | l | l | l}
+Type & Title & Resource Family & Requests/15 Min \\
+\hline
+GET & \verb|application/rate_limit_status| & application & 180 \\
+GET & \verb|favorites/list| & favorites & 15 \\
+GET & \verb|followers/ids| & followers & 15 \\
+GET & \verb|followers/list| & followers & 30 \\
+GET & \verb|friends/ids| & friends & 15 \\
+GET & \verb|friends/list| & friends & 30 \\
+GET & \verb|friendships/show| & friendships & 15 \\
+GET & \verb|help/configuration| & help & 15 \\
+GET & \verb|help/languages| & help & 15 \\
+GET & \verb|help/privacy| & help & 15 \\
+GET & \verb|help/tos| & help & 15 \\
+GET & \verb|lists/list| & lists & 15 \\
+GET & \verb|lists/members| & lists & 15 \\
+GET & \verb|lists/members/show| & lists & 15 \\
+GET & \verb|lists/memberships| & lists & 15 \\
+GET & \verb|lists/ownerships| & lists & 15 \\
+GET & \verb|lists/show| & lists & 15 \\
+GET & \verb|lists/statuses| & lists & 180 \\
+GET & \verb|lists/subscribers| & lists & 15 \\
+GET & \verb|lists/subscribers/show| & lists & 15 \\
+GET & \verb|lists/subscriptions| & lists & 15 \\
+GET & \verb|search/tweets| & search & 450 \\
+GET & \verb|statuses/lookup| & statuses & 60 \\
+GET & \verb|statuses/retweeters/ids| & statuses & 60 \\
+GET & \verb|statuses/retweets/:id| & statuses & 60 \\
+GET & \verb|statuses/show/:id| & statuses & 180 \\
+GET & \verb|statuses/user_timeline| & statuses & 300 \\
+GET & \verb|trends/available| & trends & 15 \\
+GET & \verb|trends/closest| & trends & 15 \\
+GET & \verb|trends/place| & trends & 15 \\
+GET & \verb|users/lookup| & users & 60 \\
+GET & \verb|users/show| & users & 180 \\
+GET & \verb|users/suggestions| & users & 15 \\
+GET & \verb|users/suggestions/:slug| & users & 15 \\
+GET & \verb|users/suggestions/:slug/members| & users & 15  \\
+\end{tabular}
+\caption{Twitter Rate Limiting}
+\label{tab:abc}
+\end{table}
 
 
