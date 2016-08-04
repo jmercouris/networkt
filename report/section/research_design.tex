@@ -1,6 +1,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Methodology}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Without directly observing Transnational Entrepreneurs in their own environments throughout many longitudinal studies, while simultaneously observing an equally large control group over the course of years, it is impossible to witness Transnational Diffusion.
+\\
+As such as a secondary method of observation was chosen- Twitter. Through Twitter's public API we are able to get a host of publicly available data about any given User.
+
 \subsection{Inductive vs Deductive}
 Deductive was chosen because.
 
@@ -8,9 +12,7 @@ Deductive was chosen because.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Method}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Without directly observing Transnational Entrepreneurs in their own environments throughout many longitudinal studies, while simultaneously observing an equally large control group over the course of years, it is impossible to witness Transnational Diffusion.
-\\
-As such as a secondary method of observation was chosen- Twitter. Through Twitter's public API we are able to get a host of publicly available data about any given User.
+Twitter affords us a large amount of publicly available data. The following are the fields that we may extract for any given Twitter user.
 
 \begin{itemize}
 \item \verb|created_at|: User account creation date
@@ -30,7 +32,7 @@ As such as a secondary method of observation was chosen- Twitter. Through Twitte
 \item \verb|verified|: Has the User submitted proof to Twitter of their identity
 \end{itemize}
 
-We are also able to get their statuses which will later be useful for tracking Transnational Diffusion through the Twitter network.
+We are also able to get all of their relationships, all of their friends and followers. Finally, we can get their latest 200 statuses which are useful for tracking Transnational Diffusion through a Twitter network.
 
 \subsection{The Root Node}
 The study that we have done may be replicated in any given country given the following process:
@@ -40,6 +42,11 @@ The study that we have done may be replicated in any given country given the fol
 \item Select a startup incubator or co-working space in the city of interest
 \item Find the Twitter account of the selected incubator or co-working space
 \end{enumerate}
+
+The Twitter account that you find in the third step will represent your network root.
+
+\subsection{Root network Extraction}
+After identifying a Twitter User as your Root node, the program will extract a group of follower's from your Root node. These are your Root node's 1st degree network, or rather an incomplete ego-centric network. This group of followers represent candidates for Transnational Entrepreneurs, we know they are likely Entreprenuers in the city that we are interested in, in order to determine whether they are the users that we are looking for, we will perform a set of filters on them.
 
 \subsection{Filter Level 0}
 The Filter 0.
