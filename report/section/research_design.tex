@@ -49,10 +49,19 @@ The Twitter account that you find in the third step will represent your network 
 After identifying a Twitter User as your Root node, the program will extract a group of follower's from your Root node. These are your Root node's 1st degree network, or rather an incomplete ego-centric network. This group of followers represent candidates for Transnational Entrepreneurs, we know they are likely Entreprenuers in the city that we are interested in, in order to determine whether they are the users that we are looking for, we will perform a set of filters on them.
 
 \subsection{Filter Level 0}
-The Filter 0.
+Filter level 0 is responsible for filtering the Root network's ego centric users to see whether they are of interest. We check two things here.
+
+\begin{itemize}
+\item Is the User from Berlin?
+\item Is the User a human?
+\end{itemize}
+
+The way we determine whether the User is from Berlin is largely by relying on their time zone settings. We found that many people set their language, or their city to whatever they would like, but the timezone, often automatically set by the computer is a good indicator of the user's actual locale. Either way, going with any one of the attributes is not a completley valid way to ensure that a given user says where they actually are, all information is subject to what the user wishes to input.
+\\
+The second criteria is a little bit more difficult to discern. It is not always possible to tell apart a human from a robot or organization. In order to keep things as simple as possible, we looked for all user's with names that existed within a census of known names. This is again not a foolproof way of filtering users as robots or not, but it is computationally cheap and allowed us to quickly move on to our next stage of filtering.
 
 \subsection{Filter Level 1}
-The Filter 1.
+Filter level 1 is the part of the filtering process in which we determine whether a user is largely of interest to us, are we going to gather their ego centric network. The reason that we must assess this at this stage is because we are rate limited in how many API calls we may make to the Twitter API for a given time frame (please see the appendix for details).
 
 \subsection{Filter Level 2}
 The Filter 2.
