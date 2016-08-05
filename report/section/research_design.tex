@@ -46,7 +46,7 @@ The study that we have done may be replicated in any given country given the fol
 The Twitter account that you find in the third step will represent your network root.
 
 \subsection{Root network Extraction}
-After identifying a Twitter User as your Root node, the program will extract a group of follower's from your Root node. These are your Root node's 1st degree network, or rather an incomplete ego-centric network. This group of followers represent candidates for Transnational Entrepreneurs, we know they are likely Entreprenuers in the city that we are interested in, in order to determine whether they are the users that we are looking for, we will perform a set of filters on them.
+After identifying a Twitter User as your Root node, the program will extract a group of follower's from your Root node. These are your Root node's 1st degree network, or rather, an incomplete ego-centric network. This group of followers represent candidates for Transnational Entrepreneurs, we know they are likely Entreprenuers in the city that we are interested in, in order to determine whether they are the users that we are looking for, we will perform a set of filters on them.
 
 \subsection{Filter Level 0}
 Filter level 0 is responsible for filtering the Root network's ego centric users to see whether they are of interest. We check two things here.
@@ -61,7 +61,15 @@ The way we determine whether the User is from Berlin is largely by relying on th
 The second criteria is a little bit more difficult to discern. It is not always possible to tell apart a human from a robot or organization. In order to keep things as simple as possible, we looked for all user's with names that existed within a census of known names. This is again not a foolproof way of filtering users as robots or not, but it is computationally cheap and allowed us to quickly move on to our next stage of filtering.
 
 \subsection{Filter Level 1}
-Filter level 1 is the part of the filtering process in which we determine whether a user is largely of interest to us, are we going to gather their ego centric network. The reason that we must assess this at this stage is because we are rate limited in how many API calls we may make to the Twitter API for a given time frame (please see the appendix for details).
+Filter level 1 is the part of the filtering process in which we determine whether a user is largely of interest to us, are we going to gather their ego centric network. The reason that we must assess this at this stage is because we are rate limited in how many API calls we may make to the Twitter API for a given time frame (please see the appendix for details). In order to assess whether a candidate is therefore a transnational entrepreneur without pulling their whole network, we pull a sample of their friends.
+\\
+If we find that the sample distribution is valid, then we will mark them as filtered and move on to processing them in the next stage. The distribution ratio of a valid transnational is therefore that their top two most common nationalaties in their network must be more than \verb|50%| of their network and that their top two most common nationalities may not differ by more than \verb|80%|.
+
+\subsection{Transnational Entrepreneur Ego Network Extraction}
+Following the selection of a set of individuals that we are interested in we begin the extraction process. We iterate through every Transnational Entrepreneur candidate and collect a limited network of their friends and followers. For our initial study, we limited this to 10,000 friends and 10,000 followers each for a given Transnational Entrepreneur.
+
+\subsection{Transnational Entrepreneur Ego-Centric Network Activity}
+Something something something.
 
 \subsection{Filter Level 2}
-The Filter 2.
+Final
