@@ -2,7 +2,7 @@
 \section{Methodology}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Without directly observing Transnational Entrepreneurs in their own environments throughout many longitudinal studies, while simultaneously observing an equally large control group over the course of years, it is impossible to witness Transnational Diffusion.
-\\
+\par
 As such as a secondary method of observation was chosen- Twitter. Through Twitter's public API we are able to get a host of publicly available data about any given User.
 
 \subsection{Inductive vs Deductive}
@@ -57,12 +57,12 @@ Filter level 0 is responsible for filtering the Root network's ego-centric users
 \end{itemize}
 
 The way we determine whether the User is from Berlin is largely by relying on their time zone settings. We found that many people set their language, or their city to whatever they would like, but the timezone, often automatically set by the computer is a good indicator of the user's actual locale. Either way, going with any one of the attributes is not a completley valid way to ensure that a given user says where they actually are, all information is subject to what the user wishes to input.
-\\
+\par
 The second criteria is a little bit more difficult to discern. It is not always possible to tell apart a human from a robot or organization. In order to keep things as simple as possible, we looked for all user's with names that existed within a census of known names. This is again not a foolproof way of filtering users as robots or not, but it is computationally cheap and allowed us to quickly move on to our next stage of filtering.
 
 \subsection{Filter Level 1}
 Filter level 1 is the part of the filtering process in which we determine whether a user is largely of interest to us, are we going to gather their ego-centric network. The reason that we must assess this at this stage is because we are rate limited in how many API calls we may make to the Twitter API for a given time frame (please see the appendix for details). In order to assess whether a candidate is therefore a transnational entrepreneur without pulling their whole network, we pull a sample of their friends.
-\\
+\par
 If we find that the sample distribution is valid, then we will mark them as filtered and move on to processing them in the next stage. The distribution ratio of a valid transnational is therefore that their top two most common nationalaties in their network must be more than \verb|50%| of their network and that their top two most common nationalities may not differ by more than \verb|80%|.
 
 \subsection{Transnational Entrepreneur Ego-Centric Network Extraction}
@@ -95,8 +95,10 @@ Finally, the last thing that we can check, and the most computationally expensiv
 
 \subsection{Transnational Diffusion Sequence Identification}
 Following the collection of all of the tweets within our network we need to be able to identify diffusion of information. Because we have a list of all the tweets and when they occured, we effectively have a very large timeline of tweets from the perspective of the transnational entrepreneur. We can arrange them linearly and we can replay the history of the network throughout time. 
-\\
-Throughout the replay of the network we can look for the following pattern from the perspective of the transnational entrepreneur.
+
+\par
+
+Throughout the replay of the network we can look for the following pattern from the perspective of the transnational entrepreneur:
 
 \begin{enumerate}
 \item Country A - One of my friends posts a piece of information \verb|i| 
@@ -105,7 +107,7 @@ Throughout the replay of the network we can look for the following pattern from 
 \end{enumerate}
 
 If we can observe this pattern, then we have identified an example of Transnational Diffusion, a tweet that somebody in one country made, was transferred to another country via a Transnational Entrepreneur. They helped facilitate information diffusion across borders.
-\\
+\par
 Due to the high volume of tweets within a network, one can imagine that doing this by hand would be nearly impossible. In order to do this effectively against multiple Transnational Entrepreneur ego-centric networks, we have to utilize machine learning.
 
 \subsection{K-Means Clustering \& Document Tokenization}
