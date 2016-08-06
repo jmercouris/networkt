@@ -84,7 +84,7 @@ After collecting all of the tweets from every single user of the gathered ego-ce
 \subsubsection{Is The User Twitter Verified}
 One of the indicators we use to see whether a Twitter User's tweets are worth clustering is whether they are verified or not. A verified Twitter user is one that has submitted formal proof to Twitter that they are who they say they are. Verified Twitter accounts are therefore usually not spammers, and real people or organizations.
 \subsubsection{User Friend to Follower Ratio}
-Does the ratio match.
+A common technique by spam bots is to friend as many people as possible in the hope that they will friend them back. They are operating the human reciprocity principle, and usually with rather limited success. Because the amount of people that friend them back is so low, and far lower than it would be for most humans, we can filter them out easily. We set a threshold of 10:1 friend to follower ratio for someone to be considered within our network. This means that for every 10 people that they are friends with, they must have at lest 1 follower, any less and they will be discounted.
 \subsubsection{Minimum Status Requirements}
 Text.
 \subsubsection{Is the User Spamming?}
