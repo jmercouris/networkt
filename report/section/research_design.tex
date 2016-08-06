@@ -93,5 +93,20 @@ The minimum status requirements that we pose on a user are to make sure that the
 \subsubsection{Is the User Spamming?}
 Finally, the last thing that we can check, and the most computationally expensive is, is the user spamming? To do this we check the latest 200 of a user's total tweets, if over \verb|50%| of them are \verb|75%| or more similar, then we can conclude they are likely spamming and we will not include their tweets in the clustering.
 
-\subsection{Clustering \& Transnational Diffusion Identification}
-Section about identification.
+\subsection{Transnational Diffusion Sequence Identification}
+Following the collection of all of the tweets within our network we need to be able to identify diffusion of information. Because we have a list of all the tweets and when they occured, we effectively have a very large timeline of tweets from the perspective of the transnational entrepreneur. We can arrange them linearly and we can replay the history of the network throughout time. 
+\\
+Throughout the replay of the network we can look for the following pattern from the perspective of the transnational entrepreneur.
+
+\begin{enumerate}
+\item Country A - One of my friends posts a piece of information \verb|i| 
+\item I pick up \verb|i| and post about it as well
+\item Country B - One of my followers posts about \verb|i| after seeing my tweet
+\end{enumerate}
+
+If we can observe this pattern, then we have identified an example of Transnational Diffusion, a tweet that somebody in one country made, was transferred to another country via a Transnational Entrepreneur. They helped facilitate information diffusion across borders.
+\\
+Due to the high volume of tweets within a network, one can imagine that doing this by hand would be nearly impossible. In order to do this effectively against multiple Transnational Entrepreneur ego-centric networks, we have to utilize machine learning.
+
+\subsection{K-Means Clustering \& Document Tokenization}
+The Process of K means clustering is quite long.
