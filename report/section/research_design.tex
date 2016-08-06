@@ -8,12 +8,10 @@ As such as a secondary method of observation was chosen- Twitter. Through Twitte
 \subsection{Inductive vs Deductive}
 Deductive was chosen because.
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Method}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % High Level Overview
-
 Twitter affords us a large amount of publicly available data. The following are the fields that we may extract for any given Twitter user.
 
 \begin{itemize}
@@ -75,18 +73,25 @@ After extracting up to 10,000 friends and followers from every given Transnation
 
 \subsection{Filter Level 2}
 After collecting all of the tweets from every single user of the gathered ego-centric we now have the capability to do more effective filtering for different indicators that a given user may be a robot. In the case that a user is a robot, we do not want to consider their data, our study is only concerned with individuals. To quickly sort through hundreds of thousands of users we take a number of shortcuts that are indicators of humanity.
+
 \begin{itemize}
 \item Is the user twitter verified?
 \item Does the user have a valid ratio of friends to followers?
 \item Does the user have enough statuses?
 \item Is the user simply spamming the same tweet over and over again?
 \end{itemize}
+
 \subsubsection{Is The User Twitter Verified}
 One of the indicators we use to see whether a Twitter User's tweets are worth clustering is whether they are verified or not. A verified Twitter user is one that has submitted formal proof to Twitter that they are who they say they are. Verified Twitter accounts are therefore usually not spammers, and real people or organizations.
+
 \subsubsection{User Friend to Follower Ratio}
 A common technique by spam bots is to friend as many people as possible in the hope that they will friend them back. They are operating the human reciprocity principle, and usually with rather limited success. Because the amount of people that friend them back is so low, and far lower than it would be for most humans, we can filter them out easily. We set a threshold of 10:1 friend to follower ratio for someone to be considered within our network. This means that for every 10 people that they are friends with, they must have at lest 1 follower, any less and they will be discounted.
-\subsubsection{Minimum Status Requirements}
-Text.
-\subsubsection{Is the User Spamming?}
-Text.
 
+\subsubsection{Minimum Status Requirements}
+The minimum status requirements that we pose on a user are to make sure that they are active on twitter. We want to only pick up individuals that are actually participating in conversations and contributing to a community. For this reason we set a minimum number of statuses to 50, if a user has less than 50 statuses every tweeted, then they are not considered in our algorithm.
+
+\subsubsection{Is the User Spamming?}
+Finally, the last thing that we can check, and the most computationally expensive is, is the user spamming? To do this we check the latest 200 of a user's total tweets, if over \verb|50%| of them are \verb|75%| or more similar, then we can conclude they are likely spamming and we will not include their tweets in the clustering.
+
+\subsection{Clustering \& Transnational Diffusion Identification}
+Section about identification.
