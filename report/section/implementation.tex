@@ -162,7 +162,7 @@ Node is the module responsible for all representation and logic of a node. The n
 The Status object represents a tweet. It, like the Node object contains all the information and representation logic necessary for usage by Networkt. It has a date, message body, language, etc, every single field available from twitter, any one of these parameters may be used to influence the behavior of the tweets as they travel across the network e.g. they move quicker between the nodes, they are colored red, etc.
 
 \subsection{Camera}
-Camera Description
+The Camera object and module represents the camera control by the end user. If the user is to move around the objects on the map, we can't actually update their relative positions as defined by the layout algorithm. Instead what we do is we mark an offset on them, if the user pans the map down, then we offset all of the objects up. If the user zooms in, then we multiply the coordinates of the objects so that they occupy a bigger space. All of these actions result in a 'movement' of a camera without actually updating the object properties. The camera offsets are calculated and incorporated during render time.
 
 \subsection{Range Slider}
 Written by \verb|https://groups.google.com/forum/#!topic/kivy-users/oMFx0YKW5oA| 'Werton'
