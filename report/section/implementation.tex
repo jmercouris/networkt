@@ -142,6 +142,7 @@ The runner is the main entry point of the system. Whether running from the GUI m
 Main is aptly named as the main entry point into the program. This is where the GUI version of Scrapet begins. Just like the command line program though, the true entry point of execution is in Runner. During execution of the scraping process, scrapet launches 'Runner' as a thread.
 
 \subsection{Settings Panel}
+The settings panel provides an abstract way to edit the ini file which controls the behavior of the runner. In this way it is possible to use the GUI to set the parameters that the command line program will operate with, as they launch the same subprocess - directly or otherwise.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Networkt}
@@ -155,10 +156,10 @@ As with other packages, Main is the is the main entry point into the program. Th
 Network is the name of the high level Network view. What Network does is, given a set of nodes, it will draw them to the screen. It'll draw them using the Fruchterman-Reingold algorithm. Then, the program when in 'play' mode will signal the Network widget object that time has passed. The Network object will note how much time has passed and how many events from which nodes have been fired off. After collecting the set of fired nodes, it'll initiate the node firing process and actually send the 'messages' between the nodes so that the user can observe them.
 
 \subsection{Node}
-Node Description.
+Node is the module responsible for all representation and logic of a node. The node module contains vertex instructions for drawing, a list of all references to all the status objects of a particular node, and other rendering information. For example, any node property might be used to affect the drawing instructions. When a node is clicked on in the Network widget, all of its' information is displayed in the right hand sidebar.
 
 \subsection{Status}
-Status Object Description
+The Status object represents a tweet. It, like the Node object contains all the information and representation logic necessary for usage by Networkt. It has a date, message body, language, etc, every single field available from twitter, any one of these parameters may be used to influence the behavior of the tweets as they travel across the network e.g. they move quicker between the nodes, they are colored red, etc.
 
 \subsection{Camera}
 Camera Description
