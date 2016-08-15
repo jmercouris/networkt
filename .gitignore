@@ -290,3 +290,6 @@ TSWLatexianTemp*
 report/*.pdf
 
 report/archive
+
+# Ignore offline folder
+offline
