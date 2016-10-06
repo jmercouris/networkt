@@ -54,4 +54,3 @@ class Graph(object):
     
     def close(self):
         self.session.close()
-

@@ -20,13 +20,8 @@ def create_session():
 if __name__ == "__main__":
     session = create_session()
     transnational_users = session.query(Node).filter_by(filter_1=True).all()
+    # Print Information
+    print('username, friends_count, followers_count')
     for user in transnational_users:
-        print('User ', user.screen_name)
-        # statuses = []
-        # statuses = statuses + user.statuses
-        # for node in user.reference_nodes():
-        #     statuses = statuses + node.statuses
-        # for node in user.pointer_nodes():
-        #     statuses = statuses + node.statuses
-        
+        print('{}, {}, {}'.format(user.screen_name, user.friends_count, user.followers_count))
 
