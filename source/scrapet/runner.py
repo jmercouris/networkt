@@ -183,4 +183,3 @@ if __name__ == "__main__":
          extended_graph_follower_limit=extended_graph_follower_limit,
          filter_graph_follower_limit=filter_graph_follower_limit,
          name_list_path=name_list_path, graph_path=graph_path)
-
