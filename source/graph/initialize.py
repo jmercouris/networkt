@@ -96,7 +96,8 @@ class Node(Base):
                 'statusescount': int(self.statuses_count),
                 'timezone': str(self.time_zone),
                 'utcoffset': int(self.utc_offset),
-                'verified': bool(self.verified), }
+                'verified': bool(self.verified),
+                'transnational': bool(self.filter_1), }
 
 
 class Edge(Base):
