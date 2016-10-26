@@ -5,7 +5,16 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from graph.initialize import Base, Status
 
-# Word Cloud for All Tweets
+from nltk.corpus import stopwords
+from nltk.tokenize import TweetTokenizer
+
+
+def process(text):
+    tknzr = TweetTokenizer(strip_handles=True, reduce_len=True)
+    words = tknzr.tokenize(text)
+    filtered_words = [word for word in words if word not in stopwords.words('english')]
+
+    return filtered_words
 
 
 def create_session():
@@ -23,7 +32,8 @@ if __name__ == "__main__":
     session = create_session()
     statuses = session.query(Status).all()
 
-    documents = [i.text for i in statuses]
+    documents = [' '.join(process(i.text)) for i in statuses]
+    print(documents)
     text = ' '.join(documents)
     print('Documents Gathered')
 
@@ -41,4 +51,4 @@ if __name__ == "__main__":
     plt.figure(figsize=(20, 20), facecolor='k')
     plt.imshow(wordcloud)
     plt.axis("off")
-    plt.savefig('{}.png'.format('plotname'))
+    plt.savefig('{}.png'.format('cloud'))
