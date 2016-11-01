@@ -33,7 +33,6 @@ if __name__ == "__main__":
     statuses = session.query(Status).all()
 
     documents = [' '.join(process(i.text)) for i in statuses]
-    print(documents)
     text = ' '.join(documents)
     print('Documents Gathered')
 
