@@ -1,19 +1,21 @@
+''' DB Scan Clustering
+'''
+
 import os
 import string
-import collections
 
 from configparser import ConfigParser
 from nltk import word_tokenize
 from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords
-from sklearn.cluster import KMeans
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from graph.initialize import Base, Node
-from sklearn.metrics.pairwise import cosine_similarity
-import matplotlib.pyplot as plt
-from sklearn.manifold import MDS
+
+from sklearn.cluster import DBSCAN
+from collections import defaultdict
 
 
 def process_text(text, stem=True):
@@ -30,35 +32,21 @@ def process_text(text, stem=True):
     return tokens
 
 
-def cluster_texts(texts, clusters=3):
+def cluster_documents(documents):
     """ Transform texts to Tf-Idf coordinates and cluster texts using K-Means """
     vectorizer = TfidfVectorizer(tokenizer=process_text,
                                  stop_words=stopwords.words('english'),
                                  max_df=0.5,
                                  min_df=0.0,
                                  lowercase=True)
- 
-    tfidf_model = vectorizer.fit_transform(texts)
-    print('Data Vectorized')
-
-    km_model = KMeans(n_clusters=clusters)
-    km_model.fit(tfidf_model)
- 
-    clustering = collections.defaultdict(list)
-    dist = 1 - cosine_similarity(tfidf_model)
-
-    mds = MDS(n_components=2, dissimilarity="precomputed", random_state=1)
-    pos = mds.fit_transform(dist)  # shape (n_components, n_samples)
-    xs, ys = pos[:, 0], pos[:, 1]
     
-    plt.plot(xs, ys, 'go')
+    print('Data Vectorizing')
+    tfidf_model = vectorizer.fit_transform(documents)
     
-    plt.show()
- 
-    for idx, label in enumerate(km_model.labels_):
-        clustering[label].append(idx)
- 
-    return clustering
+    print('Data Clustering')
+    db = DBSCAN(eps=1.0, min_samples=10).fit(tfidf_model)
+    
+    return db.labels_
 
 
 def create_session():
@@ -76,20 +64,41 @@ def create_session():
 if __name__ == "__main__":
     session = create_session()
     transnational_users = session.query(Node).filter_by(filter_1=True).all()
+    
+    print('Gathering Documents')
     for user in transnational_users[0:1]:
         print('User ', user.screen_name)
         statuses = []
         statuses = statuses + user.statuses
-        for node in user.reference_nodes()[0:1]:
-            statuses = statuses + node.statuses
-        for node in user.pointer_nodes()[0:1]:
+        
+        print('Gathering Friend Statuses')
+        for node in user.reference_nodes():
             statuses = statuses + node.statuses
         
-        statuses.sort()
+        print('Gathering Follower Statuses')
+        for node in user.pointer_nodes():
+            statuses = statuses + node.statuses
+        
+        # Convert Documents into Plain Text
         documents = [i.text for i in statuses]
-        print('Documents Gathered')
-        cluster_count = 20
-        clusters = cluster_texts(documents, cluster_count)
+        
+        print('Clustering Documents')
+        labels = cluster_documents(documents)
+        
+        print('Zipping Cluster Labels')
+        for label, status in zip(labels, statuses):
+            status.cluster = label
+        
+        # Group by Cluster for Printing
+        groups = defaultdict(list)
+        for obj in statuses:
+            groups[obj.cluster].append(obj)
+        
+        for key, value in groups.items():
+            print('CLUSTER {}'.format(key))
+            print('_' * 80)
+            for element in value:
+                print(element.text)
         
         print('Execution Complete')
 
