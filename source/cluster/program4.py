@@ -44,7 +44,7 @@ def cluster_documents(documents):
     tfidf_model = vectorizer.fit_transform(documents)
     
     print('Data Clustering')
-    db = DBSCAN(eps=1.0, min_samples=10).fit(tfidf_model)
+    db = DBSCAN(eps=1.0, min_samples=10, n_jobs=-1).fit(tfidf_model)
     
     return db.labels_
 
