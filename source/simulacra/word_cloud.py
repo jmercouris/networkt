@@ -1,3 +1,6 @@
+'''Word Cloud for All Tweets
+'''
+
 import os
 
 from configparser import ConfigParser
@@ -5,7 +8,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from graph.initialize import Base, Node
 
-# Word Cloud for All Tweets
+
 
 
 def create_session():
