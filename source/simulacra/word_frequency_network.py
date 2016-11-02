@@ -1,4 +1,4 @@
-''' Word Frequency of Different Clusters within a given Network
+''' Word Frequency of Different Networks
 '''
 
 import os
@@ -7,7 +7,6 @@ from configparser import ConfigParser
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from graph.initialize import Base, Node
-from collections import defaultdict
 from nltk import FreqDist
 from nltk import word_tokenize
 
@@ -55,22 +54,13 @@ if __name__ == "__main__":
         for node in user.pointer_nodes(limit=10):
             statuses = statuses + node.statuses
         
-        # Group by Cluster for Persistence
-        groups = defaultdict(list)
-        for obj in statuses:
-            groups[obj.cluster].append(obj)
-        
-        with open('{}/{}'.format(WORD_FREQUENCY_PATH, user.screen_name), 'w') as f:
-            for key, value in groups.items():
-                f.write('Cluster {}\n'.format(key))
-                text = ''
+        with open('{}/{}_network'.format(WORD_FREQUENCY_PATH, user.screen_name), 'w') as f:
+            text = ''
+            for status in statuses:
+                text += status.text
                 
-                for element in value:
-                    text += element.text
-                
-                fdist = FreqDist(tokenize_text(text))
-                f.write(str(fdist.most_common(10)) + '\n')
-                f.write('_' * 80 + '\n')
+            fdist = FreqDist(tokenize_text(text))
+            f.write(str(fdist.most_common(256)) + '\n')
         
         print('Execution Complete')
 
