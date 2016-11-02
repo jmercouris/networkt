@@ -44,7 +44,7 @@ def cluster_documents(documents):
     tfidf_model = vectorizer.fit_transform(documents)
     
     print('Data Clustering')
-    db = DBSCAN(eps=1.0, min_samples=10, n_jobs=-1).fit(tfidf_model)
+    db = DBSCAN(eps=1.0, min_samples=3, n_jobs=-1).fit(tfidf_model)
     
     return db.labels_
 
@@ -52,7 +52,7 @@ def cluster_documents(documents):
 def create_session():
     config = ConfigParser()
     config.read(os.path.expanduser('~/.config/networkt/cluster.ini'))
-    DATABASE_NAME = 'sqlite:///{}/data_store_mini.db'.format(config.get('persistence-configuration', 'database_path'))
+    DATABASE_NAME = 'sqlite:///{}/data_store.db'.format(config.get('persistence-configuration', 'database_path'))
     engine = create_engine(DATABASE_NAME)
     Base.metadata.bind = engine
     DBSession = sessionmaker(bind=engine)
@@ -66,17 +66,17 @@ if __name__ == "__main__":
     transnational_users = session.query(Node).filter_by(filter_1=True).all()
     
     print('Gathering Documents')
-    for user in transnational_users[0:1]:
+    for user in transnational_users:
         print('User ', user.screen_name)
         statuses = []
         statuses = statuses + user.statuses
         
         print('Gathering Friend Statuses')
-        for node in user.reference_nodes()[0:1]:
+        for node in user.reference_nodes(limit=10):
             statuses = statuses + node.statuses
         
         print('Gathering Follower Statuses')
-        for node in user.pointer_nodes()[0:1]:
+        for node in user.pointer_nodes(limit=10):
             statuses = statuses + node.statuses
         
         # Convert Documents into Plain Text
@@ -87,18 +87,21 @@ if __name__ == "__main__":
         
         print('Zipping Cluster Labels')
         for label, status in zip(labels, statuses):
-            status.cluster = label
+            status.cluster = int(label)
         
         # Group by Cluster for Printing
-        groups = defaultdict(list)
-        for obj in statuses:
-            groups[obj.cluster].append(obj)
+        # groups = defaultdict(list)
+        # for obj in statuses:
+        #     groups[obj.cluster].append(obj)
         
-        for key, value in groups.items():
-            print('CLUSTER {}'.format(key))
-            print('_' * 80)
-            for element in value:
-                print(element.text)
+        # for key, value in groups.items():
+        #     print('CLUSTER {}'.format(key))
+        #     print('_' * 80)
+        #     for element in value:
+        #         print(element.text)
+        
+        session.commit()
+        print('_' * 80)
         
         print('Execution Complete')
 

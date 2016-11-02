@@ -66,12 +66,18 @@ class Node(Base):
             Edge(node, self)
         return self
 
-    def pointer_nodes(self):
-        return [i.pointer_node for i in self.reference_edges]
-
-    def reference_nodes(self):
-        return [i.reference_node for i in self.pointer_edges]
-
+    def pointer_nodes(self, limit=0):
+        if (limit == 0):
+            return [i.pointer_node for i in self.reference_edges]
+        else:
+            return [i.pointer_node for i in self.reference_edges[0:limit]]
+    
+    def reference_nodes(self, limit=0):
+        if (limit == 0):
+            return [i.reference_node for i in self.pointer_edges]
+        else:
+            return [i.reference_node for i in self.pointer_edges[0:limit]]
+    
     def __str__(self):
         return self.id_str
 
