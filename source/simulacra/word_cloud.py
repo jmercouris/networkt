@@ -9,8 +9,6 @@ from sqlalchemy.orm import sessionmaker
 from graph.initialize import Base, Node
 
 
-
-
 def create_session():
     config = ConfigParser()
     config.read(os.path.expanduser('~/.config/networkt/cluster.ini'))
