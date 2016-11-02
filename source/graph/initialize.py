@@ -29,7 +29,8 @@ class Node(Base):
     time_zone = Column(Text)
     utc_offset = Column(Integer)
     verified = Column(Boolean)
-
+    cluster = Column(Integer)
+    
     # Filtering Levels
     filter_0 = Column(Boolean)
     filter_1 = Column(Boolean)
