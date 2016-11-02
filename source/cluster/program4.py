@@ -1,4 +1,4 @@
-''' DB Scan Clustering
+''' DB Scan Clustering and Persistence
 '''
 
 import os

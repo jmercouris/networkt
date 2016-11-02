@@ -1,3 +1,6 @@
+''' Create GML files for Analysis for Users
+'''
+
 from graph.graph import Graph
 import configparser
 
