@@ -15,7 +15,7 @@ from sqlalchemy.orm import sessionmaker
 from graph.initialize import Base, Node
 
 from sklearn.cluster import DBSCAN
-from collections import defaultdict
+# from collections import defaultdict
 
 
 def process_text(text, stem=True):
