@@ -29,7 +29,6 @@ class Node(Base):
     time_zone = Column(Text)
     utc_offset = Column(Integer)
     verified = Column(Boolean)
-    cluster = Column(Integer)
     
     # Filtering Levels
     filter_0 = Column(Boolean)
@@ -147,6 +146,7 @@ class Status(Base):
     source = Column(Text)
     text = Column(Text)
     truncated = Column(Boolean)
+    cluster = Column(Integer)
     
     def __init__(self, dictionary):
         if dictionary.get('coordinates', None) is not None:
