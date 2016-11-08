@@ -15,11 +15,11 @@ from sqlalchemy.orm import sessionmaker
 from graph.initialize import Base, Node
 
 from sklearn.cluster import DBSCAN
-# from collections import defaultdict
 
 
 def process_text(text, stem=True):
-    """ Tokenize text and stem words removing punctuation """
+    """ Tokenize text and stem words removing punctuation
+    """
     transtable = {ord(s): None for s in string.punctuation}
     transtable[ord('/')] = u''
     text = text.translate(transtable)

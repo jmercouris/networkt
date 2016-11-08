@@ -1,4 +1,4 @@
-'''Word Cloud for All Tweets
+'''Word Cloud for All Tweets in a network
 '''
 
 import os
