@@ -31,14 +31,14 @@ def create_session():
 if __name__ == "__main__":
     session = create_session()
     statuses = session.query(Status).all()
-
+    
     documents = [' '.join(process(i.text)) for i in statuses]
     text = ' '.join(documents)
     print('Documents Gathered')
-
+    
     # Generate a word cloud image
     wordcloud = WordCloud().generate(text)
-
+    
     # Display the generated image:
     # the matplotlib way:
     import matplotlib.pyplot as plt
@@ -50,4 +50,4 @@ if __name__ == "__main__":
     plt.figure(figsize=(20, 20), facecolor='k')
     plt.imshow(wordcloud)
     plt.axis("off")
-    plt.savefig('{}.png'.format('cloud'))
+    plt.savefig('{}.png'.format('root_network_cloud'))
