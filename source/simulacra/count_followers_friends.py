@@ -24,5 +24,6 @@ if __name__ == "__main__":
     # Print Information
     print('username, friends_count, followers_count')
     for user in transnational_users:
-        print('{}, {}, {}'.format(user.screen_name, user.friends_count, user.followers_count))
+        print('{}, {}, {}'.format(
+            user.screen_name, user.friends_count, user.followers_count))
 
