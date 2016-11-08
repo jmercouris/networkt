@@ -9,7 +9,8 @@ from graph.initialize import Base, Node
 def create_session():
     config = ConfigParser()
     config.read(os.path.expanduser('~/.config/networkt/cluster.ini'))
-    DATABASE_NAME = 'sqlite:///{}/data_store.db'.format(config.get('persistence-configuration', 'database_path'))
+    DATABASE_NAME = 'sqlite:///{}/data_store.db'.format(
+        config.get('persistence-configuration', 'database_path'))
     engine = create_engine(DATABASE_NAME)
     Base.metadata.bind = engine
     DBSession = sessionmaker(bind=engine)
