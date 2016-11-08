@@ -74,11 +74,11 @@ if __name__ == "__main__":
         statuses = statuses + user.statuses
         
         print('Gathering Friend Statuses')
-        for node in user.reference_nodes(limit=10):
+        for node in user.reference_nodes():
             statuses = statuses + node.statuses
         
         print('Gathering Follower Statuses')
-        for node in user.pointer_nodes(limit=10):
+        for node in user.pointer_nodes():
             statuses = statuses + node.statuses
         
         print('Converting Documents into Plain Text')
