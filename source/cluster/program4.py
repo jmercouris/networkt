@@ -33,7 +33,8 @@ def process_text(text, stem=True):
 
 
 def cluster_documents(documents):
-    """ Transform texts to Tf-Idf coordinates and cluster texts using K-Means """
+    """ Transform texts to Tf-Idf coordinates and cluster texts using K-Means
+    """
     vectorizer = TfidfVectorizer(tokenizer=process_text,
                                  stop_words=stopwords.words('english'),
                                  max_df=0.5,
@@ -52,7 +53,8 @@ def cluster_documents(documents):
 def create_session():
     config = ConfigParser()
     config.read(os.path.expanduser('~/.config/networkt/cluster.ini'))
-    DATABASE_NAME = 'sqlite:///{}/data_store.db'.format(config.get('persistence-configuration', 'database_path'))
+    DATABASE_NAME = 'sqlite:///{}/data_store.db'.format(
+        config.get('persistence-configuration', 'database_path'))
     engine = create_engine(DATABASE_NAME)
     Base.metadata.bind = engine
     DBSession = sessionmaker(bind=engine)
@@ -79,7 +81,7 @@ if __name__ == "__main__":
         for node in user.pointer_nodes(limit=10):
             statuses = statuses + node.statuses
         
-        # Convert Documents into Plain Text
+        print('Converting Documents into Plain Text')
         documents = [i.text for i in statuses]
         
         print('Clustering Documents')
