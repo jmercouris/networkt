@@ -42,10 +42,10 @@ def cluster_documents(documents):
                                  min_df=0.0,
                                  lowercase=True)
     
-    print('Data Vectorizing')
+    # Data Vectorizing
     tfidf_model = vectorizer.fit_transform(documents)
     
-    print('Data Clustering')
+    # Data Clustering
     db = DBSCAN(min_samples=3).fit(tfidf_model)
     
     return db.labels_
@@ -75,34 +75,29 @@ if __name__ == "__main__":
         statuses = []
         statuses = statuses + user.statuses
         
-        print('Gathering Friend Statuses')
         for index, edge in enumerate(user.pointer_edges):
-            node = edge.pointer_node
-            statuses = statuses + node.statuses
-            print('{} friends gathered (limit 1,000)'.format(index + 1), end='\r')
-        print('')
-        
-        print('Gathering Follower Statuses')
-        for index, edge in enumerate(user.reference_edges):
             node = edge.reference_node
             statuses = statuses + node.statuses
             print('{} followers gathered (limit 1,000)'.format(index + 1), end='\r')
         print('')
         
+        for index, edge in enumerate(user.reference_edges):
+            node = edge.pointer_node
+            statuses = statuses + node.statuses
+            print('{} friends gathered (limit 1,000)'.format(index + 1), end='\r')
+        print('')
+        
         # Sort Statuses by Date to Cluster in Increments of 10000
         statuses.sort()
-        slice_size = 10000
-        sub_array_count = int(len(statuses) / slice_size)
-        print('Total Sections: {}'.format(sub_array_count))
+        split_statuses = np.array_split(statuses, int(len(statuses) / 10000))
         
-        sub_arrays = np.array_split(statuses, sub_array_count)
-        
-        for array in sub_arrays:
-            documents = [i.text for i in array]
+        for index, status_group in enumerate(split_statuses):
+            print('Cluster Group: {}'.format(index), end='\r')
+            documents = [i.text for i in status_group]
             labels = cluster_documents(documents)
             
-            print('Zipping Cluster Labels')
-            for label, status in zip(labels, statuses):
+            print('Zipping Group: {}'.format(index))
+            for label, status in zip(labels, status_group):
                 status.cluster = int(label)
         
         session.commit()
@@ -110,3 +105,8 @@ if __name__ == "__main__":
         
         print('Execution Complete')
 
+'''TODO:
+Add prefix to Cluster to Indicate what sub array it was part of
+Create Program that generates table of Transnational Interactions
+Create Program that calculates distance between tweets to show evoltuion
+'''
