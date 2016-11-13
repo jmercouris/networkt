@@ -67,40 +67,32 @@ if __name__ == "__main__":
     session = create_session()
     transnational_users = session.query(Node).filter_by(filter_1=True).all()
     
-    print('Gathering Documents')
     for user in transnational_users:
         print('User ', user.screen_name)
         statuses = []
         statuses = statuses + user.statuses
         
         print('Gathering Friend Statuses')
-        for node in user.reference_nodes():
+        for index, edge in enumerate(user.pointer_edges):
+            node = edge.pointer_node
             statuses = statuses + node.statuses
+            print('{} of {} friends gathered (limit 10,000)'.format(index, node.friends_count), end='\r')
         
         print('Gathering Follower Statuses')
-        for node in user.pointer_nodes():
+        for index, edge in enumerate(user.reference_edges):
+            node = edge.reference_node
             statuses = statuses + node.statuses
+            print('{} of {} followers gathered (limit 10,000)'.format(index, node.followers_count), end='\r')
         
         print('Converting Documents into Plain Text')
         documents = [i.text for i in statuses]
+        print('Documents Count {}'.format(len(documents)))
         
-        print('Clustering Documents')
-        labels = cluster_documents(documents)
+        labels = cluster_documents(documents[:100])
         
         print('Zipping Cluster Labels')
         for label, status in zip(labels, statuses):
             status.cluster = int(label)
-        
-        # Group by Cluster for Printing
-        # groups = defaultdict(list)
-        # for obj in statuses:
-        #     groups[obj.cluster].append(obj)
-        
-        # for key, value in groups.items():
-        #     print('CLUSTER {}'.format(key))
-        #     print('_' * 80)
-        #     for element in value:
-        #         print(element.text)
         
         session.commit()
         print('_' * 80)
