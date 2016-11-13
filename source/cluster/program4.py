@@ -15,6 +15,7 @@ from sqlalchemy.orm import sessionmaker
 from graph.initialize import Base, Node
 
 from sklearn.cluster import DBSCAN
+import numpy as np
 
 
 def process_text(text, stem=True):
@@ -45,7 +46,7 @@ def cluster_documents(documents):
     tfidf_model = vectorizer.fit_transform(documents)
     
     print('Data Clustering')
-    db = DBSCAN(eps=1.0, min_samples=3, n_jobs=-1).fit(tfidf_model)
+    db = DBSCAN(min_samples=3).fit(tfidf_model)
     
     return db.labels_
 
@@ -78,25 +79,31 @@ if __name__ == "__main__":
         for index, edge in enumerate(user.pointer_edges):
             node = edge.pointer_node
             statuses = statuses + node.statuses
-            print('{} friends gathered (limit 2,000)'.format(index), end='\r')
-        print('\n')
+            print('{} friends gathered (limit 1,000)'.format(index + 1), end='\r')
+        print('')
         
         print('Gathering Follower Statuses')
         for index, edge in enumerate(user.reference_edges):
             node = edge.reference_node
             statuses = statuses + node.statuses
-            print('{} followers gathered (limit 2,000)'.format(index), end='\r')
-        print('\n')
+            print('{} followers gathered (limit 1,000)'.format(index + 1), end='\r')
+        print('')
         
-        print('Converting Documents into Plain Text')
-        documents = [i.text for i in statuses]
-        print('Documents Count {}'.format(len(documents)))
+        # Sort Statuses by Date to Cluster in Increments of 10000
+        statuses.sort()
+        slice_size = 10000
+        sub_array_count = int(len(statuses) / slice_size)
+        print('Total Sections: {}'.format(sub_array_count))
         
-        labels = cluster_documents(documents[:1000])
+        sub_arrays = np.array_split(statuses, sub_array_count)
         
-        print('Zipping Cluster Labels')
-        for label, status in zip(labels, statuses):
-            status.cluster = int(label)
+        for array in sub_arrays:
+            documents = [i.text for i in array]
+            labels = cluster_documents(documents)
+            
+            print('Zipping Cluster Labels')
+            for label, status in zip(labels, statuses):
+                status.cluster = int(label)
         
         session.commit()
         print('_' * 80)
