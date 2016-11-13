@@ -69,6 +69,8 @@ if __name__ == "__main__":
     
     for user in transnational_users:
         print('User ', user.screen_name)
+        print('Friends: {}'.format(user.friends_count))
+        print('Followers: {}'.format(user.followers_count))
         statuses = []
         statuses = statuses + user.statuses
         
@@ -76,19 +78,21 @@ if __name__ == "__main__":
         for index, edge in enumerate(user.pointer_edges):
             node = edge.pointer_node
             statuses = statuses + node.statuses
-            print('{} of {} friends gathered (limit 10,000)'.format(index, node.friends_count), end='\r')
+            print('{} friends gathered (limit 10,000)'.format(index), end='\r')
+        print('\n')
         
         print('Gathering Follower Statuses')
         for index, edge in enumerate(user.reference_edges):
             node = edge.reference_node
             statuses = statuses + node.statuses
-            print('{} of {} followers gathered (limit 10,000)'.format(index, node.followers_count), end='\r')
+            print('{} followers gathered (limit 10,000)'.format(index), end='\r')
+        print('\n')
         
         print('Converting Documents into Plain Text')
         documents = [i.text for i in statuses]
         print('Documents Count {}'.format(len(documents)))
         
-        labels = cluster_documents(documents[:100])
+        labels = cluster_documents(documents[:1000])
         
         print('Zipping Cluster Labels')
         for label, status in zip(labels, statuses):
