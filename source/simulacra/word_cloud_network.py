@@ -3,6 +3,7 @@
 
 import os
 import string
+import re
 from configparser import ConfigParser
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -15,6 +16,7 @@ from nltk.tokenize import TweetTokenizer
 
 
 def process(text):
+    text = re.sub(r'(https|http)?:\/\/(\w|\.|\/|\?|\=|\&|\%)*\b', '', text, flags=re.MULTILINE)
     tknzr = TweetTokenizer(strip_handles=True, reduce_len=True)
     words = tknzr.tokenize(text)
     filtered_words = [word for word in words if word not in stopwords.words('english')]
