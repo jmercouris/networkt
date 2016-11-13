@@ -5,8 +5,8 @@ from graph.initialize import Base, Node, Status
 
 
 class Graph(object):
-    """Documentation for Graph
-
+   nn """Documentation for Graph
+nn
     """
     def __init__(self, DATABASE_NAME):
         engine = create_engine(DATABASE_NAME)

@@ -58,7 +58,7 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
             if (node.filter_0):
                 try:
                     network_scrape.pull_remote_graph_friend(node.screen_name,
-                                                            scope_limit=ceiling(filter_graph_follower_limit / 200))
+                                                            scope_limit=ceiling(extended_graph_follower_limit / 200))
                     LOGGER.log_event(0, 'Partial Graph: {} extracted.'.format(node.screen_name))
                 except:
                     LOGGER.log_event(0, 'Could not extract partial graph: {}'.format(node.screen_name))
@@ -78,7 +78,7 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
         LOGGER.log_event(0, 'Skipped filter level 1 of transnational users (already done)')
     
     ##########################################################################
-    # Pull extended graphs of all filtered users
+    # Pull extended graphs of all filtered users, pull their followers as well
     if (network_scrape.statuses_exist() is None):
         for root_node in network_scrape.get_users_from_filter_level('filter_1'):
             try:
@@ -87,12 +87,6 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
                 LOGGER.log_event(0, '{} follower subgraph extracted'.format(root_node.screen_name))
             except:
                 LOGGER.log_event(0, '{} follower subgraph could not be extracted'.format(root_node.screen_name))
-            try:
-                network_scrape.pull_remote_graph_friend(root_node.screen_name,
-                                                        scope_limit=ceiling(extended_graph_follower_limit / 200))
-                LOGGER.log_event(0, '{} friend subgraph extracted'.format(root_node.screen_name))
-            except:
-                LOGGER.log_event(0, '{} friend subgraph could not be extracted'.format(root_node.screen_name))
         LOGGER.update_progress(0.60)
     else:
         LOGGER.log_event(0, 'Skipped subgraph extraction of all filter 1 users (already done)')
@@ -102,6 +96,7 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
     if (network_scrape.nodes_filtered_at_level('filter_2') is None):
         for root_node in network_scrape.get_users_from_filter_level('filter_1'):
             network_scrape.pull_remote_status(root_node.screen_name)
+            
             for node in root_node.reference_nodes():
                 try:
                     network_scrape.pull_remote_status(node.screen_name)
@@ -110,6 +105,7 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
                 except:
                     LOGGER.log_event(0, '{} friend: {} statuses not extracted'.format(
                         root_node.screen_name, node.screen_name))
+            
             for node in root_node.pointer_nodes():
                 try:
                     network_scrape.pull_remote_status(node.screen_name)
@@ -118,6 +114,7 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
                 except:
                     LOGGER.log_event(0, '{} follower: {} statuses not extracted'.format(
                         root_node.screen_name, node.screen_name))
+        
         LOGGER.update_progress(0.70)
     else:
         LOGGER.log_event(0, 'Skipped statuses extraction (already done)')
