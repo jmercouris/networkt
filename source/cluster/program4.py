@@ -78,14 +78,14 @@ if __name__ == "__main__":
         for index, edge in enumerate(user.pointer_edges):
             node = edge.pointer_node
             statuses = statuses + node.statuses
-            print('{} friends gathered (limit 10,000)'.format(index), end='\r')
+            print('{} friends gathered (limit 2,000)'.format(index), end='\r')
         print('\n')
         
         print('Gathering Follower Statuses')
         for index, edge in enumerate(user.reference_edges):
             node = edge.reference_node
             statuses = statuses + node.statuses
-            print('{} followers gathered (limit 10,000)'.format(index), end='\r')
+            print('{} followers gathered (limit 2,000)'.format(index), end='\r')
         print('\n')
         
         print('Converting Documents into Plain Text')
