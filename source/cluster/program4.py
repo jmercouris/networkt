@@ -5,7 +5,6 @@ import os
 import string
 from bisect import bisect_left, bisect_right
 from datetime import timedelta
-from graph.initialize import Status
 
 from configparser import ConfigParser
 from nltk import word_tokenize
@@ -13,12 +12,13 @@ from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords
 
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.cluster import DBSCAN
+import numpy as np
+import jellyfish
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from graph.initialize import Base, Node
-
-from sklearn.cluster import DBSCAN
-import numpy as np
 
 
 def process_text(text, stem=True):
@@ -86,21 +86,41 @@ def identify_transnational_diffusion(user, statuses):
             next_stack = statuses[index:right_bound]
             
             # Filter Type Tweets
-            friend_stack = [sts for sts in previous_stack if user in sts.node.pointer_nodes()]
-            follower_stack = [sts for sts in next_stack if user in sts.node.reference_nodes()]
+            previous_stack = [sts for sts in previous_stack if user in sts.node.pointer_nodes()]
+            next_stack = [sts for sts in next_stack if user in sts.node.reference_nodes()]
             
             # Filter Cluster
-            friend_stack = [sts for sts in friend_stack if sts.cluster == status.cluster]
-            follower_stack = [sts for sts in follower_stack if sts.cluster == status.cluster]
+            previous_stack = [sts for sts in previous_stack if sts.cluster == status.cluster]
+            next_stack = [sts for sts in next_stack if sts.cluster == status.cluster]
+            
+            # Average Distance Before / After
+            distance = 0
+            for sts in previous_stack:
+                distance += jellyfish.jaro_distance(sts.text, status.text)
+            previous_average = distance / len(previous_stack)
+            
+            distance = 0
+            comparisons = 0
+            for sts in previous_stack:
+                for stsy in next_stack:
+                    comparisons += 1
+                    distance += jellyfish.jaro_distance(sts.text, stsy.text)
+            evolved_average = distance / comparisons
             
             # Print Output
-            if(len(friend_stack) > 0 and len(follower_stack) > 0):
-                print([i.text for i in friend_stack])
-                print('-' * 40)
-                print(status.text)
-                print('-' * 40)
-                print([i.text for i in follower_stack])
-                print('=' * 80)
+            if(len(previous_stack) > 0 and len(next_stack) > 0):
+                config = ConfigParser()
+                config.read(os.path.expanduser('~/.config/networkt/cluster.ini'))
+                path = config.get('persistence-configuration', 'database_path')
+                with open('{}/{}'.format(path, user.screen_name), 'a') as f:
+                    f.write('Average Distance(Friend -> Transnational): {}'.format(previous_average))
+                    f.write('Average Distance(Friend -> Transnational Follower): {}'.format(evolved_average))
+                    f.write(str([i.text for i in previous_stack]) + '\n')
+                    f.write('-' * 40 + '\n')
+                    f.write(status.text + '\n')
+                    f.write('-' * 40 + '\n')
+                    f.write(str([i.text for i in next_stack]) + '\n')
+                    f.write('=' * 80 + '\n')
 
 if __name__ == "__main__":
     session = create_session()
