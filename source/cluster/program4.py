@@ -145,8 +145,6 @@ if __name__ == "__main__":
         print('_' * 80)
 
 '''TODO:
-Add prefix to Cluster to Indicate what sub array it was part of
-Create Program that generates table of Transnational Interactions
 Create Program that calculates distance between tweets to show evolution
 Work on Documentation
 '''
