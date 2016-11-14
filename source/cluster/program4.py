@@ -68,6 +68,9 @@ def create_session():
 
 
 def identify_transnational_diffusion(user, statuses):
+    # Remove Non Clustered Tweets
+    statuses = [sts for sts in statuses if sts.cluster != -1 and sts.cluster is not None]
+    
     for index, status in enumerate(statuses):
         # Transnational Tweet - Check for Diffusion
         if (status.node == user):
@@ -82,15 +85,29 @@ def identify_transnational_diffusion(user, statuses):
             right_bound = bisect_right(statuses, tmp_status, lo=index)
             next_stack = statuses[index:right_bound]
             
-            # Filter Friend Tweets
-            # friend_stack = [status for status in previous_stack if status.node]
+            # Filter Type Tweets
+            friend_stack = [sts for sts in previous_stack if user in sts.node.pointer_nodes()]
+            follower_stack = [sts for sts in next_stack if user in sts.node.reference_nodes()]
+            
+            # Filter Cluster
+            friend_stack = [sts for sts in friend_stack if sts.cluster == status.cluster]
+            follower_stack = [sts for sts in follower_stack if sts.cluster == status.cluster]
+            
+            # Print Output
+            if(len(friend_stack) > 0 and len(follower_stack) > 0):
+                print([i.text for i in friend_stack])
+                print('-' * 40)
+                print(status.text)
+                print('-' * 40)
+                print([i.text for i in follower_stack])
+                print('=' * 80)
 
 if __name__ == "__main__":
     session = create_session()
     transnational_users = session.query(Node).filter_by(filter_1=True).all()
     
     for user in transnational_users:
-        print('User ', user.screen_name)
+        print('User: {} '.format(user.screen_name))
         print('Friends: {}'.format(user.friends_count))
         print('Followers: {}'.format(user.followers_count))
         statuses = []
