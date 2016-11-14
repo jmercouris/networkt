@@ -93,22 +93,24 @@ def identify_transnational_diffusion(user, statuses):
             previous_stack = [sts for sts in previous_stack if sts.cluster == status.cluster]
             next_stack = [sts for sts in next_stack if sts.cluster == status.cluster]
             
-            # Average Distance Before / After
-            distance = 0
-            for sts in previous_stack:
-                distance += jellyfish.jaro_distance(sts.text, status.text)
-            previous_average = distance / len(previous_stack)
-            
-            distance = 0
-            comparisons = 0
-            for sts in previous_stack:
-                for stsy in next_stack:
-                    comparisons += 1
-                    distance += jellyfish.jaro_distance(sts.text, stsy.text)
-            evolved_average = distance / comparisons
             
             # Print Output
             if(len(previous_stack) > 0 and len(next_stack) > 0):
+                # Average Distance Before / After
+                distance = 0
+                for sts in previous_stack:
+                    distance += jellyfish.jaro_distance(sts.text, status.text)
+                previous_average = distance / len(previous_stack)
+                
+                distance = 0
+                comparisons = 0
+                for sts in previous_stack:
+                    for stsy in next_stack:
+                        comparisons += 1
+                        distance += jellyfish.jaro_distance(sts.text, stsy.text)
+                evolved_average = distance / comparisons
+                
+                # Print Output
                 config = ConfigParser()
                 config.read(os.path.expanduser('~/.config/networkt/cluster.ini'))
                 path = config.get('persistence-configuration', 'database_path')
