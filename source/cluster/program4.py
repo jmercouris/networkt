@@ -115,8 +115,8 @@ def identify_transnational_diffusion(user, statuses):
                 config.read(os.path.expanduser('~/.config/networkt/cluster.ini'))
                 path = config.get('persistence-configuration', 'database_path')
                 with open('{}/{}'.format(path, user.screen_name), 'a') as f:
-                    f.write('Average Distance(Friend -> Transnational): {}'.format(previous_average))
-                    f.write('Average Distance(Friend -> Transnational Follower): {}'.format(evolved_average))
+                    f.write('Avg.(Friend -> Transnational): {}\n'.format(previous_average))
+                    f.write('Avg.(Friend -> Transnational Follower): {}\n'.format(evolved_average))
                     f.write(str([i.text for i in previous_stack]) + '\n')
                     f.write('-' * 40 + '\n')
                     f.write(status.text + '\n')
