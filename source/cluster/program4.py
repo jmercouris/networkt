@@ -3,6 +3,9 @@
 
 import os
 import string
+from bisect import bisect_left, bisect_right
+from datetime import timedelta
+from graph.initialize import Status
 
 from configparser import ConfigParser
 from nltk import word_tokenize
@@ -64,6 +67,24 @@ def create_session():
     return session
 
 
+def identify_transnational_diffusion(user, statuses):
+    for index, status in enumerate(statuses):
+        # Transnational Tweet - Check for Diffusion
+        if (status.node == user):
+            # Gather Tweets from Previous 1 Day
+            tmp_status = type('', (), {})  # Create Pseudo Object for Comparison
+            tmp_status.date = status.date - timedelta(days=1)
+            left_bound = bisect_left(statuses, tmp_status, lo=0, hi=index)
+            previous_stack = statuses[left_bound:index]
+            
+            # Gather Tweets from Next 1 Day
+            tmp_status.date = status.date + timedelta(days=1)
+            right_bound = bisect_right(statuses, tmp_status, lo=index)
+            next_stack = statuses[index:right_bound]
+            
+            # Filter Friend Tweets
+            # friend_stack = [status for status in previous_stack if status.node]
+
 if __name__ == "__main__":
     session = create_session()
     transnational_users = session.query(Node).filter_by(filter_1=True).all()
@@ -99,14 +120,16 @@ if __name__ == "__main__":
             print('Zipping Group: {}'.format(index))
             for label, status in zip(labels, status_group):
                 status.cluster = int(label)
+            
+            # Identify Transnational Interactions
+            identify_transnational_diffusion(user, status_group)
         
         session.commit()
         print('_' * 80)
-        
-        print('Execution Complete')
 
 '''TODO:
 Add prefix to Cluster to Indicate what sub array it was part of
 Create Program that generates table of Transnational Interactions
-Create Program that calculates distance between tweets to show evoltuion
+Create Program that calculates distance between tweets to show evolution
+Work on Documentation
 '''
