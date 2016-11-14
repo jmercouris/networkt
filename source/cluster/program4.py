@@ -93,7 +93,6 @@ def identify_transnational_diffusion(user, statuses):
             previous_stack = [sts for sts in previous_stack if sts.cluster == status.cluster]
             next_stack = [sts for sts in next_stack if sts.cluster == status.cluster]
             
-            
             # Print Output
             if(len(previous_stack) > 0 and len(next_stack) > 0):
                 # Average Distance Before / After
