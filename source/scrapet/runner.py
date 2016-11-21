@@ -77,12 +77,12 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
     ##########################################################################
     # Pull extended graphs of all filtered users, pull their followers as well
     # if (network_scrape.statuses_exist() is None):
-    for root_node in network_scrape.get_users_from_filter_level('filter_1'):
+    for node in network_scrape.get_users_from_filter_level('filter_1'):
         try:
-            network_scrape.pull_remote_graph_follow(root_node.screen_name, extended_graph_follower_limit)
-            LOGGER.log_event(0, '{} follower subgraph extracted'.format(root_node.screen_name))
+            network_scrape.pull_remote_graph_follow(node.screen_name, extended_graph_follower_limit)
+            LOGGER.log_event(0, '{} follower subgraph extracted'.format(node.screen_name))
         except:
-            LOGGER.log_event(0, '{} follower subgraph could not be extracted'.format(root_node.screen_name))
+            LOGGER.log_event(0, '{} follower subgraph could not be extracted'.format(node.screen_name))
     LOGGER.update_progress(0.60)
     # else:
     #     LOGGER.log_event(0, 'Skipped subgraph extraction of all filter 1 users (already done)')
@@ -90,26 +90,26 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
     ##########################################################################
     # Pull statuses of all filtered user networks
     if (network_scrape.nodes_filtered_at_level('filter_2') is None):
-        for root_node in network_scrape.get_users_from_filter_level('filter_1'):
-            network_scrape.pull_remote_status(root_node.screen_name)
+        for node in network_scrape.get_users_from_filter_level('filter_1'):
+            network_scrape.pull_remote_status(node.screen_name)
             
-            for node in root_node.reference_nodes():
+            for node in node.reference_nodes():
                 try:
                     network_scrape.pull_remote_status(node.screen_name)
                     LOGGER.log_event(0, '{} friend: {} statuses extracted'.format(
-                        root_node.screen_name, node.screen_name))
+                        node.screen_name, node.screen_name))
                 except:
                     LOGGER.log_event(0, '{} friend: {} statuses not extracted'.format(
-                        root_node.screen_name, node.screen_name))
+                        node.screen_name, node.screen_name))
             
-            for node in root_node.pointer_nodes():
+            for node in node.pointer_nodes():
                 try:
                     network_scrape.pull_remote_status(node.screen_name)
                     LOGGER.log_event(0, '{} follower: {} statuses extracted'.format(
-                        root_node.screen_name, node.screen_name))
+                        node.screen_name, node.screen_name))
                 except:
                     LOGGER.log_event(0, '{} follower: {} statuses not extracted'.format(
-                        root_node.screen_name, node.screen_name))
+                        node.screen_name, node.screen_name))
         
         LOGGER.update_progress(0.70)
     else:
@@ -119,9 +119,9 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
     # Persist Graphs of all filtered user networks
     if (network_scrape.nodes_filtered_at_level('filter_2') is None):
         root_user_object = network_scrape.get_user_from_data_store(root_user)
-        for root_node in root_user_object.pointer_nodes():
-            if (root_node.filter_0 and root_node.filter_1):
-                graph.persist_graph(root_node.screen_name, graph_path, root_node.screen_name)
+        for node in root_user_object.pointer_nodes():
+            if (node.filter_0 and node.filter_1):
+                graph.persist_graph(node.screen_name, graph_path, node.screen_name)
         graph.persist_graph(root_user_object.screen_name, graph_path, root_user_object.screen_name)
         LOGGER.update_progress(0.90)
     else:
