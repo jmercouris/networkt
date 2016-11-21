@@ -1,4 +1,5 @@
 import time
+from math import ceil as ceiling
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from graph.initialize import Base, Node, Edge, Status, edge_point, edge_reference
@@ -26,7 +27,9 @@ class NetworkScrape(object):
             self.session.add(instance)
             self.session.commit()
     
-    def pull_remote_graph_follow(self, screen_name, scope_limit=1, scope_depth=200):
+    def pull_remote_graph_follow(self, screen_name, limit):
+        scope_depth = 200
+        scope_limit = ceiling(limit / scope_depth)
         user_object = self.session.query(Node).filter_by(screen_name=screen_name).first()
         node_count = len(user_object.pointer_nodes())
         
@@ -34,7 +37,9 @@ class NetworkScrape(object):
             self.pull_remote_graph(screen_name, scope_limit, scope_depth,
                                    self.twitter.get_followers_list, self.edge_check_reference, edge_reference)
     
-    def pull_remote_graph_friend(self, screen_name, scope_limit=1, scope_depth=200):
+    def pull_remote_graph_friend(self, screen_name, limit):
+        scope_depth = 200
+        scope_limit = ceiling(limit / scope_depth)
         user_object = self.session.query(Node).filter_by(screen_name=screen_name).first()
         node_count = len(user_object.reference_nodes())
         
