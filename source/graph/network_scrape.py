@@ -28,13 +28,17 @@ class NetworkScrape(object):
     
     def pull_remote_graph_follow(self, screen_name, scope_limit=1, scope_depth=200):
         user_object = self.session.query(Node).filter_by(screen_name=screen_name).first()
-        if (len(user_object.pointer_nodes()) < 5):
+        node_count = len(user_object.pointer_nodes())
+        
+        if (node_count < user_object.followers_count and node_count < (scope_limit * scope_depth) - 1):
             self.pull_remote_graph(screen_name, scope_limit, scope_depth,
                                    self.twitter.get_followers_list, self.edge_check_reference, edge_reference)
     
     def pull_remote_graph_friend(self, screen_name, scope_limit=1, scope_depth=200):
         user_object = self.session.query(Node).filter_by(screen_name=screen_name).first()
-        if (len(user_object.reference_nodes()) < 5):
+        node_count = len(user_object.reference_nodes())
+        
+        if (node_count < user_object.friends_count and node_count < (scope_limit * scope_depth) - 1):
             self.pull_remote_graph(screen_name, scope_limit, scope_depth,
                                    self.twitter.get_friends_list, self.edge_check_point, edge_point)
     
