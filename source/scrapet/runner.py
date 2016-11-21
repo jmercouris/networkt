@@ -2,7 +2,6 @@ import configparser
 from graph.network_scrape import NetworkScrape
 from graph.graph import Graph
 from graph.initialize import create_database
-from math import ceil as ceiling
 from scrapet.logger import Logger
 
 
@@ -32,8 +31,7 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
     # Persist the root user's follower list
     if (network_scrape.nodes_filtered_at_level('filter_0') is None):
         try:
-            network_scrape.pull_remote_graph_follow(root_user,
-                                                    scope_limit=ceiling(root_user_follower_limit / 200))
+            network_scrape.pull_remote_graph_follow(root_user, root_user_follower_limit)
             LOGGER.log_event(0, 'Persisted Root User follower graph')
         except:
             LOGGER.log_event(0, 'Could not pull Root User follower graph')
@@ -57,8 +55,7 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
         for node in root_user_object.pointer_nodes():
             if (node.filter_0):
                 try:
-                    network_scrape.pull_remote_graph_friend(node.screen_name,
-                                                            scope_limit=ceiling(extended_graph_follower_limit / 200))
+                    network_scrape.pull_remote_graph_friend(node.screen_name, extended_graph_follower_limit)
                     LOGGER.log_event(0, 'Partial Graph: {} extracted.'.format(node.screen_name))
                 except:
                     LOGGER.log_event(0, 'Could not extract partial graph: {}'.format(node.screen_name))
@@ -79,17 +76,16 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
     
     ##########################################################################
     # Pull extended graphs of all filtered users, pull their followers as well
-    if (network_scrape.statuses_exist() is None):
-        for root_node in network_scrape.get_users_from_filter_level('filter_1'):
-            try:
-                network_scrape.pull_remote_graph_follow(root_node.screen_name,
-                                                        scope_limit=ceiling(extended_graph_follower_limit / 200))
-                LOGGER.log_event(0, '{} follower subgraph extracted'.format(root_node.screen_name))
-            except:
-                LOGGER.log_event(0, '{} follower subgraph could not be extracted'.format(root_node.screen_name))
-        LOGGER.update_progress(0.60)
-    else:
-        LOGGER.log_event(0, 'Skipped subgraph extraction of all filter 1 users (already done)')
+    # if (network_scrape.statuses_exist() is None):
+    for root_node in network_scrape.get_users_from_filter_level('filter_1'):
+        try:
+            network_scrape.pull_remote_graph_follow(root_node.screen_name, extended_graph_follower_limit)
+            LOGGER.log_event(0, '{} follower subgraph extracted'.format(root_node.screen_name))
+        except:
+            LOGGER.log_event(0, '{} follower subgraph could not be extracted'.format(root_node.screen_name))
+    LOGGER.update_progress(0.60)
+    # else:
+    #     LOGGER.log_event(0, 'Skipped subgraph extraction of all filter 1 users (already done)')
     
     ##########################################################################
     # Pull statuses of all filtered user networks
