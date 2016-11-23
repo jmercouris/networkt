@@ -111,10 +111,10 @@ class NetworktApp(App):
     def load_graph(self):
         # Generate a simple graph
         self.nodes = {}
-        root_user = 'daffunn'
+        root_user = 'marley'
         # Generate Graph Object
         graph_object = Graph('sqlite://///Users/jmercouris/Documents/TUB/Transnational/source/data/data_store.db')
-        graph = graph_object.load_graph_from_database(root_user, depth_limit=0)
+        graph = graph_object.load_ego_graph_from_database(root_user, 10)
         layout = nx.spring_layout(graph)
         # Generate the list of nodes with positions
         for node in layout:
@@ -130,9 +130,10 @@ class NetworktApp(App):
             # Generate Placeholder Lines for updating
             self.nodes[edge[0]].edges_representation.append(Line(points=[0, 0, 100, 100]))
         # Generate graph metadata
-        for node in self.nodes:
+        for index, node in enumerate(self.nodes):
             nodei = self.nodes[node]
-            for status in graph_object.get_statuses_for_screen_name(nodei.screen_name):
+            print('{}/{} Loading Statuses {}'.format(index, len(self.nodes), nodei.screen_name), end='\r')
+            for status in graph_object.get_statuses_for_screen_name(nodei.screen_name)[:10]:
                 nodei.statuses.append(Status(status, sender=nodei))
             # Sort node statuses
             nodei.statuses.sort()
