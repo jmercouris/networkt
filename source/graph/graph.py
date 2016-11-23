@@ -28,6 +28,21 @@ class Graph(object):
         graph = self.traverse(root_user_object, 0, depth_limit, {}, graph)
         return graph
     
+    def load_ego_graph_from_database(self, screen_name, limit):
+        graph = nx.DiGraph()
+        root_user = self.session.query(Node).filter_by(screen_name=screen_name).first()
+        graph.add_node(root_user.screen_name, root_user.construct_dictionary())
+        
+        for node in root_user.pointer_nodes()[:limit]:
+            graph.add_node(node.screen_name, node.construct_dictionary())
+            graph.add_edge(root_user.screen_name, node.screen_name)
+        
+        for node in root_user.reference_nodes()[:limit]:
+            graph.add_node(node.screen_name, node.construct_dictionary())
+            graph.add_edge(node.screen_name, root_user.screen_name)
+        
+        return graph
+
     def load_statuses(self, lang='en', filter_level=2):
         return self.session.query(Status).join(Node).filter(Status.lang == 'en', Node.filter_2).all()
     
