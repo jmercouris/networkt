@@ -132,12 +132,21 @@ class Network(StencilView):
     
     def update_graphic(self):
         self.node_instruction_group.clear()
-
+        
         for index, node in enumerate(self.nodes):
             nodei = self.nodes[node]
             nodei.interaction_instruction_group = self.interaction_instruction_group
+            
+            # Try to Color Connections based on whether friend or otherwise
+            try:
+                if(nodei.connection == 'friend'):
+                    self.node_instruction_group.add(Color(0, 1, 0, 1))
+                else:
+                    self.node_instruction_group.add(Color(1, 0, 0, 1))
+            except AttributeError:
+                self.node_instruction_group.add(Color(0, 0, 1, 1))  # Add a Default Color
+            
             self.node_instruction_group.add(nodei.representation)
-            self.node_instruction_group.add(Color(0, (index / len(self.nodes)), 0, 1))
             for edge in nodei.edges_representation:
                 self.node_instruction_group.add(edge)
     
