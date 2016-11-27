@@ -38,13 +38,13 @@ class Status(object):
         self.truncated = src_status_object.truncated
     
     def initialize(self):
-        self.steps = 50
+        self.steps = 100
         self.radius = dp(5.0)
         self.refresh_position()
         if (self.receiver is not None):
             self.calculate_delta(steps=self.steps)
     
-    def calculate_delta(self, steps=50):
+    def calculate_delta(self, steps=100):
         self.delta_x = (self.receiver.render_position[0] - self.sender.render_position[0]) / steps
         self.delta_y = (self.receiver.render_position[1] - self.sender.render_position[1]) / steps
     

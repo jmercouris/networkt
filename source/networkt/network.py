@@ -26,10 +26,12 @@ class Network(StencilView):
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
         self.camera = Camera()
         self.event_stack = []
+        
         # Messages Instruction Group
         self.interaction_instruction_group = InstructionGroup()
         self.interaction_instruction_group.add(Color(0, .75, 0, 1))
         self.canvas.add(self.interaction_instruction_group)
+        
         # Node Instruction Group
         self.node_instruction_group = InstructionGroup()
         self.node_instruction_group.add(Color(0, .75, 0, 1))
@@ -130,11 +132,12 @@ class Network(StencilView):
     
     def update_graphic(self):
         self.node_instruction_group.clear()
-        self.node_instruction_group.add(Color(0, .50, 0, 1))
-        for node in self.nodes:
+
+        for index, node in enumerate(self.nodes):
             nodei = self.nodes[node]
             nodei.interaction_instruction_group = self.interaction_instruction_group
             self.node_instruction_group.add(nodei.representation)
+            self.node_instruction_group.add(Color(0, (index / len(self.nodes)), 0, 1))
             for edge in nodei.edges_representation:
                 self.node_instruction_group.add(edge)
     

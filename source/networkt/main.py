@@ -112,15 +112,18 @@ class NetworktApp(App):
         # Generate a simple graph
         self.nodes = {}
         root_user = 'marley'
+        
         # Generate Graph Object
         graph_object = Graph('sqlite://///Users/jmercouris/Documents/TUB/Transnational/source/data/data_store.db')
         graph = graph_object.load_ego_graph_from_database(root_user, 10)
         layout = nx.spring_layout(graph)
+        
         # Generate the list of nodes with positions
         for node in layout:
             nodei = Node(graph.node[node])
             nodei.position = layout[node]
             self.nodes[nodei.screen_name] = nodei
+        
         # Add edges to every node in graph
         for edge in graph.edges():
             # Add Outbound edges
@@ -129,6 +132,7 @@ class NetworktApp(App):
             self.nodes[edge[1]].inbound_edges.append(self.nodes[edge[0]])
             # Generate Placeholder Lines for updating
             self.nodes[edge[0]].edges_representation.append(Line(points=[0, 0, 100, 100]))
+        
         # Generate graph metadata
         for index, node in enumerate(self.nodes):
             nodei = self.nodes[node]
