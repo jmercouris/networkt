@@ -136,9 +136,9 @@ class NetworktApp(App):
         # Mark Users as Followers or Friends in Ego-Centric Sense
         for index, node in enumerate(self.nodes):
             nodei = self.nodes[node]
-            if (len(nodei.edges) > 0):
+            if len(nodei.edges) > 0 and len(nodei.inbound_edges) <= 0:
                 nodei.connection = 'friend'
-            else:
+            elif len(nodei.inbound_edges) > 0 and len(nodei.edges) <=0:
                 nodei.connection = 'follower'
         
         # Generate graph metadata
