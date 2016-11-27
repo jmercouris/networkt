@@ -19,13 +19,14 @@ class Network(StencilView):
     time = NumericProperty(0)
     time_slice_start = NumericProperty(0)
     time_slice_end = NumericProperty(0)
-    
+
     def __init__(self, **kwargs):
         super(Network, self).__init__(**kwargs)
         self._keyboard = Window.request_keyboard(self._keyboard_closed, self, 'text')
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
         self.camera = Camera()
         self.event_stack = []
+        self.total_events_fired = 0
         
         # Messages Instruction Group
         self.interaction_instruction_group = InstructionGroup()
@@ -154,13 +155,15 @@ class Network(StencilView):
         for node in self.nodes:
             nodei = self.nodes[node]
             nodei.act()
-    
+
     # Fire Events within the Time Slice
     def on_time_slice_end(self, *args):
         slice_stack = self.event_stack[bisect_right(self.event_stack, StatusIndex(self.time_slice_start)):
                                        bisect_right(self.event_stack, StatusIndex(self.time_slice_end)) - 1]
-        print(len(self.event_stack))
-        print('start:{} end:{} events:{}'.format(self.time_slice_start, self.time_slice_end, len(slice_stack)))
+        self.total_events_fired += len(slice_stack)
+        print('total: {} start:{} end:{} events:{}'.format(self.total_events_fired,
+                                                           self.time_slice_start, self.time_slice_end,
+                                                           len(slice_stack)), end='\r')
         for event in slice_stack:
             if (len(event.sender.edges) > 0):
                 event.receiver = event.sender.edges[0]
