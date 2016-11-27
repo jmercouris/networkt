@@ -34,10 +34,12 @@ class Graph(object):
         graph.add_node(root_user.screen_name, root_user.construct_dictionary())
         
         for node in root_user.pointer_nodes()[:limit]:
+            node.connection = 'follower'
             graph.add_node(node.screen_name, node.construct_dictionary())
             graph.add_edge(root_user.screen_name, node.screen_name)
         
         for node in root_user.reference_nodes()[:limit]:
+            node.connection = 'friend'
             graph.add_node(node.screen_name, node.construct_dictionary())
             graph.add_edge(node.screen_name, root_user.screen_name)
         
