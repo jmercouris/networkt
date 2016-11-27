@@ -115,7 +115,7 @@ class NetworktApp(App):
         
         # Generate Graph Object
         graph_object = Graph('sqlite://///Users/jmercouris/Documents/TUB/Transnational/source/data/data_store.db')
-        graph = graph_object.load_ego_graph_from_database(root_user, 10)
+        graph = graph_object.load_ego_graph_from_database(root_user, 50)
         layout = nx.spring_layout(graph)
         
         # Generate the list of nodes with positions
@@ -138,7 +138,7 @@ class NetworktApp(App):
             nodei = self.nodes[node]
             if len(nodei.edges) > 0 and len(nodei.inbound_edges) <= 0:
                 nodei.connection = 'friend'
-            elif len(nodei.inbound_edges) > 0 and len(nodei.edges) <=0:
+            elif len(nodei.inbound_edges) > 0 and len(nodei.edges) <= 0:
                 nodei.connection = 'follower'
         
         # Generate graph metadata

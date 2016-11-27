@@ -57,6 +57,8 @@ class Status(object):
             self.render_position = (int(self.position[0]), int(self.position[1]))
             self.representation.circle = (self.render_position[0], self.render_position[1], self.radius)
             self.steps = self.steps - 1
+        else:
+            self.refresh_position()
     
     def is_alive(self):
         if (self.steps > 0):
