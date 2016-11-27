@@ -18,6 +18,7 @@ class Node(object):
         self.edges_representation = []
         self.statuses = []
         self.active_statuses = []
+    
         # Data Store Specific
         self.name = dictionary.get('name', None)
         self.screen_name = dictionary.get('screenname', 'default')

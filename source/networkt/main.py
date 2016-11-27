@@ -133,6 +133,14 @@ class NetworktApp(App):
             # Generate Placeholder Lines for updating
             self.nodes[edge[0]].edges_representation.append(Line(points=[0, 0, 100, 100]))
         
+        # Mark Users as Followers or Friends in Ego-Centric Sense
+        for index, node in enumerate(self.nodes):
+            nodei = self.nodes[node]
+            if (len(nodei.edges) > 0):
+                nodei.connection = 'friend'
+            else:
+                nodei.connection = 'follower'
+        
         # Generate graph metadata
         for index, node in enumerate(self.nodes):
             nodei = self.nodes[node]
