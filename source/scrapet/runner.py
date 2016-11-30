@@ -77,13 +77,17 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
     ##########################################################################
     # Pull extended graphs of all filtered users, pull their followers as well
     # if (network_scrape.statuses_exist() is None):
+    flag = False
     for node in network_scrape.get_users_from_filter_level('filter_1'):
-        try:
-            network_scrape.pull_remote_graph_follow(node.screen_name, extended_graph_follower_limit)
-            LOGGER.log_event(0, '{} follower subgraph extracted'.format(node.screen_name))
-        except:
-            LOGGER.log_event(0, '{} follower subgraph could not be extracted'.format(node.screen_name))
-    LOGGER.update_progress(0.60)
+        if(node.screen_name == 'nordsonne'):
+            flag = True
+        if (flag):
+            try:
+                network_scrape.pull_remote_graph_follow(node.screen_name, extended_graph_follower_limit)
+                LOGGER.log_event(0, '{} follower subgraph extracted'.format(node.screen_name))
+            except:
+                LOGGER.log_event(0, '{} follower subgraph could not be extracted'.format(node.screen_name))
+                LOGGER.update_progress(0.60)
     # else:
     #     LOGGER.log_event(0, 'Skipped subgraph extraction of all filter 1 users (already done)')
     
