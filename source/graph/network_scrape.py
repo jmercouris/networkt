@@ -80,7 +80,7 @@ class NetworkScrape(object):
     
     def pull_remote_status(self, screen_name, scope_depth=200):
         user_object = self.session.query(Node).filter_by(screen_name=screen_name).first()
-        if (user_object is None or len(user_object.statuses) > 0):
+        if (user_object is None):
             return
         try:
             # We have recorded 0 Statuses previously for this user, therefore we can reasonably assume
@@ -90,7 +90,7 @@ class NetworkScrape(object):
                 user_object.statuses.append(Status(status))
             self.session.commit()
         except:
-            pass
+            print('Could not persist statuses to database for user {}'.format(screen_name))
         time.sleep(7)
     
     def statuses_exist(self):
