@@ -76,44 +76,47 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
     
     ##########################################################################
     # Pull extended graphs of all filtered users, pull their followers as well
-    # if (network_scrape.statuses_exist() is None):
-    flag = False
-    for node in network_scrape.get_users_from_filter_level('filter_1'):
-        if(node.screen_name == 'nordsonne'):
-            flag = True
-        if (flag):
+    if (network_scrape.statuses_exist() is None):
+        for node in network_scrape.get_users_from_filter_level('filter_1'):
             try:
                 network_scrape.pull_remote_graph_follow(node.screen_name, extended_graph_follower_limit)
                 LOGGER.log_event(0, '{} follower subgraph extracted'.format(node.screen_name))
             except:
                 LOGGER.log_event(0, '{} follower subgraph could not be extracted'.format(node.screen_name))
                 LOGGER.update_progress(0.60)
-    # else:
-    #     LOGGER.log_event(0, 'Skipped subgraph extraction of all filter 1 users (already done)')
+    else:
+        LOGGER.log_event(0, 'Skipped subgraph extraction of all filter 1 users (already done)')
     
     ##########################################################################
     # Pull statuses of all filtered user networks
+    flag = False
+    
     if (network_scrape.nodes_filtered_at_level('filter_2') is None):
         for node in network_scrape.get_users_from_filter_level('filter_1'):
-            network_scrape.pull_remote_status(node.screen_name)
             
-            for node in node.reference_nodes():
-                try:
-                    network_scrape.pull_remote_status(node.screen_name)
-                    LOGGER.log_event(0, '{} friend: {} statuses extracted'.format(
-                        node.screen_name, node.screen_name))
-                except:
-                    LOGGER.log_event(0, '{} friend: {} statuses not extracted'.format(
-                        node.screen_name, node.screen_name))
+            # Temporary Fix to Allow skipping of most users
+            if(node.screen_name == 'nordsonne'):
+                flag = True
             
-            for node in node.pointer_nodes():
-                try:
-                    network_scrape.pull_remote_status(node.screen_name)
-                    LOGGER.log_event(0, '{} follower: {} statuses extracted'.format(
-                        node.screen_name, node.screen_name))
-                except:
-                    LOGGER.log_event(0, '{} follower: {} statuses not extracted'.format(
-                        node.screen_name, node.screen_name))
+            if (flag):
+                network_scrape.pull_remote_status(node.screen_name)
+                for node in node.reference_nodes():
+                    try:
+                        network_scrape.pull_remote_status(node.screen_name)
+                        LOGGER.log_event(0, '{} friend: {} statuses extracted'.format(
+                            node.screen_name, node.screen_name))
+                    except:
+                        LOGGER.log_event(0, '{} friend: {} statuses not extracted'.format(
+                            node.screen_name, node.screen_name))
+
+                for node in node.pointer_nodes():
+                    try:
+                        network_scrape.pull_remote_status(node.screen_name)
+                        LOGGER.log_event(0, '{} follower: {} statuses extracted'.format(
+                            node.screen_name, node.screen_name))
+                    except:
+                        LOGGER.log_event(0, '{} follower: {} statuses not extracted'.format(
+                            node.screen_name, node.screen_name))
         
         LOGGER.update_progress(0.70)
     else:
