@@ -80,17 +80,19 @@ class NetworkScrape(object):
     
     def pull_remote_status(self, screen_name, scope_depth=200):
         user_object = self.session.query(Node).filter_by(screen_name=screen_name).first()
-        if (user_object is None):
+        if (user_object is None and len(user_object.statuses) > 0):
             return
+        
         try:
             # We have recorded 0 Statuses previously for this user, therefore we can reasonably assume
             # An object of the same credentials does not exist in the database, also it is within a try/catch
             statuses = self.twitter.get_user_timeline(screen_name=screen_name, count=scope_depth)
             for status in statuses:
                 user_object.statuses.append(Status(status))
-            self.session.commit()
         except:
-            print('Could not persist statuses to database for user {}'.format(screen_name))
+            pass
+        
+        self.session.commit()
         time.sleep(7)
     
     def statuses_exist(self):

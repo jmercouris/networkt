@@ -89,35 +89,22 @@ def main(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, DATABASE_NAME, LO
     
     ##########################################################################
     # Pull statuses of all filtered user networks
-    flag = False
-    
     if (network_scrape.nodes_filtered_at_level('filter_2') is None):
         for node in network_scrape.get_users_from_filter_level('filter_1'):
-            
-            # Temporary Fix to Allow skipping of most users
-            if(node.screen_name == 'nordsonne'):
-                flag = True
-            
-            if (flag):
+            # If length is less than 0, probably have already worked on this network
+            if(len(node.statuses) <= 0):
+                print('Working on {}'.format(node.screen_name))
                 network_scrape.pull_remote_status(node.screen_name)
-                for node in node.reference_nodes():
-                    try:
-                        network_scrape.pull_remote_status(node.screen_name)
-                        LOGGER.log_event(0, '{} friend: {} statuses extracted'.format(
-                            node.screen_name, node.screen_name))
-                    except:
-                        LOGGER.log_event(0, '{} friend: {} statuses not extracted'.format(
-                            node.screen_name, node.screen_name))
-
-                for node in node.pointer_nodes():
-                    try:
-                        network_scrape.pull_remote_status(node.screen_name)
-                        LOGGER.log_event(0, '{} follower: {} statuses extracted'.format(
-                            node.screen_name, node.screen_name))
-                    except:
-                        LOGGER.log_event(0, '{} follower: {} statuses not extracted'.format(
-                            node.screen_name, node.screen_name))
-        
+                    
+                for nodey in node.reference_nodes():
+                    network_scrape.pull_remote_status(nodey.screen_name)
+                    LOGGER.log_event(0, '{} friend {} stat extracted'.format(node.screen_name, nodey.screen_name))
+                for nodey in node.pointer_nodes():
+                    network_scrape.pull_remote_status(nodey.screen_name)
+                    LOGGER.log_event(0, '{} follow {} stat extracted'.format(node.screen_name, nodey.screen_name))
+            else:
+                print('Skipped user {}'.format(node.screen_name))
+            
         LOGGER.update_progress(0.70)
     else:
         LOGGER.log_event(0, 'Skipped statuses extraction (already done)')
