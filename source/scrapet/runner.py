@@ -19,8 +19,6 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
     # Persist the root user's follower list
     network_scrape.pull_follow_network(root_user, root_user_follower_limit)
     
-    print('Execution Complete')
-    
     # ##########################################################################
     # # Perform degree 0 filtering to decide whether to pull 0th degree network
     # if (network_scrape.nodes_filtered_at_level('filter_1') is None):
@@ -29,6 +27,8 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
     #     LOGGER.update_progress(0.20)
     # else:
     #     LOGGER.log_event(0, 'Skipped Root User follower graph filtering (already done)')
+
+    print('Execution Complete')
     
     # ##########################################################################
     # # Pull partial graphs of all filtered users following root user
