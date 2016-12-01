@@ -67,21 +67,6 @@ class NetworkScrape(object):
     #     self.session.commit()
     #     time.sleep(7)
     
-    # def get_user_statuses(self, screen_name):
-    #     user_object = self.session.query(Node).filter_by(screen_name=screen_name).first()
-    #     return user_object.statuses
-    
-    # def get_user_from_data_store(self, screen_name):
-    #     return self.session.query(Node).filter_by(screen_name=screen_name).first()
-    
-    # def nodes_filtered_at_level(self, filter_level):
-    #     arguments = {filter_level: True}
-    #     return self.session.query(Node).filter_by(**arguments).first()
-    
-    # def get_users_from_filter_level(self, filter_level):
-    #     arguments = {filter_level: True}
-    #     return self.session.query(Node).filter_by(**arguments).all()
-    
     # def filter_0(self, root_user, location=''):
     #     root_user_object = self.get_user_from_data_store(root_user)
     #     name_list = load_name_list_into_memory(location=location)  # Load list of valid names
