@@ -1,6 +1,7 @@
 from textwrap import dedent
 from kivy.graphics import Line
 from kivy.metrics import dp
+from kivy.graphics import Color
 
 
 class Node(object):
@@ -49,6 +50,9 @@ class Node(object):
     
     def event_start(self, event):
         event.initialize()
+        
+        # TODO: SPECIFY COLOR OF MESSAGE BASED ON MESSAGE TYPE
+        self.interaction_instruction_group.add(Color(0, .75, .75, 1))
         self.interaction_instruction_group.add(event.representation)
         self.active_statuses.append(event)
     

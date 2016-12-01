@@ -111,7 +111,7 @@ class NetworktApp(App):
     def load_graph(self):
         # Generate a simple graph
         self.nodes = {}
-        root_user = 'marley'
+        root_user = 'dtaschik'
         
         # Generate Graph Object
         graph_object = Graph('sqlite://///Users/jmercouris/Documents/TUB/Transnational/source/data/data_store.db')
