@@ -27,10 +27,16 @@ if __name__ == "__main__":
         print('User ', user.screen_name)
         statuses = []
         statuses = statuses + user.statuses
-        for node in user.reference_nodes():
+        
+        for node in user.reference_nodes()[0:10]:
             statuses = statuses + node.statuses
-        for node in user.pointer_nodes():
+        print('Reference Nodes Complete')
+        
+        for node in user.pointer_nodes()[0:10]:
             statuses = statuses + node.statuses
+        print('Pointer Nodes Complete')
         
         documents = [i.text for i in statuses]
         print('Documents Gathered')
+        
+        long_document = ' '.join(documents)

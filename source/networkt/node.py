@@ -52,7 +52,7 @@ class Node(object):
         event.initialize()
         
         # TODO: SPECIFY COLOR OF MESSAGE BASED ON MESSAGE TYPE
-        self.interaction_instruction_group.add(Color(0, .75, .75, 1))
+        self.interaction_instruction_group.add(Color(.75, .75, .75, 1))
         self.interaction_instruction_group.add(event.representation)
         self.active_statuses.append(event)
     

@@ -19,7 +19,7 @@ class Graph(object):
         return element.statuses
     
     def persist_graph(self, screen_name, graph_path, file_name):
-        graph = self.load_graph_from_database(screen_name)
+        graph = self.load_ego_graph_from_database(screen_name, 200)
         nx.write_gml(graph, '{}/{}.gml'.format(graph_path, file_name))
     
     def load_graph_from_database(self, screen_name, depth_limit=0):

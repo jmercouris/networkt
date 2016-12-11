@@ -16,12 +16,17 @@ from nltk.tokenize import TweetTokenizer
 
 
 def process(text):
-    text = re.sub(r'(https|http)?:\/\/(\w|\.|\/|\?|\=|\&|\%)*\b', '', text, flags=re.MULTILINE)
+    text = re.sub(r'(https|http)?:\/\/(\w|\.|\/|\?|\=|\&|\%)*\b', '', text, flags=re.MULTILINE)  # Remove URLS
+    # Strip RT and https
+    text = text.replace('RT', '')
+    text = text.replace('https', '')
+    
     tknzr = TweetTokenizer(strip_handles=True, reduce_len=True)
     words = tknzr.tokenize(text)
-    filtered_words = [word for word in words if word not in stopwords.words('english')]
+    filtered_english_words = [word for word in words if word not in stopwords.words('english')]
+    filtered_german_words = [word for word in filtered_english_words if word not in stopwords.words('german')]
     
-    return filtered_words
+    return filtered_german_words
 
 
 def create_session():
@@ -60,11 +65,11 @@ if __name__ == "__main__":
         statuses = statuses + user.statuses
         
         print('Gathering Friend Statuses')
-        for node in user.reference_nodes(limit=10):
+        for node in user.reference_nodes(limit=50):
             statuses = statuses + node.statuses
         
         print('Gathering Follower Statuses')
-        for node in user.pointer_nodes(limit=10):
+        for node in user.pointer_nodes(limit=50):
             statuses = statuses + node.statuses
         
         print('Gathering Documents')
@@ -86,5 +91,3 @@ if __name__ == "__main__":
         plt.imshow(wordcloud)
         plt.axis("off")
         plt.savefig('{}/{}_network_cloud.png'.format(WORD_FREQUENCY_PATH, user.screen_name))
-
-
