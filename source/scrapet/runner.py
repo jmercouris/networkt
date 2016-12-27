@@ -1,9 +1,14 @@
 import configparser
 from graph.network_scrape import NetworkScrape
+import argparse
+
+parser = argparse.ArgumentParser(description='Scrapet: Twitter scraping tool.')
+parser.add_argument('--phase', dest='phase', action='store', nargs='?', type=int, default=0,
+                    help='Which phase of extraction to resume operation at')
 
 
 def main(app_key, app_secret, oauth_token, oauth_token_secret,
-         root_user='',
+         phase, root_user='',
          root_user_follower_limit=200,
          filter_graph_follower_limit=200,
          extended_graph_follower_limit=200,
@@ -13,21 +18,19 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
     
     ##########################################################################
     # Persist the root user
-    network_scrape.persist_user(root_user)
+    if phase < 1:
+        network_scrape.persist_user(root_user)
     
     ##########################################################################
     # Persist the root user's follower list
-    network_scrape.pull_follow_network(root_user, root_user_follower_limit)
+    if phase < 2:
+        network_scrape.pull_follow_network(root_user, root_user_follower_limit)
     
     # ##########################################################################
-    # # Perform degree 0 filtering to decide whether to pull 0th degree network
-    # if (network_scrape.nodes_filtered_at_level('filter_1') is None):
-    #     network_scrape.filter_0(root_user, location=name_list_path)
-    #     LOGGER.log_event(0, 'Root User: {} follower graph filtered [Filter level 0]'.format(root_user))
-    #     LOGGER.update_progress(0.20)
-    # else:
-    #     LOGGER.log_event(0, 'Skipped Root User follower graph filtering (already done)')
-
+    # Perform degree 0 filtering to decide whether to pull 0th degree network
+    if phase < 3:
+        pass
+    
     print('Execution Complete')
     
     # ##########################################################################
@@ -125,14 +128,19 @@ if __name__ == "__main__":
     oauth_token = settings.get('twython-configuration', 'token')
     oauth_token_secret = settings.get('twython-configuration', 'token_secret')
     graph_path = settings.get('persistence-configuration', 'graph_path')
+    
     # Scrape Specific Configuration Details
     root_user = settings.get('scrape-configuration', 'root_user')
     name_list_path = settings.get('scrape-configuration', 'name_list_path')
     root_user_follower_limit = int(settings.get('scrape-configuration', 'root_user_follower_limit'))
     filter_graph_follower_limit = int(settings.get('scrape-configuration', 'filter_graph_follower_limit'))
     extended_graph_follower_limit = int(settings.get('scrape-configuration', 'extended_graph_follower_limit'))
-
-    main(app_key, app_secret, oauth_token, oauth_token_secret,
+    
+    # Command line Arguments
+    args = parser.parse_args()
+    phase = args.phase
+    
+    main(app_key, app_secret, oauth_token, oauth_token_secret, phase,
          root_user=root_user, root_user_follower_limit=root_user_follower_limit,
          extended_graph_follower_limit=extended_graph_follower_limit,
          filter_graph_follower_limit=filter_graph_follower_limit,
