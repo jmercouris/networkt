@@ -1,4 +1,5 @@
-Readme
+Scrapet: Twitter Network Scraper Tool
+================================================================================
 
 Filter 0:
     Candidate Meets Criteria for consideration (e.g. pull sample to see if qualifies as transnational)
