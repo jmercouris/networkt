@@ -1,7 +1,8 @@
 import time
 from math import ceil as ceiling
 from twython import Twython
-from graph.initialize import Node
+from graph.initialize import Node, Tag
+import graph.filter_node
 import neomodel
 
 
@@ -36,11 +37,13 @@ class NetworkScrape(object):
         self.pull_remote_graph(user_object, user_object.friends,
                                scope_limit, scope_depth, self.twitter.get_friends_list)
     
-    def pull_remote_graph(self, user_object, relationship, scope_limit, scope_depth, twitter_function):
+    def pull_remote_graph(self, user_object, relationship,
+                          scope_limit, scope_depth, twitter_function):
         next_cursor = -1
         while(next_cursor and scope_limit):
             scope_limit -= 1
-            search = twitter_function(screen_name=user_object.screen_name, count=scope_depth, cursor=next_cursor)
+            search = twitter_function(screen_name=user_object.screen_name,
+                                      count=scope_depth, cursor=next_cursor)
             for result in search['users']:
                 try:
                     tmp = Node.create_from_response(result)
@@ -59,14 +62,19 @@ class NetworkScrape(object):
         :param root_user: The root_user of the network to be analyzed
         :param time_zone: The time_zone we will filter against
         :returns: None
-        :rtype:None
+        :rtype: None
         
         """
+        try:
+            tag = Tag(name=Tag.FILTER_0).save()
+        except neomodel.exception.UniqueProperty:
+            print('Tag filter_0 already exists in database')
+            tag = Tag.nodes.get(name=Tag.FILTER_0)
+        
         user_object = Node.nodes.get(screen_name=root_user)
         for follower in user_object.followers:
-            print(follower.name)
-        
-        # node.filter_0 = filter_0(node, time_zone)
+            if graph.filter_node.filter_0(follower, time_zone):
+                tag.users.connect(follower)
     
     # def pull_remote_status(self, screen_name, scope_depth=200):
     #     user_object = self.session.query(Node).filter_by(screen_name=screen_name).first()
