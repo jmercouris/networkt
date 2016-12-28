@@ -50,6 +50,10 @@ class NetworkScrape(object):
             next_cursor = search["next_cursor"]
             time.sleep(65)
     
+    def filter_0(self, root_user, time_zone):
+        root_user_object = self.get_user_from_data_store(root_user)
+        node.filter_0 = filter_0(node, time_zone)
+    
     # def pull_remote_status(self, screen_name, scope_depth=200):
     #     user_object = self.session.query(Node).filter_by(screen_name=screen_name).first()
     #     if (user_object is None and len(user_object.statuses) > 0):
@@ -66,13 +70,6 @@ class NetworkScrape(object):
         
     #     self.session.commit()
     #     time.sleep(7)
-    
-    # def filter_0(self, root_user, location=''):
-    #     root_user_object = self.get_user_from_data_store(root_user)
-    #     name_list = load_name_list_into_memory(location=location)  # Load list of valid names
-    #     for node in root_user_object.pointer_nodes():
-    #         node.filter_0 = filter_0(node, name_list)
-    #     self.session.commit()
     
     # def filter_1(self, root_user):
     #     root_user_object = self.get_user_from_data_store(root_user)

@@ -5,8 +5,8 @@ import difflib
 
 
 # First Level of Filtering, used to determine whether first degree of nodes will be retrieved
-def filter_0(node, name_list):
-    return (logical_time_zone(node) and logical_name(node, name_list))
+def filter_0(node, time_zone):
+    return logical_time_zone(node, time_zone)
 
 
 # Second Degree of Filtering, used to determine whether second degree of nodes will be retrieved
@@ -90,24 +90,10 @@ def logical_distribution(node):
         return 0
 
 
-def logical_time_zone(node):
+def logical_time_zone(node, time_zone):
     if node.time_zone is None:
         return False
-    if 'Berlin' in node.time_zone:
+    if time_zone in node.time_zone:
         return True
     else:
         return False
-
-
-def logical_name(node, name_list):
-    return any(i in node.name.upper() for i in name_list)
-
-
-def load_name_list_into_memory(location='static/census-derived-all-first.txt'):
-    output_array = []
-    with open(location) as f:
-        content = f.readlines()
-        for line in content:
-            output_array.append(line.split(' ', 1)[0])
-    return output_array
-

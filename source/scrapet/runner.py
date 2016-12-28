@@ -1,6 +1,6 @@
 import configparser
-from graph.network_scrape import NetworkScrape
 import argparse
+from graph.network_scrape import NetworkScrape
 
 parser = argparse.ArgumentParser(description='Scrapet: Twitter scraping tool.')
 parser.add_argument('--phase', dest='phase', action='store', nargs='?', type=int, default=0,
@@ -14,22 +14,22 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
          extended_graph_follower_limit=200,
          name_list_path='', graph_path=''):
     
-    network_scrape = NetworkScrape(app_key, app_secret, oauth_token, oauth_token_secret)
+    _scraper = NetworkScrape(app_key, app_secret, oauth_token, oauth_token_secret)
     
     ##########################################################################
     # Persist the root user
     if phase < 1:
-        network_scrape.persist_user(root_user)
+        _scraper.persist_user(root_user)
     
     ##########################################################################
     # Persist the root user's follower list
     if phase < 2:
-        network_scrape.pull_follow_network(root_user, root_user_follower_limit)
+        _scraper.pull_follow_network(root_user, root_user_follower_limit)
     
     # ##########################################################################
     # Perform degree 0 filtering to decide whether to pull 0th degree network
     if phase < 3:
-        pass
+        _scraper.filter_0(root_user, 'Berlin')
     
     print('Execution Complete')
     

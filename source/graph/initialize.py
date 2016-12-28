@@ -1,7 +1,7 @@
 """ Database Definitions
 """
-from neomodel import (StructuredNode, StringProperty, IntegerProperty, DateProperty, BooleanProperty,
-                      RelationshipTo)
+from neomodel import (StructuredNode, StringProperty, IntegerProperty,
+                      DateProperty, BooleanProperty, RelationshipTo)
 import datetime
 
 
@@ -22,11 +22,6 @@ class Node(StructuredNode):
     time_zone = StringProperty()
     utc_offset = IntegerProperty()
     verified = BooleanProperty()
-    
-    # Filtering Levels
-    filter_0 = BooleanProperty()
-    filter_1 = BooleanProperty()
-    filter_2 = BooleanProperty()
     
     friends = RelationshipTo('Node', 'FRIEND')
     followers = RelationshipTo('Node', 'FOLLOWER')
@@ -89,6 +84,9 @@ class Status(StructuredNode):
     cluster = IntegerProperty()
     
     def create_from_response(dictionary):
+        """TODO: Persist object
+        
+        """
         created_at = dictionary.get('created_at', None)
         favorite_count = int(dictionary.get('favorite_count') or -1)
         id_str = dictionary.get('id_str', None)
@@ -138,3 +136,8 @@ class Status(StructuredNode):
     
     def __ne__(self, other):
         return self.date.timestamp() != other.date.timestamp()
+
+
+class Tag(StructuredNode):
+    name = StringProperty()
+    users = RelationshipTo('Node', 'USER')
