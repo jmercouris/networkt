@@ -51,8 +51,22 @@ class NetworkScrape(object):
             time.sleep(65)
     
     def filter_0(self, root_user, time_zone):
-        root_user_object = self.get_user_from_data_store(root_user)
-        node.filter_0 = filter_0(node, time_zone)
+        """Create a Tag (StructuredNode) which we will connect with Nodes that
+        meet the criteria of the first filter. The first filter
+        describes any nodes that are interesting to us, which nodes we
+        will draw a sample network from for analysis.
+        
+        :param root_user: The root_user of the network to be analyzed
+        :param time_zone: The time_zone we will filter against
+        :returns: None
+        :rtype:None
+        
+        """
+        user_object = Node.nodes.get(screen_name=root_user)
+        for follower in user_object.followers:
+            print(follower.name)
+        
+        # node.filter_0 = filter_0(node, time_zone)
     
     # def pull_remote_status(self, screen_name, scope_depth=200):
     #     user_object = self.session.query(Node).filter_by(screen_name=screen_name).first()
