@@ -29,9 +29,7 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
     # ##########################################################################
     # Perform degree 0 filtering to decide whether to pull 0th degree network
     if phase < 3:
-        _scraper.filter_0(root_user, 'Berlin')
-    
-    print('Execution Complete')
+        _scraper.filter_0(root_user, 'Berlin', 0.25)
     
     # ##########################################################################
     # # Pull partial graphs of all filtered users following root user
@@ -48,6 +46,8 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
     #     LOGGER.update_progress(0.30)
     # else:
     #     LOGGER.log_event(0, 'Skipped pulling partial graphs of filtered users (already done)')
+    
+    print('Execution Complete')
     
     # ##########################################################################
     # # Perform level 1 filtering on root_user - determine if their 1th degree network

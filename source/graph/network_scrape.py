@@ -53,7 +53,7 @@ class NetworkScrape(object):
             next_cursor = search["next_cursor"]
             time.sleep(65)
     
-    def filter_0(self, root_user, time_zone):
+    def filter_0(self, root_user, time_zone, disparity_tolerance):
         """Create a Tag (StructuredNode) which we will connect with Nodes that
         meet the criteria of the first filter. The first filter
         describes any nodes that are interesting to us, which nodes we
@@ -73,7 +73,7 @@ class NetworkScrape(object):
         
         user_object = Node.nodes.get(screen_name=root_user)
         for follower in user_object.followers:
-            if graph.filter_node.filter_0(follower, time_zone):
+            if graph.filter_node.filter_0(follower, time_zone, disparity_tolerance):
                 tag.users.connect(follower)
     
     # def pull_remote_status(self, screen_name, scope_depth=200):

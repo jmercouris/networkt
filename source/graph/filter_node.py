@@ -5,8 +5,8 @@ import difflib
 
 
 # First Level of Filtering, used to determine whether first degree of nodes will be retrieved
-def filter_0(node, time_zone):
-    return logical_time_zone(node, time_zone)
+def filter_0(node, time_zone, disparity_tolerance):
+    return logical_time_zone(node, time_zone) and valid_follower_friend_ratio(node, disparity_tolerance)
 
 
 # Second Degree of Filtering, used to determine whether second degree of nodes will be retrieved
@@ -20,7 +20,7 @@ def filter_2(node):
     if (verified(node)):
         return True
     # Ratio of friends to followers is insufficient
-    if (not valid_follower_ratio(node)):
+    if (not valid_follower_friend_ratio(node, 0.25)):
         return False
     # Return false for users with insufficient content
     if (not valid_content_length(node)):
@@ -45,13 +45,32 @@ def valid_content_repetition(node):
     return True
 
 
-def valid_follower_ratio(node):
-    if (node.friends_count <= 0):
+def valid_follower_friend_ratio(node, disparity_tolerance):
+    """Verify that there is a percent difference no grater than
+    :disparity_tolerance: between the friends_count and the
+    followers_count of a node
+    
+    :param node: The node to check for disparity :param
+    disparity_tolerance: The tolerance for disparity expressed as a
+        float between 0 and 1
+    :returns: Whether the Node is within the
+        tolerance for disparity
+    :rtype: Boolean
+    
+    """
+    
+    if (node.friends_count == 0):
         return False
-    if (node.followers_count / node.friends_count > 0.1):
-        return True
+    if (node.followers_count == 0):
+        return False
+    
+    difference = abs(node.friends_count - node.followers_count)
+    average = (node.friends_count + node.followers_count) / 2
+    
+    if (difference / average) > disparity_tolerance:
+        return False
     else:
-        return False
+        return True
 
 
 def valid_content_length(node):
