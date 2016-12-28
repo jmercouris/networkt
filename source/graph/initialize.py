@@ -139,5 +139,9 @@ class Status(StructuredNode):
 
 
 class Tag(StructuredNode):
+    FILTER_0 = 'filter_0'
+    FILTER_1 = 'filter_1'
+    FILTER_2 = 'filter_2'
+    
     name = StringProperty()
     users = RelationshipTo('Node', 'USER')
