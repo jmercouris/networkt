@@ -2,6 +2,7 @@ from collections import Counter
 from graph.data_model import Tag
 import difflib
 import neomodel
+from scipy.stats import chisquare
 
 """ Used for filtering nodes as to whether they should be expanded or not """
 
@@ -119,6 +120,13 @@ def valid_content_length(node):
 
 
 def verified(node):
+    """Check if the Node is verified
+    
+    :param node: The node to test
+    :returns: If the node is verified
+    :rtype: boolean
+    
+    """
     if (node.verified):
         return True
     else:
@@ -126,28 +134,44 @@ def verified(node):
 
 
 def transnational_distribution(node):
+    """Check the graph distribution of the node in question to make sure
+    that it qualifies as transantional, we don't want it too heavily
+    skewed towards one other time_zone/country
+    
+    :param node: The node to test to see if it's graph is transnational
+    :returns: If the node has a transnationally distributed graph
+    :rtype: boolean
+    
+    """
     time_zone_list = []
     for time_zone in [n.time_zone for n in node.friends]:
         if (time_zone is not None):
             time_zone_list.append(time_zone)
     
-    # If they dont have any friend nodes with time zones, they cannot be quantified
+    # if they dont have any friends with time zones, they cannot be quantified
     if(len(time_zone_list) < 1):
-        return 0
+        return False
     
-    counts = Counter(time_zone_list).most_common(2)
-    inclusive_count = 0
-    for key in counts:
-        inclusive_count = inclusive_count + key[1]
-        
-    try:
-        return ((inclusive_count > len(time_zone_list) * .50) and
-                (abs(counts[0][1] - counts[1][1]) / counts[0][1] < .8))
-    except:
-        return 0
+    # collect the top 3 time_zones in their network
+    counts = [c[1] for c in Counter(time_zone_list).most_common(3)]
+    # cs returns tuple(Power_divergenceResult, pvalue)
+    cs = chisquare(counts)
+    if (cs[0] < 5 and cs[1] > 0.25):
+        return True
+    else:
+        return False
 
 
 def logical_time_zone(node, time_zone):
+    """Make sure that the node in question is in a time_zone that we are
+    interested in
+    
+    :param node: The node to test
+    :param time_zone: The time_zone we want the node to be in
+    :returns: If the node is within the time_zone
+    :rtype: boolean
+    
+    """
     if node.time_zone is None:
         return False
     if time_zone in node.time_zone:

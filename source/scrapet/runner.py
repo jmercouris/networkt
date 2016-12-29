@@ -54,6 +54,7 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
         tag = Tag.nodes.get(name=Tag.FILTER_0)
         for node in tag.users:
             _filter.filter_1(node)
+        print('Transnational graph filtering complete')
     
     print('Execution Complete')
     
