@@ -1,4 +1,5 @@
-""" Database Definitions
+"""Database Definitions
+
 """
 from neomodel import (StructuredNode, StringProperty, IntegerProperty,
                       DateProperty, BooleanProperty, RelationshipTo)
