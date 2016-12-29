@@ -1,18 +1,56 @@
 from collections import Counter
+from graph.data_model import Tag
 import difflib
+import neomodel
 
 """ Used for filtering nodes as to whether they should be expanded or not """
 
 
-# First Level of Filtering, used to determine whether first degree of nodes will be retrieved
-def filter_0(node, time_zone, disparity_tolerance):
-    return logical_time_zone(node, time_zone) and valid_follower_friend_ratio(node, disparity_tolerance)
-
-
-# Second Degree of Filtering, used to determine whether second degree of nodes will be retrieved
-def filter_1(node):
-    return logical_distribution(node)
-
+class Filter(object):
+    """Documentation for Filter
+    
+    """
+    def __init__(self):
+        try:
+            self.tag_0 = Tag(name=Tag.FILTER_0).save()
+        except neomodel.exception.UniqueProperty:
+            self.tag_0 = Tag.nodes.get(name=Tag.FILTER_0)
+        
+        try:
+            self.tag_1 = Tag(name=Tag.FILTER_1).save()
+        except neomodel.exception.UniqueProperty:
+            self.tag_1 = Tag.nodes.get(name=Tag.FILTER_1)
+    
+    def filter_0(self, user, time_zone, disparity_tolerance):
+        """Create a Tag (StructuredNode) which we will connect with Nodes that
+        meet the criteria of the first filter. The first filter
+        describes any nodes that are interesting to us, which nodes we
+        will draw a sample network from for analysis.
+        
+        :param root_user: The root_user of the network to be analyzed
+        :param time_zone: The time_zone we will filter against
+        :returns: None
+        :rtype: None
+        
+        """
+        for follower in user.followers:
+            if (logical_time_zone(follower, time_zone) and
+               valid_follower_friend_ratio(follower, disparity_tolerance)):
+                self.tag_0.users.connect(follower)
+    
+    def filter_1(self, user):
+        """Create a Tag (StructuredNode) which we will connect with Nodes that
+        meet the criteria of the second filter. The scond filter
+        describes any nodes that appear to have transnational networks.
+        
+        :param user: The user whose network to test
+        :returns: None
+        :rtype: None
+        
+        """
+        if transnational_distribution(user):
+            self.tag_1.users.connect(user)
+    
 
 # Third Degree of Filtering, determine whether their tweets are of any value, or they are a spambot etc
 def filter_2(node):
@@ -87,13 +125,13 @@ def verified(node):
         return False
 
 
-def logical_distribution(node):
+def transnational_distribution(node):
     time_zone_list = []
-    for time_zone in [n.time_zone for n in node.reference_nodes()]:
+    for time_zone in [n.time_zone for n in node.friends]:
         if (time_zone is not None):
             time_zone_list.append(time_zone)
     
-    # If they dont have any reference nodes with time zones, they cannot be quantified
+    # If they dont have any friend nodes with time zones, they cannot be quantified
     if(len(time_zone_list) < 1):
         return 0
     

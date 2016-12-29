@@ -2,6 +2,7 @@ import configparser
 import argparse
 from graph.network_scrape import NetworkScrape
 from graph.data_model import Tag
+from graph.filter_node import Filter
 
 parser = argparse.ArgumentParser(description='Scrapet: Twitter scraping tool.')
 parser.add_argument('--phase', dest='phase', action='store', nargs='?', type=int, default=0,
@@ -17,6 +18,7 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
     
     # Declaration / Initialization
     _scraper = NetworkScrape(app_key, app_secret, oauth_token, oauth_token_secret)
+    _filter = Filter()
     root_user = None
     
     ##########################################################################
@@ -34,7 +36,7 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
     # ##########################################################################
     # Perform degree 0 filtering to decide whether to pull 0th degree network
     if phase < 3:
-        _scraper.filter_0(root_user, 'Berlin', 0.25)
+        _filter.filter_0(root_user, 'Berlin', 0.25)
         print('{} follower graph filtered'.format(root_user.screen_name))
     
     ##########################################################################
@@ -46,20 +48,14 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
             _scraper.pull_follow_network(node, filter_graph_sample_limit)
             print('{} sample graph extracted'.format(node.screen_name))
     
+    ##########################################################################
+    # Filter users to see which have graphs that qualify as transnational
     if phase < 5:
-        pass
+        tag = Tag.nodes.get(name=Tag.FILTER_0)
+        for node in tag.users:
+            _filter.filter_1(node)
     
     print('Execution Complete')
-    
-    # ##########################################################################
-    # # Perform level 1 filtering on root_user - determine if their 1th degree network
-    # # is something that should be retrieved
-    # if (network_scrape.statuses_exist() is None):
-    #     network_scrape.filter_1(root_user)
-    #     LOGGER.log_event(0, 'Root User: {} follower graphs filtered [Filter level 1]'.format(root_user))
-    #     LOGGER.update_progress(0.35)
-    # else:
-    #     LOGGER.log_event(0, 'Skipped filter level 1 of transnational users (already done)')
     
     # ##########################################################################
     # # Pull extended graphs of all filtered users, pull their followers as well

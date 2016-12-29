@@ -24,6 +24,7 @@ class Node(StructuredNode):
     utc_offset = IntegerProperty()
     verified = BooleanProperty()
     
+    # Relationship definitions
     friends = RelationshipTo('Node', 'FRIEND')
     followers = RelationshipTo('Node', 'FOLLOWER')
     
@@ -103,7 +104,7 @@ class Status(StructuredNode):
         text = dictionary.get('text', None)
         truncated = bool(dictionary.get('truncated', False) or False)
         date = datetime.strptime(created_at, '%a %b %d %H:%M:%S +0000 %Y')
-
+        
         return Status(created_at=created_at,
                       favorite_count=favorite_count,
                       id_str=id_str,
@@ -144,5 +145,5 @@ class Tag(StructuredNode):
     FILTER_1 = 'filter_1'
     FILTER_2 = 'filter_2'
     
-    name = StringProperty()
+    name = StringProperty(unique_index=True)
     users = RelationshipTo('Node', 'USER')
