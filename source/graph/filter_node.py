@@ -1,18 +1,57 @@
 from collections import Counter
+from graph.data_model import Tag
 import difflib
+import neomodel
+from scipy.stats import chisquare
 
 """ Used for filtering nodes as to whether they should be expanded or not """
 
 
-# First Level of Filtering, used to determine whether first degree of nodes will be retrieved
-def filter_0(node, name_list):
-    return (logical_time_zone(node) and logical_name(node, name_list))
-
-
-# Second Degree of Filtering, used to determine whether second degree of nodes will be retrieved
-def filter_1(node):
-    return logical_distribution(node)
-
+class Filter(object):
+    """Documentation for Filter
+    
+    """
+    def __init__(self):
+        try:
+            self.tag_0 = Tag(name=Tag.FILTER_0).save()
+        except neomodel.exception.UniqueProperty:
+            self.tag_0 = Tag.nodes.get(name=Tag.FILTER_0)
+        
+        try:
+            self.tag_1 = Tag(name=Tag.FILTER_1).save()
+        except neomodel.exception.UniqueProperty:
+            self.tag_1 = Tag.nodes.get(name=Tag.FILTER_1)
+    
+    def filter_0(self, user, time_zone, disparity_tolerance):
+        """Create a Tag (StructuredNode) which we will connect with Nodes that
+        meet the criteria of the first filter. The first filter
+        describes any nodes that are interesting to us, which nodes we
+        will draw a sample network from for analysis.
+        
+        :param root_user: The root_user of the network to be analyzed
+        :param time_zone: The time_zone we will filter against
+        :returns: None
+        :rtype: None
+        
+        """
+        for follower in user.followers:
+            if (logical_time_zone(follower, time_zone) and
+               valid_follower_friend_ratio(follower, disparity_tolerance)):
+                self.tag_0.users.connect(follower)
+    
+    def filter_1(self, user):
+        """Create a Tag (StructuredNode) which we will connect with Nodes that
+        meet the criteria of the second filter. The scond filter
+        describes any nodes that appear to have transnational networks.
+        
+        :param user: The user whose network to test
+        :returns: None
+        :rtype: None
+        
+        """
+        if transnational_distribution(user):
+            self.tag_1.users.connect(user)
+    
 
 # Third Degree of Filtering, determine whether their tweets are of any value, or they are a spambot etc
 def filter_2(node):
@@ -20,7 +59,7 @@ def filter_2(node):
     if (verified(node)):
         return True
     # Ratio of friends to followers is insufficient
-    if (not valid_follower_ratio(node)):
+    if (not valid_follower_friend_ratio(node, 0.25)):
         return False
     # Return false for users with insufficient content
     if (not valid_content_length(node)):
@@ -45,13 +84,32 @@ def valid_content_repetition(node):
     return True
 
 
-def valid_follower_ratio(node):
-    if (node.friends_count <= 0):
+def valid_follower_friend_ratio(node, disparity_tolerance):
+    """Verify that there is a percent difference no grater than
+    :disparity_tolerance: between the friends_count and the
+    followers_count of a node
+    
+    :param node: The node to check for disparity :param
+    disparity_tolerance: The tolerance for disparity expressed as a
+        float between 0 and 1
+    :returns: Whether the Node is within the
+        tolerance for disparity
+    :rtype: Boolean
+    
+    """
+    
+    if (node.friends_count == 0):
         return False
-    if (node.followers_count / node.friends_count > 0.1):
-        return True
+    if (node.followers_count == 0):
+        return False
+    
+    difference = abs(node.friends_count - node.followers_count)
+    average = (node.friends_count + node.followers_count) / 2
+    
+    if (difference / average) > disparity_tolerance:
+        return False
     else:
-        return False
+        return True
 
 
 def valid_content_length(node):
@@ -62,52 +120,61 @@ def valid_content_length(node):
 
 
 def verified(node):
+    """Check if the Node is verified
+    
+    :param node: The node to test
+    :returns: If the node is verified
+    :rtype: boolean
+    
+    """
     if (node.verified):
         return True
     else:
         return False
 
 
-def logical_distribution(node):
+def transnational_distribution(node):
+    """Check the graph distribution of the node in question to make sure
+    that it qualifies as transantional, we don't want it too heavily
+    skewed towards one other time_zone/country
+    
+    :param node: The node to test to see if it's graph is transnational
+    :returns: If the node has a transnationally distributed graph
+    :rtype: boolean
+    
+    """
     time_zone_list = []
-    for time_zone in [n.time_zone for n in node.reference_nodes()]:
+    for time_zone in [n.time_zone for n in node.friends]:
         if (time_zone is not None):
             time_zone_list.append(time_zone)
     
-    # If they dont have any reference nodes with time zones, they cannot be quantified
+    # if they dont have any friends with time zones, they cannot be quantified
     if(len(time_zone_list) < 1):
-        return 0
-    
-    counts = Counter(time_zone_list).most_common(2)
-    inclusive_count = 0
-    for key in counts:
-        inclusive_count = inclusive_count + key[1]
-        
-    try:
-        return ((inclusive_count > len(time_zone_list) * .50) and
-                (abs(counts[0][1] - counts[1][1]) / counts[0][1] < .8))
-    except:
-        return 0
-
-
-def logical_time_zone(node):
-    if node.time_zone is None:
         return False
-    if 'Berlin' in node.time_zone:
+    
+    # collect the top 3 time_zones in their network
+    counts = [c[1] for c in Counter(time_zone_list).most_common(3)]
+    # cs returns tuple(Power_divergenceResult, pvalue)
+    cs = chisquare(counts)
+    if (cs[0] < 5 and cs[1] > 0.25):
         return True
     else:
         return False
 
 
-def logical_name(node, name_list):
-    return any(i in node.name.upper() for i in name_list)
-
-
-def load_name_list_into_memory(location='static/census-derived-all-first.txt'):
-    output_array = []
-    with open(location) as f:
-        content = f.readlines()
-        for line in content:
-            output_array.append(line.split(' ', 1)[0])
-    return output_array
-
+def logical_time_zone(node, time_zone):
+    """Make sure that the node in question is in a time_zone that we are
+    interested in
+    
+    :param node: The node to test
+    :param time_zone: The time_zone we want the node to be in
+    :returns: If the node is within the time_zone
+    :rtype: boolean
+    
+    """
+    if node.time_zone is None:
+        return False
+    if time_zone in node.time_zone:
+        return True
+    else:
+        return False
