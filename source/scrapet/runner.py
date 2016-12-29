@@ -24,52 +24,48 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
     ##########################################################################
     # Persist the root user
     if phase < 1:
+        print('Retrieving user {}'.format(root_user_screen_name))
         root_user = _scraper.get_user(root_user_screen_name)
-        print('Root user {} retrieved'.format(root_user_screen_name))
     
     ##########################################################################
     # Persist the root user's follower list
     if phase < 2:
+        print('Retrieving {} followers'.format(root_user.screen_name))
         _scraper.pull_follow_network(root_user, root_user_follower_limit)
-        print('{} followers retrieved'.format(root_user.screen_name))
     
     # ##########################################################################
     # Perform degree 0 filtering to decide whether to pull 0th degree network
     if phase < 3:
+        print('Filtering {} follower graph'.format(root_user.screen_name))
         _filter.filter_0(root_user, 'Berlin', 0.25)
-        print('{} follower graph filtered'.format(root_user.screen_name))
     
     ##########################################################################
     # Pull sample of filter user's graph - qualifies user as transnational
     if phase < 4:
         tag = Tag.nodes.get(name=Tag.FILTER_0)
         for node in tag.users:
+            print('Retrieving {} sample graph'.format(node.screen_name))
             _scraper.pull_friend_network(node, filter_graph_sample_limit)
             _scraper.pull_follow_network(node, filter_graph_sample_limit)
-            print('{} sample graph extracted'.format(node.screen_name))
     
     ##########################################################################
     # Filter users to see which have graphs that qualify as transnational
     if phase < 5:
+        print('Transnational graph filtering complete')
         tag = Tag.nodes.get(name=Tag.FILTER_0)
         for node in tag.users:
             _filter.filter_1(node)
-        print('Transnational graph filtering complete')
+    
+    ##########################################################################
+    # Pull extended graphs of all filtered users, pull their followers as well
+    if phase < 6:
+        tag = Tag.nodes.get(name=Tag.FILTER_1)
+        for node in tag.users:
+            print('Retrieving {} graph'.format(node.screen_name))
+            _scraper.pull_friend_network(node, extended_graph_limit)
+            _scraper.pull_follow_network(node, extended_graph_limit)
     
     print('Execution Complete')
-    
-    # ##########################################################################
-    # # Pull extended graphs of all filtered users, pull their followers as well
-    # if (network_scrape.statuses_exist() is None):
-    #     for node in network_scrape.get_users_from_filter_level('filter_1'):
-    #         try:
-    #             network_scrape.pull_remote_graph_follow(node.screen_name, extended_graph_follower_limit)
-    #             LOGGER.log_event(0, '{} follower subgraph extracted'.format(node.screen_name))
-    #         except:
-    #             LOGGER.log_event(0, '{} follower subgraph could not be extracted'.format(node.screen_name))
-    #             LOGGER.update_progress(0.60)
-    # else:
-    #     LOGGER.log_event(0, 'Skipped subgraph extraction of all filter 1 users (already done)')
     
     # ##########################################################################
     # # Pull statuses of all filtered user networks
