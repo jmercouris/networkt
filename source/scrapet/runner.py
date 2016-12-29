@@ -12,7 +12,7 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
          phase, root_user_screen_name='',
          root_user_follower_limit=200,
          filter_graph_sample_limit=200,
-         extended_graph_follower_limit=200,
+         extended_graph_limit=200,
          graph_path=''):
     
     # Declaration / Initialization
@@ -46,19 +46,8 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
             _scraper.pull_follow_network(node, filter_graph_sample_limit)
             print('{} sample graph extracted'.format(node.screen_name))
     
-    # if (network_scrape.nodes_filtered_at_level('filter_1') is None):
-    #     root_user_object = network_scrape.get_user_from_data_store(root_user)
-    #     for node in root_user_object.pointer_nodes():
-    #         if (node.filter_0):
-    #             try:
-    #                 network_scrape.pull_remote_graph_friend(node.screen_name, extended_graph_follower_limit)
-    #                 LOGGER.log_event(0, 'Partial Graph: {} extracted.'.format(node.screen_name))
-    #             except:
-    #                 LOGGER.log_event(0, 'Could not extract partial graph: {}'.format(node.screen_name))
-    #     LOGGER.log_event(0, 'Root User: {} follower graphs extracted'.format(root_user))
-    #     LOGGER.update_progress(0.30)
-    # else:
-    #     LOGGER.log_event(0, 'Skipped pulling partial graphs of filtered users (already done)')
+    if phase < 5:
+        pass
     
     print('Execution Complete')
     
@@ -135,25 +124,25 @@ if __name__ == "__main__":
     settings = configparser.ConfigParser()
     settings.read('scrapet.ini')
     
-    # Network Scrape Parameters
+    # Network scrape parameters
     app_key = settings.get('twython-configuration', 'key')
     app_secret = settings.get('twython-configuration', 'secret')
     oauth_token = settings.get('twython-configuration', 'token')
     oauth_token_secret = settings.get('twython-configuration', 'token_secret')
     graph_path = settings.get('persistence-configuration', 'graph_path')
     
-    # Scrape Specific Configuration Details
+    # Scrape specific configuration details
     root_user_screen_name = settings.get('scrape-configuration', 'root_user')
     root_user_follower_limit = int(settings.get('scrape-configuration', 'root_user_follower_limit'))
     filter_graph_sample_limit = int(settings.get('scrape-configuration', 'filter_graph_sample_limit'))
-    extended_graph_follower_limit = int(settings.get('scrape-configuration', 'extended_graph_follower_limit'))
+    extended_graph_limit = int(settings.get('scrape-configuration', 'extended_graph_limit'))
     
-    # Command line Arguments
+    # Command line arguments
     args = parser.parse_args()
     phase = args.phase
     
     main(app_key, app_secret, oauth_token, oauth_token_secret, phase,
          root_user_screen_name=root_user_screen_name, root_user_follower_limit=root_user_follower_limit,
-         extended_graph_follower_limit=extended_graph_follower_limit,
+         extended_graph_limit=extended_graph_limit,
          filter_graph_sample_limit=filter_graph_sample_limit,
          graph_path=graph_path)
