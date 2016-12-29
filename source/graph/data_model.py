@@ -3,7 +3,7 @@
 """
 from neomodel import (StructuredNode, StringProperty, IntegerProperty,
                       DateProperty, BooleanProperty, RelationshipTo)
-import datetime
+from datetime import datetime
 
 
 class Node(StructuredNode):
@@ -27,6 +27,7 @@ class Node(StructuredNode):
     # Relationship definitions
     friends = RelationshipTo('Node', 'FRIEND')
     followers = RelationshipTo('Node', 'FOLLOWER')
+    statuses = RelationshipTo('Status', 'STATUS')
     
     def create_from_response(dictionary):
         name = dictionary.get('name', None)
@@ -66,12 +67,13 @@ class Node(StructuredNode):
 
 
 class Status(StructuredNode):
+    id_str = StringProperty(unique_index=True)
+    
     coordinate_longitude = StringProperty()
     coordinate_latitude = StringProperty()
     created_at = StringProperty()
     date = DateProperty()
     favorite_count = IntegerProperty()
-    id_str = StringProperty()
     in_reply_to_screen_name = StringProperty()
     in_reply_to_status_id_str = StringProperty()
     in_reply_to_user_id_str = StringProperty()
@@ -86,9 +88,6 @@ class Status(StructuredNode):
     cluster = IntegerProperty()
     
     def create_from_response(dictionary):
-        """TODO: Persist object
-        
-        """
         created_at = dictionary.get('created_at', None)
         favorite_count = int(dictionary.get('favorite_count') or -1)
         id_str = dictionary.get('id_str', None)
@@ -103,23 +102,26 @@ class Status(StructuredNode):
         source = dictionary.get('source', None)
         text = dictionary.get('text', None)
         truncated = bool(dictionary.get('truncated', False) or False)
-        date = datetime.strptime(created_at, '%a %b %d %H:%M:%S +0000 %Y')
+        date = datetime.strptime(created_at, '%a %b %d %H:%M:%S +0000 %Y').date()
         
-        return Status(created_at=created_at,
-                      favorite_count=favorite_count,
-                      id_str=id_str,
-                      in_reply_to_screen_name=in_reply_to_screen_name,
-                      in_reply_to_status_id_str=in_reply_to_status_id_str,
-                      in_reply_to_user_id_str=in_reply_to_user_id_str,
-                      lang=lang,
-                      possibly_sensitive=possibly_sensitive,
-                      quoted_status_id_str=quoted_status_id_str,
-                      retweet_count=retweet_count,
-                      retweeted=retweeted,
-                      source=source,
-                      text=text,
-                      truncated=truncated,
-                      date=date)
+        tmp = Status(created_at=created_at,
+                     favorite_count=favorite_count,
+                     id_str=id_str,
+                     in_reply_to_screen_name=in_reply_to_screen_name,
+                     in_reply_to_status_id_str=in_reply_to_status_id_str,
+                     in_reply_to_user_id_str=in_reply_to_user_id_str,
+                     lang=lang,
+                     possibly_sensitive=possibly_sensitive,
+                     quoted_status_id_str=quoted_status_id_str,
+                     retweet_count=retweet_count,
+                     retweeted=retweeted,
+                     source=source,
+                     text=text,
+                     truncated=truncated,
+                     date=date)
+        tmp.save()
+        
+        return tmp
     
     def __lt__(self, other):
         return self.date.timestamp() < other.date.timestamp()
