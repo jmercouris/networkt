@@ -24,28 +24,28 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
     ##########################################################################
     # Persist the root user
     if phase < 1:
-        print('Phase 1\n', '=' * 40)
+        print('\nPhase 1\n', '=' * 40)
         print('Retrieving user {}'.format(root_user_screen_name))
         root_user = _scraper.get_user(root_user_screen_name)
     
     ##########################################################################
     # Persist the root user's follower list
     if phase < 2:
-        print('Phase 2\n', '=' * 40)
+        print('\nPhase 2\n', '=' * 40)
         print('Retrieving {} followers'.format(root_user.screen_name))
         _scraper.pull_follow_network(root_user, root_user_follower_limit)
     
     # ##########################################################################
     # Perform degree 0 filtering to decide whether to pull 0th degree network
     if phase < 3:
-        print('Phase 3\n', '=' * 40)
+        print('\nPhase 3\n', '=' * 40)
         print('Filtering {} follower graph'.format(root_user.screen_name))
         _filter.filter_0(root_user, 'Berlin', 0.25)
     
     ##########################################################################
     # Pull sample of filter user's graph - qualifies user as transnational
     if phase < 4:
-        print('Phase 4\n', '=' * 40)
+        print('\nPhase 4\n', '=' * 40)
         tag = Tag.nodes.get(name=Tag.FILTER_0)
         for index, node in enumerate(tag.users):
             print('{}/{} retrieving {} sample graph'.format(
@@ -55,7 +55,7 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
     ##########################################################################
     # Filter users to see which have graphs that qualify as transnational
     if phase < 5:
-        print('Phase 5\n', '=' * 40)
+        print('\nPhase 5\n', '=' * 40)
         print('Transnational graph filtering complete')
         tag = Tag.nodes.get(name=Tag.FILTER_0)
         for node in tag.users:
@@ -64,7 +64,7 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
     ##########################################################################
     # Pull extended graphs of all transnational users
     if phase < 6:
-        print('Phase 6\n', '=' * 40)
+        print('\nPhase 6\n', '=' * 40)
         tag = Tag.nodes.get(name=Tag.FILTER_1)
         for index, node in enumerate(tag.users):
             print('{}/{} retrieving {} graph'.format(
@@ -75,10 +75,10 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
     ##########################################################################
     # Pull statuses of all nodes in transnational user networks
     if phase < 7:
-        print('Phase 7\n', '=' * 40)
+        print('\nPhase 7\n', '=' * 40)
         tag = Tag.nodes.get(name=Tag.FILTER_1)
         for node in tag.users:
-            print('Retrieving statuses for {} graph'.format(node.screen_name))
+            print('\nRetrieving statuses for {} graph'.format(node.screen_name))
             
             for index, friend in enumerate(node.friends):
                 print('{}/{} friend statuses: {}'.format(
