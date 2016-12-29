@@ -12,6 +12,7 @@ class NetworkScrape(object):
     def __init__(self, app_key, app_secret, oauth_token, oauth_token_secret):
         self.twitter = Twython(app_key, app_secret,
                                oauth_token, oauth_token_secret)
+        self.scope_depth = 200
     
     def get_user(self, screen_name):
         try:
@@ -22,26 +23,24 @@ class NetworkScrape(object):
             return Node.nodes.get(screen_name=screen_name)
     
     def pull_follow_network(self, user_object, limit):
-        scope_depth = 200
-        scope_limit = ceiling(limit / scope_depth)
+        scope_limit = ceiling(limit / self.scope_depth)
         
         self.pull_remote_graph(user_object, user_object.followers,
-                               scope_limit, scope_depth, self.twitter.get_followers_list)
+                               scope_limit, self.twitter.get_followers_list)
     
     def pull_friend_network(self, user_object, limit):
-        scope_depth = 200
-        scope_limit = ceiling(limit / scope_depth)
+        scope_limit = ceiling(limit / self.scope_depth)
         
         self.pull_remote_graph(user_object, user_object.friends,
-                               scope_limit, scope_depth, self.twitter.get_friends_list)
+                               scope_limit, self.twitter.get_friends_list)
     
     def pull_remote_graph(self, user_object, relationship,
-                          scope_limit, scope_depth, twitter_function):
+                          scope_limit, twitter_function):
         next_cursor = -1
         while(next_cursor and scope_limit):
             scope_limit -= 1
             search = twitter_function(screen_name=user_object.screen_name,
-                                      count=scope_depth, cursor=next_cursor)
+                                      count=self.scope_depth, cursor=next_cursor)
             for result in search['users']:
                 tmp = None
                 try:
