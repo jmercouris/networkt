@@ -46,7 +46,6 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
         for node in tag.users:
             print('Retrieving {} sample graph'.format(node.screen_name))
             _scraper.pull_friend_network(node, filter_graph_sample_limit)
-            _scraper.pull_follow_network(node, filter_graph_sample_limit)
     
     ##########################################################################
     # Filter users to see which have graphs that qualify as transnational
@@ -57,7 +56,7 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
             _filter.filter_1(node)
     
     ##########################################################################
-    # Pull extended graphs of all filtered users, pull their followers as well
+    # Pull extended graphs of all filtered users
     if phase < 6:
         tag = Tag.nodes.get(name=Tag.FILTER_1)
         for node in tag.users:
@@ -65,41 +64,10 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
             _scraper.pull_friend_network(node, extended_graph_limit)
             _scraper.pull_follow_network(node, extended_graph_limit)
     
+    ##########################################################################
+    # Pull statuses of all filtered user networks
+    
     print('Execution Complete')
-    
-    # ##########################################################################
-    # # Pull statuses of all filtered user networks
-    # if (network_scrape.nodes_filtered_at_level('filter_2') is None):
-    #     for node in network_scrape.get_users_from_filter_level('filter_1'):
-    #         # If length is less than 0, probably have already worked on this network
-    #         if(len(node.statuses) <= 0):
-    #             print('Working on {}'.format(node.screen_name))
-    #             network_scrape.pull_remote_status(node.screen_name)
-                    
-    #             for nodey in node.reference_nodes():
-    #                 network_scrape.pull_remote_status(nodey.screen_name)
-    #                 LOGGER.log_event(0, '{} friend {} stat extracted'.format(node.screen_name, nodey.screen_name))
-    #             for nodey in node.pointer_nodes():
-    #                 network_scrape.pull_remote_status(nodey.screen_name)
-    #                 LOGGER.log_event(0, '{} follow {} stat extracted'.format(node.screen_name, nodey.screen_name))
-    #         else:
-    #             print('Skipped user {}'.format(node.screen_name))
-            
-    #     LOGGER.update_progress(0.70)
-    # else:
-    #     LOGGER.log_event(0, 'Skipped statuses extraction (already done)')
-    
-    # ##########################################################################
-    # # Persist Graphs of all filtered user networks
-    # if (network_scrape.nodes_filtered_at_level('filter_2') is None):
-    #     root_user_object = network_scrape.get_user_from_data_store(root_user)
-    #     for node in root_user_object.pointer_nodes():
-    #         if (node.filter_0 and node.filter_1):
-    #             graph.persist_graph(node.screen_name, graph_path, node.screen_name)
-    #     graph.persist_graph(root_user_object.screen_name, graph_path, root_user_object.screen_name)
-    #     LOGGER.update_progress(0.90)
-    # else:
-    #     LOGGER.log_event(0, 'Skipped graph persistence to disk (already done)')
     
     # ##########################################################################
     # # Perform filter level 2 filtering on all nodes
@@ -107,10 +75,6 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
     # network_scrape.filter_2()
     # LOGGER.log_event(0, 'Graph filtered [Filter level 2]')
     # LOGGER.update_progress(1.0)
-    
-    # ##########################################################################
-    # # Finished
-    # LOGGER.log_event(0, 'Finished!')
 
 
 if __name__ == "__main__":
