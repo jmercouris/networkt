@@ -1,7 +1,7 @@
 import time
 from math import ceil as ceiling
 from twython import Twython
-from graph.initialize import Node, Tag
+from graph.data_model import Node, Tag
 import graph.filter_node
 import neomodel
 
@@ -14,25 +14,24 @@ class NetworkScrape(object):
         self.twitter = Twython(app_key, app_secret,
                                oauth_token, oauth_token_secret)
     
-    def persist_user(self, screen_name):
+    def get_user(self, screen_name):
         try:
             instance = Node.create_from_response(self.twitter.lookup_user(screen_name=screen_name)[0])
             return instance
         except neomodel.exception.UniqueProperty:
-            print('User {} already Exists in Database'.format(screen_name))
+            # user already exists, retrieve
+            return Node.nodes.get(screen_name=screen_name)
     
-    def pull_follow_network(self, screen_name, limit):
+    def pull_follow_network(self, user_object, limit):
         scope_depth = 200
         scope_limit = ceiling(limit / scope_depth)
-        user_object = Node.nodes.get(screen_name=screen_name)
         
         self.pull_remote_graph(user_object, user_object.followers,
                                scope_limit, scope_depth, self.twitter.get_followers_list)
     
-    def pull_remote_graph_friend(self, screen_name, limit):
+    def pull_friend_network(self, user_object, limit):
         scope_depth = 200
         scope_limit = ceiling(limit / scope_depth)
-        user_object = Node.nodes.get(screen_name=screen_name)
         
         self.pull_remote_graph(user_object, user_object.friends,
                                scope_limit, scope_depth, self.twitter.get_friends_list)
@@ -45,13 +44,15 @@ class NetworkScrape(object):
             search = twitter_function(screen_name=user_object.screen_name,
                                       count=scope_depth, cursor=next_cursor)
             for result in search['users']:
+                tmp = None
                 try:
                     tmp = Node.create_from_response(result)
-                    relationship.connect(tmp)
                 except neomodel.exception.UniqueProperty:
-                    print('User {} already Exists in Database'.format(result['screen_name']))
+                    # user already exists, retrieve
+                    tmp = Node.nodes.get(screen_name=result['screen_name'])
+                relationship.connect(tmp)
             next_cursor = search["next_cursor"]
-            time.sleep(65)
+            time.sleep(60)
     
     def filter_0(self, root_user, time_zone, disparity_tolerance):
         """Create a Tag (StructuredNode) which we will connect with Nodes that
@@ -71,8 +72,7 @@ class NetworkScrape(object):
             print('Tag filter_0 already exists in database')
             tag = Tag.nodes.get(name=Tag.FILTER_0)
         
-        user_object = Node.nodes.get(screen_name=root_user)
-        for follower in user_object.followers:
+        for follower in root_user.followers:
             if graph.filter_node.filter_0(follower, time_zone, disparity_tolerance):
                 tag.users.connect(follower)
     

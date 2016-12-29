@@ -1,6 +1,7 @@
 import configparser
 import argparse
 from graph.network_scrape import NetworkScrape
+from graph.data_model import Tag
 
 parser = argparse.ArgumentParser(description='Scrapet: Twitter scraping tool.')
 parser.add_argument('--phase', dest='phase', action='store', nargs='?', type=int, default=0,
@@ -8,31 +9,43 @@ parser.add_argument('--phase', dest='phase', action='store', nargs='?', type=int
 
 
 def main(app_key, app_secret, oauth_token, oauth_token_secret,
-         phase, root_user='',
+         phase, root_user_screen_name='',
          root_user_follower_limit=200,
-         filter_graph_follower_limit=200,
+         filter_graph_sample_limit=200,
          extended_graph_follower_limit=200,
-         name_list_path='', graph_path=''):
+         graph_path=''):
     
+    # Declaration / Initialization
     _scraper = NetworkScrape(app_key, app_secret, oauth_token, oauth_token_secret)
+    root_user = None
     
     ##########################################################################
     # Persist the root user
     if phase < 1:
-        _scraper.persist_user(root_user)
+        root_user = _scraper.get_user(root_user_screen_name)
+        print('Root user {} retrieved'.format(root_user_screen_name))
     
     ##########################################################################
     # Persist the root user's follower list
     if phase < 2:
         _scraper.pull_follow_network(root_user, root_user_follower_limit)
+        print('{} followers retrieved'.format(root_user.screen_name))
     
     # ##########################################################################
     # Perform degree 0 filtering to decide whether to pull 0th degree network
     if phase < 3:
         _scraper.filter_0(root_user, 'Berlin', 0.25)
+        print('{} follower graph filtered'.format(root_user.screen_name))
     
-    # ##########################################################################
-    # # Pull partial graphs of all filtered users following root user
+    ##########################################################################
+    # Pull sample of filter user's graph - qualifies user as transnational
+    if phase < 4:
+        tag = Tag.nodes.get(name=Tag.FILTER_0)
+        for node in tag.users:
+            _scraper.pull_friend_network(node, filter_graph_sample_limit)
+            _scraper.pull_follow_network(node, filter_graph_sample_limit)
+            print('{} sample graph extracted'.format(node.screen_name))
+    
     # if (network_scrape.nodes_filtered_at_level('filter_1') is None):
     #     root_user_object = network_scrape.get_user_from_data_store(root_user)
     #     for node in root_user_object.pointer_nodes():
@@ -130,10 +143,9 @@ if __name__ == "__main__":
     graph_path = settings.get('persistence-configuration', 'graph_path')
     
     # Scrape Specific Configuration Details
-    root_user = settings.get('scrape-configuration', 'root_user')
-    name_list_path = settings.get('scrape-configuration', 'name_list_path')
+    root_user_screen_name = settings.get('scrape-configuration', 'root_user')
     root_user_follower_limit = int(settings.get('scrape-configuration', 'root_user_follower_limit'))
-    filter_graph_follower_limit = int(settings.get('scrape-configuration', 'filter_graph_follower_limit'))
+    filter_graph_sample_limit = int(settings.get('scrape-configuration', 'filter_graph_sample_limit'))
     extended_graph_follower_limit = int(settings.get('scrape-configuration', 'extended_graph_follower_limit'))
     
     # Command line Arguments
@@ -141,7 +153,7 @@ if __name__ == "__main__":
     phase = args.phase
     
     main(app_key, app_secret, oauth_token, oauth_token_secret, phase,
-         root_user=root_user, root_user_follower_limit=root_user_follower_limit,
+         root_user_screen_name=root_user_screen_name, root_user_follower_limit=root_user_follower_limit,
          extended_graph_follower_limit=extended_graph_follower_limit,
-         filter_graph_follower_limit=filter_graph_follower_limit,
-         name_list_path=name_list_path, graph_path=graph_path)
+         filter_graph_sample_limit=filter_graph_sample_limit,
+         graph_path=graph_path)
