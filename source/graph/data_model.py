@@ -28,6 +28,7 @@ class Node(StructuredNode):
     friends = RelationshipTo('Node', 'FRIEND')
     followers = RelationshipTo('Node', 'FOLLOWER')
     statuses = RelationshipTo('Status', 'STATUS')
+    tags = RelationshipTo('Tag', 'TAG')
     
     def create_from_response(dictionary):
         name = dictionary.get('name', None)

@@ -40,7 +40,7 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
     if phase < 3:
         print('\nPhase 3\n', '=' * 40)
         print('Filtering {} follower graph'.format(root_user.screen_name))
-        _filter.filter_0(root_user, 'Berlin', 0.25)
+        _filter.filter_0(root_user, 'Berlin', 0.50)
     
     ##########################################################################
     # Pull sample of filter user's graph - qualifies user as transnational

@@ -21,6 +21,11 @@ class Filter(object):
             self.tag_1 = Tag(name=Tag.FILTER_1).save()
         except neomodel.exception.UniqueProperty:
             self.tag_1 = Tag.nodes.get(name=Tag.FILTER_1)
+        
+        try:
+            self.tag_2 = Tag(name=Tag.FILTER_2).save()
+        except neomodel.exception.UniqueProperty:
+            self.tag_2 = Tag.nodes.get(name=Tag.FILTER_2)
     
     def filter_0(self, user, time_zone, disparity_tolerance):
         """Create a Tag (StructuredNode) which we will connect with Nodes that
@@ -29,9 +34,10 @@ class Filter(object):
         will draw a sample network from for analysis.
         
         :param root_user: The root_user of the network to be analyzed
-        :param time_zone: The time_zone we will filter against
-        :returns: None
-        :rtype: None
+        :param time_zone: The time_zone we will filter against :param
+        disparity_tolerance: The percent difference between
+            friends/followers tolerated
+        :returns: None :rtype: None
         
         """
         for follower in user.followers:
@@ -52,34 +58,43 @@ class Filter(object):
         if transnational_distribution(user):
             self.tag_1.users.connect(user)
     
-
-# Third Degree of Filtering, determine whether their tweets are of any value, or they are a spambot etc
-def filter_2(node):
-    # Return true for verified users
-    if (verified(node)):
+    def filter_2(node):
+        # Return true for verified users
+        if (verified(node)):
+            return True
+        # Ratio of friends to followers is insufficient
+        if (not valid_follower_friend_ratio(node, 0.75)):
+            return False
+        # Return false for users with insufficient content
+        if (not valid_content_length(node)):
+            return False
+        # Too much repetition in the user's content
+        if (not valid_content_repetition(node)):
+            return False
         return True
-    # Ratio of friends to followers is insufficient
-    if (not valid_follower_friend_ratio(node, 0.25)):
-        return False
-    # Return false for users with insufficient content
-    if (not valid_content_length(node)):
-        return False
-    # # Too much repetition in the user's content
-    # if (not valid_content_repetition(node)):
-    #     return False
-    return True
 
 
 def valid_content_repetition(node):
+    """This function takes a node and see's if any tweet is repeated over
+    50% of the time.
+    
+    :param node: The node to test
+    :returns: Is the tested node
+        repeating the same content over 50% of the time?
+    :rtype: Boolean
+    
+    """
+    
     for status_a in node.statuses:
         # Start at -1 because the algorithm will count the original tweet as matching
         repetition_count = -1
         for status_b in node.statuses:
             seq = difflib.SequenceMatcher(a=status_a.text.lower(), b=status_b.text.lower())
-            if (seq.ratio() > .75):
+            # If status_a and status_b are over 75% similar
+            if (seq.ratio() > 0.75):
                 repetition_count = repetition_count + 1
         # If any tweet is repeated more than 50% of the user's tweets, too much repetition
-        if (repetition_count > len(node.statuses) * .5):
+        if (repetition_count > len(node.statuses) * 0.5):
             return False
     return True
 
@@ -113,7 +128,7 @@ def valid_follower_friend_ratio(node, disparity_tolerance):
 
 
 def valid_content_length(node):
-    if (len(node.statuses) > 50):
+    if (node.statuses_count > 50):
         return True
     else:
         return False
@@ -127,10 +142,7 @@ def verified(node):
     :rtype: boolean
     
     """
-    if (node.verified):
-        return True
-    else:
-        return False
+    return node.verified
 
 
 def transnational_distribution(node):
