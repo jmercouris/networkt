@@ -4,6 +4,7 @@
 from neomodel import (StructuredNode, StringProperty, IntegerProperty,
                       DateTimeProperty, BooleanProperty, RelationshipTo)
 from datetime import datetime
+import pytz
 
 
 class Node(StructuredNode):
@@ -103,7 +104,8 @@ class Status(StructuredNode):
         source = dictionary.get('source', None)
         text = dictionary.get('text', None)
         truncated = bool(dictionary.get('truncated', False) or False)
-        date = datetime.strptime(created_at, '%a %b %d %H:%M:%S +0000 %Y')
+        # make datetime utc aware (all twitter dates are in UTC)
+        date = datetime.strptime(created_at, '%a %b %d %H:%M:%S +0000 %Y').replace(tzinfo=pytz.UTC)
         
         tmp = Status(created_at=created_at,
                      favorite_count=favorite_count,
