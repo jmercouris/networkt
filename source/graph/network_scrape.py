@@ -1,6 +1,7 @@
 import time
 from math import ceil as ceiling
 from twython import Twython
+from twython.exceptions import TwythonAuthError
 from graph.data_model import Node, Status
 import neomodel
 
@@ -41,8 +42,14 @@ class NetworkScrape(object):
         next_cursor = -1
         while(next_cursor and scope_limit):
             scope_limit -= 1
-            search = twitter_function(screen_name=user.screen_name,
-                                      count=self.scope_depth, cursor=next_cursor)
+            try:
+                search = twitter_function(screen_name=user.screen_name,
+                                          count=self.scope_depth, cursor=next_cursor)
+            except TwythonAuthError:
+                # This user is not accessible to us, delete them
+                user.delete()
+                return
+            
             for result in search['users']:
                 tmp = None
                 try:
@@ -54,6 +61,7 @@ class NetworkScrape(object):
                     print('System failure: {}'.format(e))
                 relationship.connect(tmp)
             next_cursor = search["next_cursor"]
+            
             time.sleep(60)
     
     def pull_remote_status(self, user, scope_depth=200):
@@ -61,7 +69,13 @@ class NetworkScrape(object):
         if len(user.statuses) > 0 or user.statuses_count <= 0:
             return
         
-        statuses = self.twitter.get_user_timeline(screen_name=user.screen_name, count=scope_depth)
+        try:
+            statuses = self.twitter.get_user_timeline(screen_name=user.screen_name, count=scope_depth)
+        except TwythonAuthError:
+            # This user is not accessible to us, delete them
+            user.delete()
+            return
+        
         for status in statuses:
             try:
                 user.statuses.connect(Status.create_from_response(status))
