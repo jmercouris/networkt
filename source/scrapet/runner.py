@@ -79,8 +79,9 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
     if phase <= 7:
         print_phase(7)
         tag = Tag.nodes.get(name=Tag.FILTER_1)
-        for node in tag.users:
-            print('\nRetrieving statuses for {} graph'.format(node.screen_name))
+        for index, node in enumerate(tag.users):
+            print('\n{}/{} retrieving statuses for {} graph\n'.format(
+                index + 1, len(tag.users), node.screen_name))
             
             for index, friend in enumerate(node.friends):
                 print('{}/{} friend statuses: {}'.format(
