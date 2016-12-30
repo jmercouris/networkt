@@ -1,7 +1,9 @@
 from collections import Counter
 from graph.data_model import Tag
 import difflib
+import itertools
 import neomodel
+from math import ceil as ceiling
 from scipy.stats import chisquare
 
 """ Used for filtering nodes as to whether they should be expanded or not """
@@ -58,25 +60,23 @@ class Filter(object):
         if transnational_distribution(user):
             self.tag_1.users.connect(user)
     
-    def filter_2(node):
-        # Return true for verified users
-        if (verified(node)):
-            return True
-        # Ratio of friends to followers is insufficient
-        if (not valid_follower_friend_ratio(node, 0.75)):
-            return False
-        # Return false for users with insufficient content
-        if (not valid_content_length(node)):
-            return False
-        # Too much repetition in the user's content
-        if (not valid_content_repetition(node)):
-            return False
-        return True
+    def filter_2(self, user):
+        """Only include nodes that are valid.
+        
+        :param node: The node network to test
+        :returns: None
+        :rtype: None
+        
+        """
+        for node in itertools.chain(user.followers, user.friends):
+            if (verified(node) or (valid_follower_friend_ratio(node, 0.75) and
+               valid_content_length(node) and valid_content_repetition(node, 25, 0.50))):
+                node.tags.connect(self.tag_2)
 
 
-def valid_content_repetition(node):
-    """This function takes a node and see's if any tweet is repeated over
-    50% of the time.
+def valid_content_repetition(node, max_sample_size, repetition_threshold):
+    """This function takes a sample of node's tweets and sees if they are
+    repeated over 50% of the time.
     
     :param node: The node to test
     :returns: Is the tested node
@@ -84,17 +84,22 @@ def valid_content_repetition(node):
     :rtype: Boolean
     
     """
+    # Collect max_sample_size of the first statuses
+    statuses = node.statuses[:max_sample_size]
     
-    for status_a in node.statuses:
-        # Start at -1 because the algorithm will count the original tweet as matching
-        repetition_count = -1
-        for status_b in node.statuses:
+    # Iterate until we could not have enough nodes untested to have 50%+ repitition
+    for index, status_a in enumerate(
+            statuses[ceiling(max_sample_size * repetition_threshold):]):
+        repetition_count = 0
+        
+        for status_b in statuses[index:]:
             seq = difflib.SequenceMatcher(a=status_a.text.lower(), b=status_b.text.lower())
             # If status_a and status_b are over 75% similar
             if (seq.ratio() > 0.75):
-                repetition_count = repetition_count + 1
+                repetition_count += 1
+        
         # If any tweet is repeated more than 50% of the user's tweets, too much repetition
-        if (repetition_count > len(node.statuses) * 0.5):
+        if (repetition_count > len(node.statuses) * repetition_threshold):
             return False
     return True
 

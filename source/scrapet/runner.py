@@ -24,28 +24,28 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
     ##########################################################################
     # Persist the root user
     if phase < 1:
-        print('\nPhase 1\n', '=' * 40)
+        print_phase(1)
         print('Retrieving user {}'.format(root_user_screen_name))
         root_user = _scraper.get_user(root_user_screen_name)
     
     ##########################################################################
     # Persist the root user's follower list
     if phase < 2:
-        print('\nPhase 2\n', '=' * 40)
+        print_phase(2)
         print('Retrieving {} followers'.format(root_user.screen_name))
         _scraper.pull_follow_network(root_user, root_user_follower_limit)
     
     # ##########################################################################
     # Perform degree 0 filtering to decide whether to pull 0th degree network
     if phase < 3:
-        print('\nPhase 3\n', '=' * 40)
+        print_phase(3)
         print('Filtering {} follower graph'.format(root_user.screen_name))
         _filter.filter_0(root_user, 'Berlin', 0.50)
     
     ##########################################################################
     # Pull sample of filter user's graph - qualifies user as transnational
     if phase < 4:
-        print('\nPhase 4\n', '=' * 40)
+        print_phase(4)
         tag = Tag.nodes.get(name=Tag.FILTER_0)
         for index, node in enumerate(tag.users):
             print('{}/{} retrieving {} sample graph'.format(
@@ -55,7 +55,7 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
     ##########################################################################
     # Filter users to see which have graphs that qualify as transnational
     if phase < 5:
-        print('\nPhase 5\n', '=' * 40)
+        print_phase(5)
         print('Transnational graph filtering complete')
         tag = Tag.nodes.get(name=Tag.FILTER_0)
         for node in tag.users:
@@ -64,7 +64,7 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
     ##########################################################################
     # Pull extended graphs of all transnational users
     if phase < 6:
-        print('\nPhase 6\n', '=' * 40)
+        print_phase(6)
         tag = Tag.nodes.get(name=Tag.FILTER_1)
         for index, node in enumerate(tag.users):
             print('{}/{} retrieving {} graph'.format(
@@ -75,29 +75,36 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
     ##########################################################################
     # Pull statuses of all nodes in transnational user networks
     if phase < 7:
-        print('\nPhase 7\n', '=' * 40)
+        print_phase(7)
         tag = Tag.nodes.get(name=Tag.FILTER_1)
         for node in tag.users:
             print('\nRetrieving statuses for {} graph'.format(node.screen_name))
             
             for index, friend in enumerate(node.friends):
                 print('{}/{} friend statuses: {}'.format(
-                    index, len(node.friends), friend.screen_name), end='\r')
-                _scraper.pull_remote_status(friend)
+                    index + 1, len(node.friends), friend.screen_name), end='\r')
+                _scraper.pull_remote_snntatus(friend)
             
             for index, follower in enumerate(node.followers):
                 print('{}/{} follow statuses: {}'.format(
-                    index, len(node.followers), follower.screen_name), end='\r')
+                    index + 1, len(node.followers), follower.screen_name), end='\r')
                 _scraper.pull_remote_status(follower)
     
-    print('Execution Complete')
+    ##########################################################################
+    # Classify nodes as relevant / non-relevant for tweet analysis
+    if phase < 8:
+        print_phase(8)
+        tag = Tag.nodes.get(name=Tag.FILTER_1)
+        for index, node in enumerate(tag.users):
+            print('{}/{} filtering {} graph'.format(
+                index + 1, len(tag.users), node.screen_name), end='\r')
+            _filter.filter_2(node)
     
-    # ##########################################################################
-    # # Perform filter level 2 filtering on all nodes
-    # # Show only interesting nodes - not spam, reasonable follower ratio, etc
-    # network_scrape.filter_2()
-    # LOGGER.log_event(0, 'Graph filtered [Filter level 2]')
-    # LOGGER.update_progress(1.0)
+    print('\nExecution Complete')
+    
+
+def print_phase(phase_number):
+    print('\nPhase {}'.format(phase_number), '=' * 40)
 
 
 if __name__ == "__main__":
