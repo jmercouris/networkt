@@ -49,7 +49,8 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
         tag = Tag.nodes.get(name=Tag.FILTER_0)
         for index, node in enumerate(tag.users):
             print('{}/{} retrieving {} sample graph'.format(
-                index, len(tag.users), node.screen_name), end='\r')
+                index, len(tag.users), node.screen_name),
+                ' ' * 20, end='\r')
             _scraper.pull_friend_network(node, filter_graph_sample_limit)
     
     ##########################################################################
@@ -68,7 +69,8 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
         tag = Tag.nodes.get(name=Tag.FILTER_1)
         for index, node in enumerate(tag.users):
             print('{}/{} retrieving {} graph'.format(
-                index, len(tag.users), node.screen_name), end='\r')
+                index + 1, len(tag.users), node.screen_name),
+                ' ' * 20, end='\r')
             _scraper.pull_friend_network(node, extended_graph_limit)
             _scraper.pull_follow_network(node, extended_graph_limit)
     
@@ -82,12 +84,14 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
             
             for index, friend in enumerate(node.friends):
                 print('{}/{} friend statuses: {}'.format(
-                    index + 1, len(node.friends), friend.screen_name), end='\r')
+                    index + 1, len(node.friends), friend.screen_name),
+                    ' ' * 20, end='\r')
                 _scraper.pull_remote_snntatus(friend)
             
             for index, follower in enumerate(node.followers):
                 print('{}/{} follow statuses: {}'.format(
-                    index + 1, len(node.followers), follower.screen_name), end='\r')
+                    index + 1, len(node.followers), follower.screen_name),
+                    ' ' * 20, end='\r')
                 _scraper.pull_remote_status(follower)
     
     ##########################################################################
@@ -97,7 +101,7 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
         tag = Tag.nodes.get(name=Tag.FILTER_1)
         for index, node in enumerate(tag.users):
             print('{}/{} filtering {} graph'.format(
-                index + 1, len(tag.users), node.screen_name), end='\r')
+                index + 1, len(tag.users), node.screen_name), ' ' * 20, end='\r')
             _filter.filter_2(node)
     
     print('\nExecution Complete')

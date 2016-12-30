@@ -2,7 +2,7 @@
 
 """
 from neomodel import (StructuredNode, StringProperty, IntegerProperty,
-                      DateProperty, BooleanProperty, RelationshipTo)
+                      DateTimeProperty, BooleanProperty, RelationshipTo)
 from datetime import datetime
 
 
@@ -73,7 +73,7 @@ class Status(StructuredNode):
     coordinate_longitude = StringProperty()
     coordinate_latitude = StringProperty()
     created_at = StringProperty()
-    date = DateProperty()
+    date = DateTimeProperty()
     favorite_count = IntegerProperty()
     in_reply_to_screen_name = StringProperty()
     in_reply_to_status_id_str = StringProperty()
@@ -103,7 +103,7 @@ class Status(StructuredNode):
         source = dictionary.get('source', None)
         text = dictionary.get('text', None)
         truncated = bool(dictionary.get('truncated', False) or False)
-        date = datetime.strptime(created_at, '%a %b %d %H:%M:%S +0000 %Y').date()
+        date = datetime.strptime(created_at, '%a %b %d %H:%M:%S +0000 %Y')
         
         tmp = Status(created_at=created_at,
                      favorite_count=favorite_count,

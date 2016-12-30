@@ -1,5 +1,6 @@
-''' DB Scan Clustering and Persistence
-'''
+"""DB Scan Clustering and Persistence
+
+"""
 
 import os
 import string
@@ -13,16 +14,13 @@ from nltk.corpus import stopwords
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import DBSCAN
-import numpy as np
 import jellyfish
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from graph.initialize import Base, Node
+from graph.data_model import Tag
 
 
 def process_text(text, stem=True):
-    """ Tokenize text and stem words removing punctuation
+    """Tokenize text and stem words removing punctuation
     """
     transtable = {ord(s): None for s in string.punctuation}
     transtable[ord('/')] = u''
@@ -37,7 +35,9 @@ def process_text(text, stem=True):
 
 
 def cluster_documents(documents):
-    """ Transform texts to Tf-Idf coordinates and cluster texts using K-Means
+    """Transform texts to Tf-Idf coordinates and cluster texts using
+    DBSCAN
+    
     """
     vectorizer = TfidfVectorizer(tokenizer=process_text,
                                  stop_words=stopwords.words('english'),
@@ -54,17 +54,16 @@ def cluster_documents(documents):
     return db.labels_
 
 
-def create_session():
-    config = ConfigParser()
-    config.read(os.path.expanduser('~/.config/networkt/cluster.ini'))
-    DATABASE_NAME = 'sqlite:///{}/data_store.db'.format(
-        config.get('persistence-configuration', 'database_path'))
-    engine = create_engine(DATABASE_NAME)
-    Base.metadata.bind = engine
-    DBSession = sessionmaker(bind=engine)
-    session = DBSession()
-    print('Using Database: {}'.format(DATABASE_NAME))
-    return session
+def main():
+    tag = Tag.nodes.get(name=Tag.FILTER_1)
+    for node in tag.users:
+        print(node.screen_name)
+        """MATCH (connections)-[:STATUS]->(statuses)
+        MATCH (statuses {lang:"en"})
+        MATCH (statuses)<-[:STATUS]-(nodes)
+        RETURN statuses.text, statuses.date, nodes.screen_name
+        ORDER BY statuses.date DESC
+        LIMIT 100"""
 
 
 def identify_transnational_diffusion(user, statuses):
@@ -124,48 +123,4 @@ def identify_transnational_diffusion(user, statuses):
                     f.write('=' * 80 + '\n')
 
 if __name__ == "__main__":
-    session = create_session()
-    transnational_users = session.query(Node).filter_by(filter_1=True).all()
-    
-    for user in transnational_users:
-        print('User: {} '.format(user.screen_name))
-        print('Friends: {}'.format(user.friends_count))
-        print('Followers: {}'.format(user.followers_count))
-        statuses = []
-        statuses = statuses + user.statuses
-        
-        for index, edge in enumerate(user.pointer_edges):
-            node = edge.reference_node
-            statuses = statuses + node.statuses
-            print('{} followers gathered (limit 1,000)'.format(index + 1), end='\r')
-        print('')
-        
-        for index, edge in enumerate(user.reference_edges):
-            node = edge.pointer_node
-            statuses = statuses + node.statuses
-            print('{} friends gathered (limit 1,000)'.format(index + 1), end='\r')
-        print('')
-        
-        # Sort Statuses by Date to Cluster in Increments of 10000
-        statuses.sort()
-        split_statuses = np.array_split(statuses, int(len(statuses) / 10000))
-        
-        for index, status_group in enumerate(split_statuses):
-            print('Cluster Group: {}'.format(index), end='\r')
-            documents = [i.text for i in status_group]
-            labels = cluster_documents(documents)
-            
-            print('Zipping Group: {}'.format(index))
-            for label, status in zip(labels, status_group):
-                status.cluster = int(label)
-            
-            # Identify Transnational Interactions
-            identify_transnational_diffusion(user, status_group)
-        
-        session.commit()
-        print('_' * 80)
-
-'''TODO:
-Create Program that calculates distance between tweets to show evolution
-Work on Documentation
-'''
+    main()
