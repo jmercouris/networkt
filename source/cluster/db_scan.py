@@ -17,6 +17,7 @@ from sklearn.cluster import DBSCAN
 import jellyfish
 
 from graph.data_model import Tag
+from neomodel import db
 
 
 def process_text(text, stem=True):
@@ -57,13 +58,19 @@ def cluster_documents(documents):
 def main():
     tag = Tag.nodes.get(name=Tag.FILTER_1)
     for node in tag.users:
-        print(node.screen_name)
-        """MATCH (connections)-[:STATUS]->(statuses)
-        MATCH (statuses {lang:"en"})
-        MATCH (statuses)<-[:STATUS]-(nodes)
-        RETURN statuses.text, statuses.date, nodes.screen_name
-        ORDER BY statuses.date DESC
-        LIMIT 100"""
+        print('processing {}'.format(node.screen_name))
+        
+        query = (
+            ' MATCH (user:Node {{screen_name:"{}"}})'.format(node.screen_name) +
+            ' MATCH (user)-[:FOLLOWER|FRIEND]->(connections)'
+            ' MATCH (connections)-[:STATUS]->(statuses)'
+            ' MATCH (statuses {lang:"en"})'
+            ' MATCH (statuses)<-[:STATUS]-(nodes)'
+            ' RETURN statuses.text, statuses.date, nodes.screen_name'
+            ' ORDER BY statuses.date DESC'
+        )
+        
+        results, meta = db.cypher_query(query)
 
 
 def identify_transnational_diffusion(user, statuses):
