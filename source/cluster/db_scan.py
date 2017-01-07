@@ -1,5 +1,5 @@
 """DB Scan Clustering and Persistence
-
+https://github.com/scikit-learn/scikit-learn/blob/master/examples/text/document_clustering.py
 """
 
 import os
@@ -60,6 +60,7 @@ def main():
     for node in tag.users:
         print('processing {}'.format(node.screen_name))
         
+        # cypher query faster than object graph mapper
         query = (
             ' MATCH (user:Node {{screen_name:"{}"}})'.format(node.screen_name) +
             ' MATCH (user)-[:FOLLOWER|FRIEND]->(connections)'
