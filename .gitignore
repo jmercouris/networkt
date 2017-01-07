@@ -293,3 +293,6 @@ report/archive
 
 # Ignore offline folder
 offline
+
+# Ignore html files
+*.html

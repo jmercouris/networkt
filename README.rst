@@ -1,16 +1,16 @@
-Build Instructions:
-___________________
+Networkt
+================================================================================
+Networkt is a project that aims to do temporal network analysis on
+digital networks.
 
-1. Go to the PyInstaller directory, and build the spec:
-2. $ pyinstaller -y --clean --windowed program.spec
+What's the origin of the name?
+--------------------------------------------------------------------------------
+The name derives from 'network' + 'time (t)' - hence, networkt.
 
-3. Run:
+What's the context of this project?
+--------------------------------------------------------------------------------
+The context of this project is 
 
-   A. $ pushd dist
-   B. $ hdiutil create ./program.dmg -srcfolder program.app -ov
-   C. $ popd
-
-You will now have a program.dmg available in the dist directory.
 
 
 
