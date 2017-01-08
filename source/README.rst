@@ -24,9 +24,9 @@ Running The Code
 - Get a Twitter API Key that you can use: https://apps.twitter.com/.
 
 - Create a configuration file in the root source directory (the
-   directory that also contains this readme) named
-   ``scrapet.ini``. This is where you will put your configuration of
-   the scraper. An example of the configuration is outlined below:
+  directory that also contains this readme) named
+  ``scrapet.ini``. This is where you will put your configuration of
+  the scraper. An example of the configuration is outlined below:
 
 ::
 
@@ -47,10 +47,10 @@ Running The Code
 
 
 - Start a Neo4j instance on your local machine or on a server, and
-   then connect it with the following instructions:
-   http://neomodel.readthedocs.io/en/latest/configuration.html. In
-   short, this involves executing the following before executing the
-   script:
+  then connect it with the following instructions:
+  http://neomodel.readthedocs.io/en/latest/configuration.html. In
+  short, this involves executing the following before executing the
+  script:
 
 ::
 
