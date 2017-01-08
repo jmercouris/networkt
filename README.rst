@@ -6,7 +6,7 @@ content and time of messages as they traverse the network.  This type
 of analysis allows answering questions about how information flows
 through networks, and which are the key individuals responsible for
 diffusing information (particularly innovation).  Conversely,
-traditional network analysis attempts to answer similar quesitons, but
+traditional network analysis attempts to answer similar questions, but
 instead by analysis strongly concerned with the relationships between
 the nodes in a network.
 
@@ -14,10 +14,10 @@ What's the context of this project?
 --------------------------------------------------------------------------------
 The context of this project is Transnational Entrepreneurship. There
 is a business theory that states there are a set of individuals named
-Transnational Entreprenuers who are responsible for the diffisuion of
+Transnational Entrepreneurs who are responsible for the diffusion of
 information and innovation across national borders. An example of what
 a Transnational Entrepreneur may be is an individual with two or more
-distincnt networks in two or more countries. That is, imagine an
+distinct networks in two or more countries. That is, imagine an
 individual who has a set of friends in country A and a set of friends
 in country B. It is said that this individual is responsible for
 spreading ideas and innovations between these countries.
@@ -55,7 +55,7 @@ Information about our process
 #. For each collected follower (F) following the startup
    incubator/workspace/hotspot, collect a sample of their network.
 #. Check the sample network of (F) to see whether it qualifies them as
-   a transnational (the details qualifying a network can be found in
+   a Transnational (the details qualifying a network can be found in
    the report).
 #. If the follower (F) qualifies, collect a larger version of their
    network for analysis. This entails getting a larger set of their
@@ -67,17 +67,17 @@ Information about our process
    threshold (defined in the report), label them as being about the
    same topic.
 #. Finally, determine how many instances occur of a tweet traversing
-   the network in such a way that the information travelled through
-   our transnational entrepreneur. That is, how often is the
-   transnational entreprneur (F) responsible for spreading information
+   the network in such a way that the information traveled through
+   our Transnational entrepreneur. That is, how often is the
+   Transnational entrepreneur (F) responsible for spreading information
    between the distinct networks (networks delineated by country) they
    are part of. To do this, we see if a tweet was tweeted by the
-   friend of our transnational entrepreneur, then by the transnational
-   entrepreneur, then by a follower of the transnational
+   friend of our Transnational entrepreneur, then by the Transnational
+   entrepreneur, then by a follower of the Transnational
    entrepreneur. It is important that the friend and follower tweeting
    are from two distinct networks (this helps ensure to some degree
-   that the transnational entrepreneur's follower recieved the
-   information from the transnational themself. If the above was
+   that the Transnational entrepreneur's follower received the
+   information from the Transnational themselves. If the above was
    confusing, the diagram below may help clarify the interaction we
    are looking for.
 
