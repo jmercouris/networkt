@@ -22,6 +22,7 @@ This software requires the following to be installed:
 Running The Code
 --------------------------------------------------------------------------------
 - Get a Twitter API Key that you can use: https://apps.twitter.com/
+
 - Create a configuration file in the root source directory (the
    directory that also contains this readme) named
    ``scrapet.ini``. This is where you will put your configuration of
