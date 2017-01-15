@@ -13,8 +13,7 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret,
          phase, root_user_screen_name='',
          root_user_follower_limit=200,
          filter_graph_sample_limit=200,
-         extended_graph_limit=200,
-         graph_path=''):
+         extended_graph_limit=200):
     
     # Declaration / Initialization
     _scraper = NetworkScrape(app_key, app_secret, oauth_token, oauth_token_secret)
@@ -121,7 +120,6 @@ if __name__ == "__main__":
     app_secret = settings.get('twython-configuration', 'secret')
     oauth_token = settings.get('twython-configuration', 'token')
     oauth_token_secret = settings.get('twython-configuration', 'token_secret')
-    graph_path = settings.get('persistence-configuration', 'graph_path')
     
     # Scrape specific configuration details
     root_user_screen_name = settings.get('scrape-configuration', 'root_user')
@@ -136,5 +134,4 @@ if __name__ == "__main__":
     main(app_key, app_secret, oauth_token, oauth_token_secret, phase,
          root_user_screen_name=root_user_screen_name, root_user_follower_limit=root_user_follower_limit,
          extended_graph_limit=extended_graph_limit,
-         filter_graph_sample_limit=filter_graph_sample_limit,
-         graph_path=graph_path)
+         filter_graph_sample_limit=filter_graph_sample_limit)
