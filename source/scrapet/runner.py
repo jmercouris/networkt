@@ -1,5 +1,14 @@
+from neomodel import config
 import configparser
 import argparse
+
+########################################
+settings = configparser.ConfigParser()
+settings.read('scrapet.ini')
+# Database parameters ##################
+config.DATABASE_URL = settings.get('database-configuration', 'url')
+########################################
+
 from graph.network_scrape import NetworkScrape
 from graph.data_model import Tag
 from graph.filter_node import Filter
@@ -9,11 +18,9 @@ parser.add_argument('--phase', dest='phase', action='store', nargs='?', type=int
                     help='Which phase of extraction to resume operation at')
 
 
-def main(app_key, app_secret, oauth_token, oauth_token_secret,
-         phase, root_user_screen_name='',
-         root_user_follower_limit=200,
-         filter_graph_sample_limit=200,
-         extended_graph_limit=200):
+def main(app_key, app_secret, oauth_token, oauth_token_secret, phase,
+         root_user_screen_name='', root_user_follower_limit=200,
+         filter_graph_sample_limit=200, extended_graph_limit=200):
     
     # Declaration / Initialization
     _scraper = NetworkScrape(app_key, app_secret, oauth_token, oauth_token_secret)
@@ -112,9 +119,6 @@ def print_phase(phase_number):
 
 
 if __name__ == "__main__":
-    settings = configparser.ConfigParser()
-    settings.read('scrapet.ini')
-    
     # Network scrape parameters
     app_key = settings.get('twython-configuration', 'key')
     app_secret = settings.get('twython-configuration', 'secret')
@@ -132,6 +136,7 @@ if __name__ == "__main__":
     phase = args.phase
     
     main(app_key, app_secret, oauth_token, oauth_token_secret, phase,
-         root_user_screen_name=root_user_screen_name, root_user_follower_limit=root_user_follower_limit,
+         root_user_screen_name=root_user_screen_name,
+         root_user_follower_limit=root_user_follower_limit,
          extended_graph_limit=extended_graph_limit,
          filter_graph_sample_limit=filter_graph_sample_limit)
