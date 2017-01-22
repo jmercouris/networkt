@@ -3,13 +3,10 @@ The breakdown of the implementation section of this paper will break apart every
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{The Database Structure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-The database structure was designed to be as simple and extensible as possible. There are three tables, 'edge', 'node', and 'status'. As you may imagine, the 'edge' table stores all relationships between 'node' objects, the 'node' table stores all nodes, and the 'status' table stores all statuses.
+The database structure was designed to be as simple and extensible as possible.
 
 \subsection{ORM \& Design Decisions}
-The ORM of choice for this project was SqlAlchemy due to its' highly adaptable nature and clean access to an agnostic SQL backend (you are able to use Sqlite, Postgresql, Mysql... with SqlAlchemy). Unfortunately the nature of SqlAlchemy is that is not a document database, it is a relational database. Other databases such as MongoDB, and Neo4j support graph operations, at the cost of a less clean integration with the Python workflow. Furthermore, MongoDB has been shown to be unreliable, losing records, crashing, etc. For this reason, SQL Alchemy was chosen.
-
-\subsection{The Declarative Base}
-The Declarative Base is a special feature of SQLAlchemy. By extending the base class and providing some protected members with metadata, we are able to create a table of a given type in SQLAlchemy. In the example below, we have created a class Node that extends Base. For our metadata we have provided \verb|__tablename__| which indicates what the table name within our database will be. Additionally we have defined all of the fields and their types which will automatically be instantiated by SQLAlchemy when the engine is created. Additionally you'll see that we have a one:many relationship defined between a given Node and a set of Statuses. That is, a Node can have multiple Statuses (this represents all of the tweets made by the user).
+The ORM of choice for this project was Neo4j.
 
 \subsection{The Declarative Base: The Node Class}
 The Node Class represents a node within the system. It contains all of the information that is available within the Twitter public API. The following class description shows which fields are available.
@@ -41,53 +38,6 @@ The Node Class represents a node within the system. It contains all of the infor
     # Relationship to Status Updates
     statuses = relationship("Status", order_by="Status.date",
                             backref="node", cascade="all, delete")
-\end{lstlisting}
-
-As alluded to earlier, relational databases do not support graphs or graph operations. In order to facilitate this, the Node class contains a set of definitions for the manipulation of a graph. One can add edges, detect inbound edges (reference nodes), and outbound edges (pointer nodes).
-
-\begin{lstlisting}
-    def add_edge(self, *nodes):
-        for node in nodes:
-            Edge(self, node)
-        return self
-
-    def add_edge_reference(self, *nodes):
-        for node in nodes:
-            Edge(node, self)
-        return self
-
-    def pointer_nodes(self):
-        return [i.pointer_node for i in self.reference_edges]
-
-    def reference_nodes(self):
-        return [i.reference_node for i in self.pointer_edges]
-\end{lstlisting}
-
-\subsection{The Declarative Base: The Edge Class}
-The Edge class is what makes all of this possible. The Edge class and corresponding Edge table glue everything together. The Edge table is very simple, it contains two fields, \verb|reference_id| and \verb|pointer_id|. Every single row in table represents a relationship between two Nodes. The Node with the \verb|reference_id| is pointing to the Node with the \verb|pointer_id|. This means that the \verb|pointer_id| Node has an outbound edge to the \verb|reference_id| and vice versa.
-
-\begin{lstlisting}
-class Edge(Base):
-    __tablename__ = 'edge'
-
-    reference_id = Column(Integer,
-                          ForeignKey('node.id'),
-                          primary_key=True)
-
-    pointer_id = Column(Integer,
-                        ForeignKey('node.id'),
-                        primary_key=True)
-
-    reference_node = relationship(Node,
-                                  primaryjoin=reference_id == Node.id,
-                                  backref='reference_edges')
-    pointer_node = relationship(Node,
-                                primaryjoin=pointer_id == Node.id,
-                                backref='pointer_edges')
-
-    def __init__(self, n1, n2):
-        self.reference_node = n1
-        self.pointer_node = n2
 \end{lstlisting}
 
 \subsection{The Declarative Base: The  Status Class}
