@@ -7,10 +7,21 @@ import neomodel
 
 
 class NetworkScrape(object):
-    """Documentation for NetworkScrape
+    """NetworkScrape is used for interfacing with the Twitter API. It
+    provides a couple of convenient methods which are used to persist
+    data directly from twitter to the datastore.
     
     """
     def __init__(self, app_key, app_secret, oauth_token, oauth_token_secret):
+        """Initialize the NetworkScrape object which can be called to pull
+        data from the Twitter API.
+        
+        :param app_key: The twitter app_key
+        :param app_secret: The twitter app_secret
+        :param oauth_token: The twitter oauth_token
+        :param oauth_token_secret: The twitter oauth_token_secret
+        
+        """
         self.twitter = Twython(app_key, app_secret,
                                oauth_token, oauth_token_secret)
         self.scope_depth = 200
