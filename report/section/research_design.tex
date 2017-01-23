@@ -1,12 +1,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Methodology}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Without directly observing Transnational Entrepreneurs in their own environments throughout many longitudinal studies, while simultaneously observing an equally large control group over the course of years, it is impossible to witness Transnational Diffusion.
+Without directly observing Transnational Entrepreneurs in their own environments through longitudinal studies, while simultaneously observing an equally large control group, it is difficult to witness Transnational Diffusion.
 \par
-As such as a secondary method of observation was chosen- Twitter. Through Twitter's public API we are able to get a host of publicly available data about any given User.
+As such as a secondary method of observation was chosen- Twitter. Through Twitter's public API we are able to get a host of publicly available data about any given User, and their interactions within their ego-centric network.
 
 \subsection{Inductive vs Deductive}
-Deductive was chosen because.
+Deductive reasoning was chosen because of the characteristics of the dataset that we have available to us. We first began with a testable hypothesis - Transnational Diffusion frequency within a Transnational Entrepreneur's ego-centric network is moderated by their network's country distribution.
+\par
+Additionally important was the novelty of deductive reasoning within this problem space. Prior research focused largely on case studies to form broader generalizations (inductive), and we wanted to see if we could validate/invalidate some of the generalized assumptions discovered in inductive research.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Method}
@@ -32,24 +34,24 @@ Twitter affords us a large amount of publicly available data. The following are 
 \item \verb|verified|: Has the User submitted proof to Twitter of their identity
 \end{itemize}
 
-We are also able to get all of their relationships, all of their friends and followers. Finally, we can get their latest 200 statuses which are useful for tracking Transnational Diffusion through a Twitter network.
+In addition to this data, we are able to get all of their relationships (friends and followers). Finally, we can get their latest 200 statuses (tweets) which are used for tracing Information Diffusion through a Twitter network.
 
 \subsection{The Root Node}
 The study that we have done may be replicated in any given country given the following process:
 
 \begin{enumerate}
-\item Select a city within the country you are interested in studying, preferably a startup hub
-\item Select a startup incubator or co-working space in the city of interest
-\item Find the Twitter account of the selected incubator or co-working space
+\item Select a city within the country you are interested in studying, preferably a startup hub.
+\item Select a startup incubator or co-working space in the city of interest.
+\item Find the Twitter account of the selected incubator or co-working space.
 \end{enumerate}
 
-The Twitter account that you find in the third step will represent your network root.
+The Twitter account that you find in the third step will represent your network root. From this root, you will branch off to find Transnational Entrepreneurs.
 
 \subsection{Root Network Extraction}
 After identifying a Twitter User as your Root node, the program will extract a group of follower's from your Root node. These are your Root node's 1st degree network, or rather, an incomplete ego-centric network. This group of followers represent candidates for Transnational Entrepreneurs, we know they are likely Entreprenuers in the city that we are interested in, in order to determine whether they are the users that we are looking for, we will perform a set of filters on them.
 
 \subsection{Filter Level 0}
-Filter level 0 is responsible for filtering the Root network's ego-centric users to see whether they are of interest. We check two things here.
+Filter level 0 is responsible for filtering the Root Node's followers to see whether they are of interest. We check two things here.
 
 \begin{itemize}
 \item Is the User from Berlin?
@@ -58,7 +60,7 @@ Filter level 0 is responsible for filtering the Root network's ego-centric users
 
 The way we determine whether the User is from Berlin is largely by relying on their time zone settings. We found that many people set their language, or their city to whatever they would like, but the timezone, often automatically set by the computer is a good indicator of the user's actual locale. Either way, going with any one of the attributes is not a completley valid way to ensure that a given user says where they actually are, all information is subject to what the user wishes to input.
 \par
-The second criteria is a little bit more difficult to discern. It is not always possible to tell apart a human from a robot or organization. In order to keep things as simple as possible, we looked for all user's with names that existed within a census of known names. This is again not a foolproof way of filtering users as robots or not, but it is computationally cheap and allowed us to quickly move on to our next stage of filtering.
+The second criteria is a little bit more difficult to discern. It is not always possible to tell apart a human from a robot or organization. In order to keep things as simple as possible, we performed some basic checks that look for a valid ratio of friends:followers, limited amount of content repetition/spam, and automatically passed them if they were twitter verified. This is not a foolproof way of filtering users as robots or not, but it is computationally cheap and allowed us to quickly move on to our next stage of filtering. Further research could focus more on this aspect.
 
 \subsection{Filter Level 1}
 Filter level 1 is the part of the filtering process in which we determine whether a user is largely of interest to us, are we going to gather their ego-centric network. The reason that we must assess this at this stage is because we are rate limited in how many API calls we may make to the Twitter API for a given time frame (please see the appendix for details). In order to assess whether a candidate is therefore a transnational entrepreneur without pulling their whole network, we pull a sample of their friends.
@@ -66,13 +68,13 @@ Filter level 1 is the part of the filtering process in which we determine whethe
 If we find that the sample distribution is valid, then we will mark them as filtered and move on to processing them in the next stage. The distribution ratio of a valid transnational is therefore that their top two most common nationalaties in their network must be more than \verb|50%| of their network and that their top two most common nationalities may not differ by more than \verb|80%|.
 
 \subsection{Transnational Entrepreneur Ego-Centric Network Extraction}
-Following the selection of a set of individuals that we are interested in we begin the extraction process. We iterate through every Transnational Entrepreneur candidate and collect a limited network of their friends and followers. For our initial study, we limited this to 10,000 friends and 10,000 followers each for a given Transnational Entrepreneur.
+Following the selection of a set of individuals that we are interested in we begin the extraction process. We iterate through every Transnational Entrepreneur candidate and collect a limited network of their friends and followers. For our initial study, we limited this to 200 friends and 200 followers each for a given Transnational Entrepreneur.
 
 \subsection{Transnational Entrepreneur Ego-Centric Network Activity}
-After extracting up to 10,000 friends and followers from every given Transnational Entreprenuer candidate we gathered the last 200 tweets from every single user in the ego-centric network. This enables us to play back histoy, by having a record of every single tweet, and every single timestamp from every tweet, we can effectivley trace the diffusion of an idea throughout a network. If we know that one of a Transantional Entrepreneur's friends tweeted about something, and then subsequently the Transantional Entrepreneur tweets about the same topic, we can assume with some degree of certainty that we witnessed information diffusion.
+After extracting up to 200 friends and 200 followers from every given Transnational Entreprenuer candidate we gathered the last 200 tweets from every single user in the ego-centric network. This enables us to play back histoy. By having a record of every single tweet, and every single timestamp from every tweet, we can effectivley trace the diffusion of an idea throughout a network. If we know that one of a Transantional Entrepreneur's friends tweeted about something, and then subsequently the Transantional Entrepreneur tweets about the same topic, we can assume with some degree of certainty that we witnessed information diffusion from the friend to the Transnational Entrepreneur.
 
 \subsection{Filter Level 2}
-After collecting all of the tweets from every single user of the gathered ego-centric we now have the capability to do more effective filtering for different indicators that a given user may be a robot. In the case that a user is a robot, we do not want to consider their data, our study is only concerned with individuals. To quickly sort through hundreds of thousands of users we take a number of shortcuts that are indicators of humanity.
+After collecting all of the tweets from every single user of the Transnational Entrepreneurs ego-centric we now have the capability to do more effective filtering for different indicators that a given user may be a robot. In the case that a user is a robot, we do not want to consider their data, our study is only concerned with individuals. To quickly sort through hundreds of thousands of users we take a number of shortcuts that are indicators of humanity.
 
 \begin{itemize}
 \item Is the user twitter verified?
@@ -85,13 +87,13 @@ After collecting all of the tweets from every single user of the gathered ego-ce
 One of the indicators we use to see whether a Twitter User's tweets are worth clustering is whether they are verified or not. A verified Twitter user is one that has submitted formal proof to Twitter that they are who they say they are. Verified Twitter accounts are therefore usually not spammers, and real people or organizations.
 
 \subsubsection{User Friend to Follower Ratio}
-A common technique by spam bots is to friend as many people as possible in the hope that they will friend them back. They are operating the human reciprocity principle, and usually with rather limited success. Because the amount of people that friend them back is so low, and far lower than it would be for most humans, we can filter them out easily. We set a threshold of 10:1 friend to follower ratio for someone to be considered within our network. This means that for every 10 people that they are friends with, they must have at lest 1 follower, any less and they will be discounted.
+A common technique by spam bots is to friend as many people as possible in the hope that they will friend them back. They are operating on the human reciprocity principle, and usually with rather limited success. Because the amount of people that friend them back is so low, and far lower than it would be for most humans, we can filter them out easily. We set a threshold of 10:1 friend to follower ratio for someone to be considered within our network. This means that for every 10 people that they are friends with, they must have at lest 1 follower, any less and they will be discounted.
 
 \subsubsection{Minimum Status Requirements}
-The minimum status requirements that we pose on a user are to make sure that they are active on twitter. We want to only pick up individuals that are actually participating in conversations and contributing to a community. For this reason we set a minimum number of statuses to 50, if a user has less than 50 statuses every tweeted, then they are not considered in our algorithm.
+The minimum status requirements that we pose on a user are to make sure that they are active on twitter. We want to only pick up individuals that are actually participating in conversations and contributing to a community. For this reason we set a minimum number of statuses to 50, if a user has less than 50 statuses ever tweeted, then they are not considered in our algorithm.
 
 \subsubsection{Is the User Spamming?}
-Finally, the last thing that we can check, and the most computationally expensive is, is the user spamming? To do this we check the latest 200 of a user's total tweets, if over \verb|50%| of them are \verb|75%| or more similar, then we can conclude they are likely spamming and we will not include their tweets in the clustering.
+Finally, the last thing that we can check, and the most computationally expensive is, is the user spamming? To do this we check the latest 200 of a user's total tweets, if over \verb|50%| of them are \verb|75%| or more similar, then we can conclude they are likely spamming and we will not include their tweets in our analysis.
 
 \subsection{Transnational Diffusion Sequence Identification}
 Following the collection of all of the tweets within our network we need to be able to identify diffusion of information. Because we have a list of all the tweets and when they occured, we effectively have a very large timeline of tweets from the perspective of the transnational entrepreneur. We can arrange them linearly and we can replay the history of the network throughout time. 
@@ -110,5 +112,5 @@ If we can observe this pattern, then we have identified an example of Transnatio
 \par
 Due to the high volume of tweets within a network, one can imagine that doing this by hand would be nearly impossible. In order to do this effectively against multiple Transnational Entrepreneur ego-centric networks, we have to utilize machine learning.
 
-\subsection{K-Means Clustering \& Document Tokenization}
-The Process of K means clustering is quite long.
+\subsection{DB Scan Clustering \& Document Tokenization}
+Method.
