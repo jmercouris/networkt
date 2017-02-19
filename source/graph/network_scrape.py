@@ -37,13 +37,37 @@ class NetworkScrape(object):
             print('System failure: {}'.format(e))
     
     def pull_follow_network(self, user, limit):
+        """This function pulls a user's following network, returns immediately
+        if enough of a user's network has been pulled
+        
+        :param user: The user to pull data for
+        :param limit: How many user's of relation follow to pull
+        
+        """
         scope_limit = ceiling(limit / self.scope_depth)
+        
+        # Check to see if network needs to be retrieved
+        retrieved_count = len(user.followers)
+        if (retrieved_count >= limit or retrieved_count >= user.followers_count):
+            return
         
         self.pull_remote_graph(user, user.followers,
                                scope_limit, self.twitter.get_followers_list)
     
     def pull_friend_network(self, user, limit):
+        """This function pulls a user's friend network, returns immediately if
+        enough of a user's network has been pulled
+        
+        :param user: The user to pull data for
+        :param limit: How many user's of relation friend to pull
+        
+        """
         scope_limit = ceiling(limit / self.scope_depth)
+        
+        # Check to see if network needs to be retrieved
+        retrieved_count = len(user.friends)
+        if (retrieved_count >= limit or retrieved_count >= user.friends_count):
+            return
         
         self.pull_remote_graph(user, user.friends,
                                scope_limit, self.twitter.get_friends_list)
