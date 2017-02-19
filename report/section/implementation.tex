@@ -3,7 +3,7 @@ The breakdown of the implementation section of this paper will break apart every
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{The Database Structure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-The database structure was designed to be as simple and extensible as possible.
+The database structure was designed to mimic the nature of the twitter network graph as closely as possible.
 
 \subsection{ORM \& Design Decisions}
 The ORM of choice for this project was Neo4j.
@@ -72,7 +72,8 @@ class Status(Base):
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Graph}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-The Graph package contains all of the important definitions for the database structure, access, and extraction of data from Twitter.
+The Graph package contains all of the important definitions for the database structure, access, and extraction of data from Twitter. It is composed of three important files: data_model.py, filter_node.py, network_scrape.py.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Scrapet}
