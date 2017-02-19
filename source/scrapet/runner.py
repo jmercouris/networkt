@@ -112,7 +112,7 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret, phase,
             _filter.filter_2(node)
     
     print('\nExecution Complete')
-    
+
 
 def print_phase(phase_number):
     print('\nPhase {}'.format(phase_number), '=' * 40)
