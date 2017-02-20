@@ -1,7 +1,7 @@
 import time
 from math import ceil as ceiling
 from twython import Twython
-from twython.exceptions import TwythonAuthError
+from twython.exceptions import TwythonAuthError, TwythonError
 from graph.data_model import Node, Status
 import neomodel
 
@@ -108,6 +108,10 @@ class NetworkScrape(object):
             statuses = self.twitter.get_user_timeline(screen_name=user.screen_name, count=scope_depth)
         except TwythonAuthError:
             # This user is not accessible to us, delete them
+            user.delete()
+            return
+        except TwythonError:
+            # This user may have deleted their page, etc, twitter can't get their statuses
             user.delete()
             return
         
