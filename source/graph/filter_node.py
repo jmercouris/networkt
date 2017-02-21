@@ -126,6 +126,9 @@ def valid_follower_friend_ratio(node, disparity_tolerance):
     difference = abs(node.friends_count - node.followers_count)
     average = (node.friends_count + node.followers_count) / 2
     
+    if average <= 0:
+        return False
+    
     if (difference / average) > disparity_tolerance:
         return False
     else:
