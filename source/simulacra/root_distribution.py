@@ -7,10 +7,14 @@
   each country
 
 """
-from collections import defaultdict
-from neomodel import config
-from graph.data_model import Node
 import configparser
+import csv
+from collections import defaultdict
+
+from graph.data_model import Node
+
+import networkx
+from neomodel import config
 
 ########################################
 settings = configparser.ConfigParser()
@@ -24,7 +28,6 @@ root_user = Node.nodes.get(screen_name='FactoryBerlin')
 
 # get list of time zones from root_user's followers
 time_zones = [node.time_zone for node in root_user.followers]
-print(len(time_zones))
 
 # count via dictionary
 time_zone_dictionary = defaultdict(int)
@@ -32,6 +35,20 @@ time_zone_dictionary = defaultdict(int)
 for time_zone in time_zones:
     time_zone_dictionary[time_zone] = time_zone_dictionary[time_zone] + 1
 
-# output data to appropriate formats
+# output to graph ####################################################
+graph = networkx.Graph()
+graph.add_node(root_user.screen_name)
+
 for time_zone, count in time_zone_dictionary.items():
-    print('{}: {}'.format(time_zone, count))
+    if time_zone and count:
+        graph.add_node(time_zone, {'count': count})
+        graph.add_edge(root_user.screen_name, time_zone)
+
+networkx.write_gml(graph, 'root_user_distribution.gml')
+
+# output to csv ######################################################
+with open('root_user_distribution.csv', 'w', newline='') as f:
+    writer = csv.writer(f)
+    for time_zone, count in time_zone_dictionary.items():
+        if time_zone and count:
+            writer.writerow([time_zone, count])
