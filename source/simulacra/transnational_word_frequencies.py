@@ -7,6 +7,7 @@ import configparser
 from graph.data_model import Tag
 
 from neomodel import config
+from nltk.corpus import stopwords
 
 
 ########################################
