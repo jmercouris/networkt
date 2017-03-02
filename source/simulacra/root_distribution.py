@@ -32,6 +32,7 @@ time_zones = [node.time_zone for node in root_user.followers]
 # count via dictionary
 time_zone_dictionary = defaultdict(int)
 
+# count how many members are in each time zone
 for time_zone in time_zones:
     time_zone_dictionary[time_zone] = time_zone_dictionary[time_zone] + 1
 
