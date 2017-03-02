@@ -130,5 +130,6 @@ def identify_transnational_diffusion(user, statuses):
                     f.write(str([i.text for i in next_stack]) + '\n')
                     f.write('=' * 80 + '\n')
 
+
 if __name__ == "__main__":
     main()
