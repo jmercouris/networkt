@@ -1,8 +1,10 @@
-"""Network Graph, Size of Nodes = Population from Location.
+"""
++ Show a simple graph showing how many people are coming from each
+  country, each node's relative size indicates how many individuals
+  are coming from that country, output for rendering by Gephi
 
-Show a simple graph showing how many people are coming from each
-country, each node's relative size indicates how many individuals are
-coming from that country, output for rendering by Gephi
++ Show a simple bar graph that shows how many people are coming from
+  each country
 
 """
 from collections import defaultdict
@@ -20,7 +22,7 @@ config.DATABASE_URL = settings.get('database-configuration', 'url')
 # get root user
 root_user = Node.nodes.get(screen_name='FactoryBerlin')
 
-# get list of time zones
+# get list of time zones from root_user's followers
 time_zones = [node.time_zone for node in root_user.followers]
 print(len(time_zones))
 
