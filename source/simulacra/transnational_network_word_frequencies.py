@@ -34,6 +34,8 @@ for node in tag.users:
     
     string_text = ' '.join(text)
     
+    # CHANGE ABOVE #############################################################
+    
     # create word cloud
     if text:
         # lower max_font_size
