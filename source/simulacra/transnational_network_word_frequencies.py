@@ -1,7 +1,7 @@
 """
-+ TE Tweet Word Frequencies (Stopwords removed, Wordcloud rendering)
++ Ego Centric Graph Word Frequencies (Stopwords removed, Wordcloud rendering)
 
-  Only tweets of each transnational
+  Tweets of all users in a transnational's network
 """
 import configparser
 
