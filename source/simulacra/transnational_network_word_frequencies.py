@@ -34,6 +34,7 @@ for node in tag.users:
     
     string_text = ' '.join(text)
     
+    # TODO: CYPHER QUERY FOR TWEETS WITHIN NETWORK
     # CHANGE ABOVE #############################################################
     
     # create word cloud
