@@ -10,7 +10,7 @@
 """
 import configparser
 from graph.data_model import Tag
-
+import csv
 import networkx
 from neomodel import config
 from collections import defaultdict
@@ -58,3 +58,17 @@ for node in tag.users:
             graph.add_edge(time_zone, node.screen_name)
     
     networkx.write_gml(graph, '{}_user_distribution.gml'.format(node.screen_name))
+    
+    # output to csv ######################################################
+    with open('{}_follow_distribution.csv'.format(node.screen_name), 'w', newline='') as f:
+        writer = csv.writer(f)
+        for time_zone, count in time_zone_dictionary_follow.items():
+            if time_zone and count:
+                writer.writerow([time_zone, count])
+    
+    # output to csv ######################################################
+    with open('{}_friend_distribution.csv'.format(node.screen_name), 'w', newline='') as f:
+        writer = csv.writer(f)
+        for time_zone, count in time_zone_dictionary_friend.items():
+            if time_zone and count:
+                writer.writerow([time_zone, count])
