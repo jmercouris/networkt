@@ -61,4 +61,4 @@ for node in tag.users:
         graph.add_node(friend.screen_name, sanitize_dict(vars(friend)))
         graph.add_edge(friend.screen_name, node.screen_name)
     
-    networkx.write_gml(graph, 'usr_{}_grph.gml'.format(node.screen_name))
+    networkx.write_gml(graph, 'usr_{}_graph.gml'.format(node.screen_name))
