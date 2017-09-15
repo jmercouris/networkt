@@ -111,6 +111,18 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret, phase,
                 index + 1, len(tag.users), node.screen_name), ' ' * 20, end='\r')
             _filter.filter_2(node)
     
+    ##########################################################################
+    # Pull secondary network of transnational entrepreneurs
+    if phase <= 9:
+        print_phase(9)
+        tag = Tag.nodes.get(name=Tag.FILTER_1)
+        for index, node in enumerate(tag.users):
+            print('{}/{} retrieving {} extended graph'.format(
+                index + 1, len(tag.users), node.screen_name),
+                ' ' * 20, end='\r')
+            _scraper.pull_friend_network(node, extended_graph_limit)
+            _scraper.pull_follow_network(node, extended_graph_limit)
+    
     print('\nExecution Complete')
 
 
