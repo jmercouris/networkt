@@ -220,7 +220,10 @@ documents about legal issues. One of the documents is about the laws
 in regards to birds. Naturally, within this special ``Bird Document''
 one would expect significant usage of the world ``Bird'' or
 ``Aviary''. This word usage is compared to the frequency of ``Bird''
-in other documents and is therefore marked as more important.
+in other documents and is therefore marked as more important. The less
+frequently ``Bird'' appears in other documents, the more related it is
+to the ``Bird'' document. This helps filter out common words from the
+whole document set that potentially carry less semantic meaning.
 
 One issue that will immediately become apparent with a TF/IDF
 vectorization is that synonyms would cause issues. If the ``Bird
@@ -244,4 +247,28 @@ be classified as ``bird'' and the context of the document overall will
 become clearer.
 
 \section{DB Scan Clustering}
+The clustering algorithm selected for this research was
+DB-Scan. Initially K-Means was selected due to its fast performance
+and the limited accesss to computational power, but it was deemed
+unsuitable. The reason K-Means was deemed unsuitable, and the reason
+DB-Scan was chosen is because DB-Scan does not require pre-defining
+how many clusters exist in a given data set.
 
+DB-Scan, roughly speaking, works by measuring the distance between two
+vectors in a two dimensional space. If this distance is close enough,
+these two vectors form the basis of a of a cluster. Iteratively
+analayzing each vector reveals which vectors are all close enough to
+each other to form a cluster. There are some settable parameters
+within DB-Scan's implementation, particularly the Sci-kit Learn
+implementation used in the research. For example, one can set what the
+minimum threshold of related vectors to constitute a cluster. In
+simpler terms, how many documents must be related for a cluster to be
+considered a cluster. Additionally important is the ability to set the
+threshold distance for two vectors to be related. This fine-tuning
+allows the data to be more accurately grouped and categorized.
+
+Therefore, to breifly summarize, DB Scan was chosen because there were
+an unknown quantity of content-clusters within the data set, and the
+parameters available to tweak the behavior of the algorithm allowed
+for fine grained adjustment of the similarity measure comparing two
+vectors.
