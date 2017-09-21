@@ -1,18 +1,24 @@
-The breakdown of the implementation section of this paper will break
-apart every package into a section. Subsequently every single module
-will be a subsection. At the top of the section will be a brief
-package definition (what the package does, how it does it) on a high
-level.
+The goal of the imlementation section is to concretely describe how
+the software was written, how it all fits together, and what are the
+actual operations it performs. The implementation section is a
+definition of how the Method was carried out on a programmatic level.
 
 \section{The Database Structure}
 The database structure was designed to mimic the nature of the twitter
-network graph as closely as possible.
+network graph as closely as possible. For this reason, the ORM of
+choice for this project was Neo4j. Neo4j was chosen because of its
+powerful ability to model graphs and networks. It comes with native
+implementations to connect nodes together, as well as cypher, a
+powerful query language used to query the database. As an example,
+cypher is used to select the tweets of all the individuals in a
+transnational network, using just one command.
 
-\subsection{OGM \& Design Decisions}
-The ORM of choice for this project was Neo4j.
+The database contains several types of objects to represent different
+parts of the twitter network. The objects will explained below.
 
 \subsection{The Declarative Base: The Node Class}
-The Node Class represents a node within the system. It contains all of
+The Node Class represents a node within the system. A node, within
+this context, refers to a user on Twitter. The Node contains all of
 the information that is available within the Twitter public API. The
 following class description shows which fields are available.
 
@@ -45,10 +51,17 @@ following class description shows which fields are available.
                             backref="node", cascade="all, delete")
 \end{lstlisting}
 
+This object is used to model a given Twitter user and can be used to
+persist all of the important information about them. By breaking apart
+the user model into fields of interest, we are able to write queries
+that target specific properties of users- for example- we can write a
+query to return all users with a location of X.
+
 \subsection{The Declarative Base: The  Status Class}
 The Status class is responsible for maintaining all of the statuses of
-every user within the network. This class is important because it
-contains all of the data that is fed into our clustering sequence for
+every user within the network. That is, the status class is a
+representation of a Tweet. This class is important because it contains
+all of the data that is fed into our clustering sequence for
 identifying the diffusion of information. The Status class has a one
 to many relationship with the Node class, that is- a node object has
 many status objects.
@@ -78,6 +91,9 @@ class Status(Base):
     text = Column(Text)
     truncated = Column(Boolean)
 \end{lstlisting}
+
+As with the Node class, the Status class represents and classifies all
+information available about a given Tweet published on Twitter.
 
 \section{Graph}
 The Graph package contains all of the important definitions for the

@@ -193,5 +193,55 @@ that doing this by hand would be nearly impossible. In order to do
 this effectively against multiple Transnational Entrepreneur
 ego-centric networks, we have to utilize machine learning.
 
-\section{DB Scan Clustering \& Document Tokenization}
-Method.
+\section{Grouping Similar Tweets}
+In order to group related Tweets together, there are a number of
+possible clustering algorithms and document vectorization
+schemes. Their needs and usefulness depends on the context, and nature
+of the data, and the information known about that data, below, the
+choices for this research will be explained and justified.
+
+\section{Document Tokenization \& Vectorization}
+The first problem is: how to vectorize the documents (Tweets). To
+vectorize documents means to create a simplified representation of a
+document. This simplified document representation allows usage of a
+clustering or learning algorithm. It is important to simplify and
+select only the most salient features of the document in order to make
+the computation feasible.
+
+For the purposes of this research, TF/IDF (term frequency/inverse
+document frequency) was used in conjunction with a Porter
+Stemmer. What this means is the following: If a word appears
+frequently in a document, but infrequently in the other documents of a
+collection, then that word is more likely to be salient to the context
+of that document.
+
+To understand TF/IDF, consider a concrete example: A collection of
+documents about legal issues. One of the documents is about the laws
+in regards to birds. Naturally, within this special ``Bird Document''
+one would expect significant usage of the world ``Bird'' or
+``Aviary''. This word usage is compared to the frequency of ``Bird''
+in other documents and is therefore marked as more important.
+
+One issue that will immediately become apparent with a TF/IDF
+vectorization is that synonyms would cause issues. If the ``Bird
+Document'' uses several synonyms for birds, or mentions several
+species of birds, the document may not record those words as salient
+because individually they are not oft repeated, despite their
+collective frequency within the whole document. For this reason,
+a Porter Stemmer is used. A Porter Stemmer is a tool that can take
+a given word and convert it to its ``base'' word. Consider the following
+stem example:
+
+\begin{enumerate}
+\item Macaw
+\item Parrot
+\item Bird
+\end{enumerate}
+
+In the example, the word Macaw is simplified to Bird. Therefore, if
+the document uses the word ``Parrot'' or ``Macaw'', both terms will
+be classified as ``bird'' and the context of the document overall will
+become clearer.
+
+\section{DB Scan Clustering}
+
