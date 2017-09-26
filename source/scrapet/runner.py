@@ -102,9 +102,19 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret, phase,
                 _scraper.pull_remote_status(follower)
     
     ##########################################################################
-    # Classify nodes as relevant / non-relevant for tweet analysis
+    # Pull statuses of all transantional users
     if phase <= 8:
         print_phase(8)
+        tag = Tag.nodes.get(name=Tag.FILTER_1)
+        for index, node in enumerate(tag.users):
+            print('\n{}/{} retrieving statuses for {}\n'.format(
+                index + 1, len(tag.users), node.screen_name))
+            _scraper.pull_remote_status(node)
+    
+    ##########################################################################
+    # Classify nodes as relevant / non-relevant for tweet analysis
+    if phase <= 9:
+        print_phase(9)
         tag = Tag.nodes.get(name=Tag.FILTER_1)
         for index, node in enumerate(tag.users):
             print('{}/{} filtering {} graph'.format(
@@ -113,8 +123,8 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret, phase,
     
     ##########################################################################
     # Pull secondary network of transnational entrepreneurs
-    if phase <= 9:
-        print_phase(9)
+    if phase <= 10:
+        print_phase(10)
         tag = Tag.nodes.get(name=Tag.FILTER_1)
         for index, node in enumerate(tag.users):
             print('{}/{} retrieving {} extended graph'.format(
