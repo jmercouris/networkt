@@ -2,25 +2,19 @@
 https://github.com/scikit-learn/scikit-learn/blob/master/examples/text/document_clustering.py
 """
 
-import os
 import string
-from bisect import bisect_left, bisect_right
-from datetime import timedelta
-
-from configparser import ConfigParser
-from nltk import word_tokenize
-from nltk.stem import PorterStemmer
-from nltk.corpus import stopwords
-
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.cluster import DBSCAN
-import jellyfish
 
 from graph.data_model import Tag
+
 from neomodel import db
+from nltk import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
+from sklearn.cluster import DBSCAN
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 
-def process_text(text, stem=True):
+def process_text(text, stem=False):
     """Tokenize text and stem words removing punctuation
     """
     transtable = {ord(s): None for s in string.punctuation}
@@ -43,16 +37,12 @@ def cluster_documents(documents):
     vectorizer = TfidfVectorizer(tokenizer=process_text,
                                  stop_words=stopwords.words('english'),
                                  min_df=0.0,
-                                 max_df=1.0,
+                                 max_df=0.95,
                                  lowercase=True)
     
-    try:
-        # Data Vectorizing
-        tfidf_model = vectorizer.fit_transform(documents)
-    except ValueError:
-        print('Not enough terms')
-        return
-        
+    # Data Vectorizing
+    tfidf_model = vectorizer.fit_transform(documents)
+    
     # Data Clustering
     db = DBSCAN(eps=0.90, min_samples=3).fit(tfidf_model)
     
