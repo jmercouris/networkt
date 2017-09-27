@@ -31,7 +31,7 @@ def process_text(text, stem=True):
     if stem:
         stemmer = PorterStemmer()
         tokens = [stemmer.stem(t) for t in tokens]
-        
+    
     return tokens
 
 
@@ -42,15 +42,19 @@ def cluster_documents(documents):
     """
     vectorizer = TfidfVectorizer(tokenizer=process_text,
                                  stop_words=stopwords.words('english'),
-                                 max_df=0.5,
                                  min_df=0.0,
+                                 max_df=1.0,
                                  lowercase=True)
     
-    # Data Vectorizing
-    tfidf_model = vectorizer.fit_transform(documents)
-    
+    try:
+        # Data Vectorizing
+        tfidf_model = vectorizer.fit_transform(documents)
+    except ValueError:
+        print('Not enough terms')
+        return
+        
     # Data Clustering
-    db = DBSCAN(min_samples=3).fit(tfidf_model)
+    db = DBSCAN(eps=0.90, min_samples=3).fit(tfidf_model)
     
     return db.labels_
 
@@ -60,75 +64,83 @@ def main():
     for node in tag.users:
         print('processing {}'.format(node.screen_name))
         
-        # cypher query faster than object graph mapper
+        # get tweets of transnational user
         query = (
             ' MATCH (user:Node {{screen_name:"{}"}})'.format(node.screen_name) +
-            ' MATCH (user)-[:FOLLOWER|FRIEND]->(connections)'
-            ' MATCH (connections)-[:STATUS]->(statuses)'
-            ' MATCH (statuses {lang:"en"})'
-            ' MATCH (statuses)<-[:STATUS]-(nodes)'
-            ' RETURN statuses.text, statuses.date, nodes.screen_name'
-            ' ORDER BY statuses.date DESC'
-        )
+            ' MATCH (user)-[:STATUS]->(statuses)'
+            ' RETURN statuses.text, statuses.date, user.screen_name')
         
-        results, meta = db.cypher_query(query)
+        statuses, meta = db.cypher_query(query)
+        
+        for index, status in enumerate(statuses):
+            print('{}, {}/{}'.format(node.screen_name, index, len(statuses)), end='\r')
+            
+            # five days in unix time
+            time_delta = 60 * 60 * 24 * 5
+            
+            # collect friend statuses before status
+            query = (
+                ' MATCH (user:Node {{screen_name:"{name}"}})'
+                ' MATCH (user)-[:FRIEND]->(connections)'
+                ' MATCH (connections)-[:STATUS]->(statuses)'
+                ' MATCH (statuses {{lang:"en"}})'
+                ' MATCH (statuses)<-[:STATUS]-(nodes)'
+                ' WHERE statuses.date > {min_date} and statuses.date < {max_date}'
+                ' RETURN statuses.text, statuses.date, nodes.screen_name'
+                ' ORDER BY statuses.date DESC').format(
+                    name=node.screen_name,
+                    min_date=status[1] - time_delta,
+                    max_date=status[1])
+            friend_statuses, meta = db.cypher_query(query)
+            
+            # collect follow statuses posted after status
+            query = (
+                ' MATCH (user:Node {{screen_name:"{name}"}})'
+                ' MATCH (user)-[:FOLLOWER]->(connections)'
+                ' MATCH (connections)-[:STATUS]->(statuses)'
+                ' MATCH (statuses {{lang:"en"}})'
+                ' MATCH (statuses)<-[:STATUS]-(nodes)'
+                ' WHERE statuses.date > {min_date} and statuses.date < {max_date}'
+                ' RETURN statuses.text, statuses.date, nodes.screen_name'
+                ' ORDER BY statuses.date DESC').format(
+                    name=node.screen_name,
+                    min_date=status[1],
+                    max_date=status[1] + time_delta)
+            follower_statuses, meta = db.cypher_query(query)
+            
+            if(friend_statuses and follower_statuses):
+                # cluster and identify diffusion
+                identify_transnational_diffusion(node, len(friend_statuses),
+                                                 friend_statuses + [status] + follower_statuses)
 
 
-def identify_transnational_diffusion(user, statuses):
-    # Remove Non Clustered Tweets
-    statuses = [sts for sts in statuses if sts.cluster != -1 and sts.cluster is not None]
+def identify_transnational_diffusion(user, user_index, all_statuses):
+    # extract document from every status and cluster
+    clusters = cluster_documents([status[0] for status in all_statuses])
     
-    for index, status in enumerate(statuses):
-        # Transnational Tweet - Check for Diffusion
-        if (status.node == user):
-            # Gather Tweets from Previous 1 Day
-            tmp_status = type('', (), {})  # Create Pseudo Object for Comparison
-            tmp_status.date = status.date - timedelta(days=1)
-            left_bound = bisect_left(statuses, tmp_status, lo=0, hi=index)
-            previous_stack = statuses[left_bound:index]
-            
-            # Gather Tweets from Next 1 Day
-            tmp_status.date = status.date + timedelta(days=1)
-            right_bound = bisect_right(statuses, tmp_status, lo=index)
-            next_stack = statuses[index:right_bound]
-            
-            # Filter Type Tweets
-            previous_stack = [sts for sts in previous_stack if user in sts.node.pointer_nodes()]
-            next_stack = [sts for sts in next_stack if user in sts.node.reference_nodes()]
-            
-            # Filter Cluster
-            previous_stack = [sts for sts in previous_stack if sts.cluster == status.cluster]
-            next_stack = [sts for sts in next_stack if sts.cluster == status.cluster]
-            
-            # Print Output
-            if(len(previous_stack) > 0 and len(next_stack) > 0):
-                # Average Distance Before / After
-                distance = 0
-                for sts in previous_stack:
-                    distance += jellyfish.jaro_distance(sts.text, status.text)
-                previous_average = distance / len(previous_stack)
-                
-                distance = 0
-                comparisons = 0
-                for sts in previous_stack:
-                    for stsy in next_stack:
-                        comparisons += 1
-                        distance += jellyfish.jaro_distance(sts.text, stsy.text)
-                evolved_average = distance / comparisons
-                
-                # Print Output
-                config = ConfigParser()
-                config.read(os.path.expanduser('~/.config/networkt/cluster.ini'))
-                path = config.get('persistence-configuration', 'database_path')
-                with open('{}/{}'.format(path, user.screen_name), 'a') as f:
-                    f.write('Avg.(Friend -> Transnational): {}\n'.format(previous_average))
-                    f.write('Avg.(Friend -> Transnational Follower): {}\n'.format(evolved_average))
-                    f.write(str([i.text for i in previous_stack]) + '\n')
-                    f.write('-' * 40 + '\n')
-                    f.write(status.text + '\n')
-                    f.write('-' * 40 + '\n')
-                    f.write(str([i.text for i in next_stack]) + '\n')
-                    f.write('=' * 80 + '\n')
+    # add cluster id to every document
+    results = [l + [r] for l, r in zip(all_statuses, clusters)]
+    
+    # if user status is not related to any other statuses, return
+    if results[user_index][3] == -1:
+        return
+    
+    # gather statuses with same clustering before
+    before_statuses = [result for result in results[:user_index]
+                       if result[3] == results[user_index][3]]
+    
+    # gather statuses with same clustering after
+    after_statuses = [result for result in results[user_index + 1:]
+                      if result[3] == results[user_index][3]]
+    
+    if before_statuses and after_statuses:
+        print('=' * 40)
+        print('-' * 20, 'before')
+        print(before_statuses)
+        print('-' * 20, 'status')
+        print(results[user_index])
+        print('-' * 20, 'after')
+        print(after_statuses)
 
 
 if __name__ == "__main__":
