@@ -44,7 +44,7 @@ def cluster_documents(documents):
     tfidf_model = vectorizer.fit_transform(documents)
     
     # Data Clustering
-    db = DBSCAN(eps=0.90, min_samples=3).fit(tfidf_model)
+    db = DBSCAN(eps=1.50, min_samples=3).fit(tfidf_model)
     
     return db.labels_
 
@@ -53,6 +53,7 @@ def main():
     tag = Tag.nodes.get(name=Tag.FILTER_1)
     for node in tag.users:
         print('processing {}'.format(node.screen_name))
+        diffusion_instances = 0
         
         # get tweets of transnational user
         query = (
@@ -100,11 +101,14 @@ def main():
             
             if(friend_statuses and follower_statuses):
                 # cluster and identify diffusion
-                identify_transnational_diffusion(node, len(friend_statuses),
-                                                 friend_statuses + [status] + follower_statuses)
+                if identify_transnational_diffusion(node, len(friend_statuses),
+                                                    friend_statuses + [status] + follower_statuses):
+                    diffusion_instances += 1
+        
+        print('{} diffusion instances: {}'.format(node.screen_name, diffusion_instances))
 
 
-def identify_transnational_diffusion(user, user_index, all_statuses):
+def identify_transnational_diffusion(user, user_index, all_statuses, output=False):
     # extract document from every status and cluster
     clusters = cluster_documents([status[0] for status in all_statuses])
     
@@ -123,7 +127,7 @@ def identify_transnational_diffusion(user, user_index, all_statuses):
     after_statuses = [result for result in results[user_index + 1:]
                       if result[3] == results[user_index][3]]
     
-    if before_statuses and after_statuses:
+    if before_statuses and after_statuses and output:
         print('=' * 40)
         print('-' * 20, 'before')
         print(before_statuses)
@@ -131,6 +135,9 @@ def identify_transnational_diffusion(user, user_index, all_statuses):
         print(results[user_index])
         print('-' * 20, 'after')
         print(after_statuses)
+    
+    if before_statuses and after_statuses:
+        return True
 
 
 if __name__ == "__main__":
