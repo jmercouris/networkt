@@ -19,12 +19,12 @@ parts of the twitter network. The objects will explained below.
 \section{Graph}
 The Graph package contains all of the important definitions for the
 database structure, access, and extraction of data from Twitter. It is
-composed of three important files:
+composed of three important modules:
 
 \begin{enumerate}
-\item data model
-\item filter node
-\item network scrape
+\item Data Model
+\item Filter Node
+\item Network Scrape
 \end{enumerate}
 
 \subsection{Data Model}
@@ -77,8 +77,8 @@ every user within the network. That is, the status class is a
 representation of a Tweet. This class is important because it contains
 all of the data that is fed into our clustering sequence for
 identifying the diffusion of information. The Status class has a one
-to many relationship with the Node class- a node object has
-many status objects.
+to many relationship with the Node class- a node object has many
+status objects.
 
 \begin{lstlisting}
 class Status(StructuredNode):
@@ -107,60 +107,52 @@ information available about a given Tweet published on Twitter.
 
 \subsection{Filter Node}
 The filter node module is responsible for all operations relating to
-classifying different nodes during the network scraping process. Within
-filter node there are a set of functions called ``filter x'' that accept
-a Node object as input, and return a true or false value as to whether a
-given Node qualifies for a particular attribute.
+classifying different nodes during the network scraping
+process. Within filter node there are a set of functions called
+``filter x'' that accept a Node object as input, and return a true or
+false value as to whether a given Node qualifies for a particular
+attribute.
 
-To provide a concrete example of Node filtering, consider identification
-of Transnational Entrepreneurs. Due to the Twitter API's rate limits,
-different filtering strategies are used to determine the liklihood that
-a given user is a Transnational Entrpreneur. This helps improve the performance
-of collecting networks of interest on Twitter. During the initial collection
-of followers of a startup hub, the filter\_1 function, will determine whether
-a sample network of a user qualifies them as being a Transnational candidate.
+To provide a concrete example of Node filtering, consider
+identification of Transnational Entrepreneurs. Due to the Twitter
+API's rate limits, different filtering strategies are used to
+determine the liklihood that a given user is a Transnational
+Entrpreneur. This helps improve the performance of collecting networks
+of interest on Twitter. During the initial collection of followers of
+a startup hub, the filter\_1 function, will determine whether a sample
+network of a user qualifies them as being a Transnational candidate.
 
 \subsection{Network Scrape}
+The network scrape module contains a set of functions for extracting a
+network of a Twitter user in a reliable way. Within network scrape,
+there are functions available to:
 
-\section{Scrapet}
-Scrapet is the tool that is responsible for pulling the data from the
-Twitter API and making the appropriate graphs. Scrapet is the core
-behind all of the tools in the project. Every single project will end
-up using a Scrapet dump of data for rendering, machine learning, or
-any other processes necessary for analysis. This tool is composed of a
-number of components which will be briefly be introduced
-below. Following the introduction and description of components, the
-high level architecture will be explained.
+\begin{enumerate}
+\item Get a single User and persist them
+\item Get a User's ego-centric follower network and persist them
+\item Get a User's ego-centric friend network and persist them
+\item Get a User's Status' and persist them
+\end{enumerate}
 
-\subsection{Scrapet.ini}
-The Ini file is important for saving many configuration details.
+Together, composting these functions allows for a snapshot of a given
+individual's network. By abstracting away the functions of the Twitter
+API in the Network Scrape module, extracting a user's Twitter network
+is significantly eased.
 
-\subsection{Logger}
-The logger is the most important component of the Scrapet system. The
-logger is an abstract entity that is either fulfilled as a console
-logger, or as a GUI logger depending on the flavor and execution
-method of the Scrapet build. The logger is responsible for reporting
-on the overall progress and the activity of the system.
-
-\subsection{Runner}
-The runner is the main entry point of the system. Whether running from
-the GUI mode, or from the command line mode, Scrapet always begins
-here. This is where all of the scraping algorithms and functions are
-organized.
-
-\subsection{Main}
-Main is aptly named as the main entry point into the program. This is
-where the GUI version of Scrapet begins. Just like the command line
-program though, the true entry point of execution is in Runner. During
-execution of the scraping process, scrapet launches 'Runner' as a
-thread.
-
-\subsection{Settings Panel}
-The settings panel provides an abstract way to edit the ini file which
-controls the behavior of the runner. In this way it is possible to use
-the GUI to set the parameters that the command line program will
-operate with, as they launch the same subprocess - directly or
-otherwise.
+There are several constraints that the Network Scrape module
+considers. One of the primary constraints is, that there are different
+rate limits for different operations within the Twitter API, therefore
+to respect the rate limits and avoid being rate limited, it is
+necessary for the program to adjust the amount of time it waits
+between each operation. Another constraint which provides significant
+problems is that the Twitter API may sometimes confirm the existence
+of a user by returning them as a friend or follower of a given user,
+but simultaneously prohibit the collection of data via the API for
+that user. If this behavior is not accounted for, the Network
+representation within Neo4j may contain empty Nodes, or Nodes without
+statuses. These problems and others are all abstracted by Network
+Scrape, so that the Scrapet package runner module can easily extract
+and persist a network snapshot from Twitter to Neo4j.
 
 \section{Cluster}
 The best way to understand the cluster package is to go through it
