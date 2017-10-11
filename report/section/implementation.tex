@@ -5,50 +5,64 @@ definition of how the Method was carried out on a programmatic level.
 
 \section{The Database Structure}
 The database structure was designed to mimic the nature of the twitter
-network graph as closely as possible. For this reason, the ORM of
-choice for this project was Neo4j. Neo4j was chosen because of its
-powerful ability to model graphs and networks. It comes with native
+network graph as closely as possible. For this reason, the datastore
+of choice for this project was Neo4j. Neo4j was chosen because of its
+powerful ability to model graphs and networks. Neo4j ships with native
 implementations to connect nodes together, as well as cypher, a
-powerful query language used to query the database. As an example,
-cypher is used to select the tweets of all the individuals in a
-transnational network, using just one command.
+powerful query language. As an example, cypher is used to select the
+tweets of all the individuals in a transnational network, using just
+one command.
 
 The database contains several types of objects to represent different
 parts of the twitter network. The objects will explained below.
 
-\subsection{The Declarative Base: The Node Class}
+\section{Graph}
+The Graph package contains all of the important definitions for the
+database structure, access, and extraction of data from Twitter. It is
+composed of three important files:
+
+\begin{enumerate}
+\item data model
+\item filter node
+\item network scrape
+\end{enumerate}
+
+\subsection{Data Model}
+The data model is where the representations for all of the objects on
+Twitter are stored. The representations are designed to capture all of
+the useful information available from the Twitter API in an indexable
+and computable way.
+
+\subsubsection{The Node Class}
 The Node Class represents a node within the system. A node, within
 this context, refers to a user on Twitter. The Node contains all of
 the information that is available within the Twitter public API. The
 following class description shows which fields are available.
 
 \begin{lstlisting}
-  class Node(Base):
-    __tablename__ = 'node'
-    id = Column(Integer, primary_key=True)
-    created_at = Column(Text)
-    description = Column(Text)
-    favorites_count = Column(Integer)
-    followers_count = Column(Integer)
-    friends_count = Column(Integer)
-    id_str = Column(Text)
-    lang = Column(Text)
-    listed_count = Column(Integer)
-    location = Column(Text)
-    name = Column(Text)
-    screen_name = Column(Text)
-    statuses_count = Column(Integer)
-    time_zone = Column(Text)
-    utc_offset = Column(Integer)
-    verified = Column(Boolean)
-
-    # Filtering Levels
-    filter_0 = Column(Boolean)
-    filter_1 = Column(Boolean)
-    filter_2 = Column(Boolean)
-    # Relationship to Status Updates
-    statuses = relationship("Status", order_by="Status.date",
-                            backref="node", cascade="all, delete")
+class Node(StructuredNode):
+    name = StringProperty()
+    screen_name = StringProperty(unique_index=True)
+    
+    created_at = StringProperty()
+    description = StringProperty()
+    favorites_count = IntegerProperty()
+    followers_count = IntegerProperty()
+    friends_count = IntegerProperty()
+    id_str = StringProperty()
+    lang = StringProperty()
+    listed_count = IntegerProperty()
+    location = StringProperty()
+    statuses_count = IntegerProperty()
+    time_zone = StringProperty()
+    utc_offset = IntegerProperty()
+    verified = BooleanProperty()
+    
+    # Relationship definitions
+    friends = RelationshipTo('Node', 'FRIEND')
+    followers = RelationshipTo('Node', 'FOLLOWER')
+    statuses = RelationshipTo('Status', 'STATUS')
+    tags = RelationshipTo('Tag', 'TAG')
 \end{lstlisting}
 
 This object is used to model a given Twitter user and can be used to
@@ -57,50 +71,56 @@ the user model into fields of interest, we are able to write queries
 that target specific properties of users- for example- we can write a
 query to return all users with a location of X.
 
-\subsection{The Declarative Base: The  Status Class}
+\subsubsection{The  Status Class}
 The Status class is responsible for maintaining all of the statuses of
 every user within the network. That is, the status class is a
 representation of a Tweet. This class is important because it contains
 all of the data that is fed into our clustering sequence for
 identifying the diffusion of information. The Status class has a one
-to many relationship with the Node class, that is- a node object has
+to many relationship with the Node class- a node object has
 many status objects.
 
 \begin{lstlisting}
-class Status(Base):
-    __tablename__ = 'status'
-    id = Column(Integer, primary_key=True)
-    # Parent
-    node_id = Column(Integer, ForeignKey('node.id'))
-    # Fields
-    coordinate_longitude = Column(Text)
-    coordinate_latitude = Column(Text)
-    created_at = Column(Text)
-    date = Column(DateTime)
-    favorite_count = Column(Integer)
-    id_str = Column(Text)
-    in_reply_to_screen_name = Column(Text)
-    in_reply_to_status_id_str = Column(Text)
-    in_reply_to_user_id_str = Column(Text)
-    lang = Column(Text)
-    possibly_sensitive = Column(Boolean)
-    quoted_status_id_str = Column(Text)
-    retweet_count = Column(Integer)
-    retweeted = Column(Boolean)
-    source = Column(Text)
-    text = Column(Text)
-    truncated = Column(Boolean)
+class Status(StructuredNode):
+  id_str = StringProperty(unique_index=True)
+
+  coordinate_longitude = StringProperty()
+  coordinate_latitude = StringProperty()
+  created_at = StringProperty()
+  date = DateTimeProperty()
+  favorite_count = IntegerProperty()
+  in_reply_to_screen_name = StringProperty()
+  in_reply_to_status_id_str = StringProperty()
+  in_reply_to_user_id_str = StringProperty()
+  lang = StringProperty()
+  possibly_sensitive = BooleanProperty()
+  quoted_status_id_str = StringProperty()
+  retweet_count = IntegerProperty()
+  retweeted = BooleanProperty()
+  source = StringProperty()
+  text = StringProperty()
+  truncated = BooleanProperty()
 \end{lstlisting}
 
 As with the Node class, the Status class represents and classifies all
 information available about a given Tweet published on Twitter.
 
-\section{Graph}
-The Graph package contains all of the important definitions for the
-database structure, access, and extraction of data from Twitter. It is
-composed of three important files: data\_model.py, filter\_node.py,
-network\_scrape.py.
+\subsection{Filter Node}
+The filter node module is responsible for all operations relating to
+classifying different nodes during the network scraping process. Within
+filter node there are a set of functions called ``filter x'' that accept
+a Node object as input, and return a true or false value as to whether a
+given Node qualifies for a particular attribute.
 
+To provide a concrete example of Node filtering, consider identification
+of Transnational Entrepreneurs. Due to the Twitter API's rate limits,
+different filtering strategies are used to determine the liklihood that
+a given user is a Transnational Entrpreneur. This helps improve the performance
+of collecting networks of interest on Twitter. During the initial collection
+of followers of a startup hub, the filter\_1 function, will determine whether
+a sample network of a user qualifies them as being a Transnational candidate.
+
+\subsection{Network Scrape}
 
 \section{Scrapet}
 Scrapet is the tool that is responsible for pulling the data from the
