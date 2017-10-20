@@ -128,10 +128,19 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret, phase,
         tag = Tag.nodes.get(name=Tag.FILTER_1)
         for index, node in enumerate(tag.users):
             print('{}/{} retrieving {} extended graph'.format(
-                index + 1, len(tag.users), node.screen_name),
-                ' ' * 20, end='\r')
-            _scraper.pull_friend_network(node, extended_graph_limit)
-            _scraper.pull_follow_network(node, extended_graph_limit)
+                index + 1, len(tag.users), node.screen_name))
+            
+            for index, friend in enumerate(node.friends):
+                print('{}/{} friend graph'.format(
+                    index + 1, len(node.friends)), ' ' * 20, end='\r')
+                _scraper.pull_friend_network(friend, extended_graph_limit)
+                _scraper.pull_follow_network(friend, extended_graph_limit)
+            
+            for index, follower in enumerate(node.followers):
+                print('{}/{} follower graph'.format(
+                    index + 1, len(node.followers)), ' ' * 20, end='\r')
+                _scraper.pull_friend_network(follower, extended_graph_limit)
+                _scraper.pull_follow_network(follower, extended_graph_limit)
     
     print('\nExecution Complete')
 
