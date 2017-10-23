@@ -87,6 +87,7 @@ class NetworkScrape(object):
             except TwythonError:
                 # This user is not accessible to us, delete them
                 user.delete()
+                return
             
             for result in search['users']:
                 tmp = None
