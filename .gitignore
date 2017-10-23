@@ -296,3 +296,6 @@ offline
 
 # Ignore html files
 *.html
+
+# Ignore org files
+*.org
