@@ -130,16 +130,29 @@ def main(app_key, app_secret, oauth_token, oauth_token_secret, phase,
             print('{}/{} retrieving {} extended graph'.format(
                 index + 1, len(tag.users), node.screen_name))
             
+            # pull_friend_network, and pull_follow network functions
+            # can delete users in place. When enumerating, what would
+            # happen is, a particular node is NOT available via
+            # twitter, and is deleted by pull_friend_network (the
+            # first one to run), then the pull follow network function
+            # would attempt to retrieve the followers of a
+            # non-existent user. Therefore, broken into separate loops
             for index, friend in enumerate(node.friends):
-                print('{}/{} friend graph'.format(
+                print('{}/{} friend friend graph'.format(
                     index + 1, len(node.friends)), ' ' * 20, end='\r')
                 _scraper.pull_friend_network(friend, extended_graph_limit)
+            for index, friend in enumerate(node.friends):
+                print('{}/{} friend follow graph'.format(
+                    index + 1, len(node.friends)), ' ' * 20, end='\r')
                 _scraper.pull_follow_network(friend, extended_graph_limit)
             
             for index, follower in enumerate(node.followers):
-                print('{}/{} follower graph'.format(
+                print('{}/{} follower friend graph'.format(
                     index + 1, len(node.followers)), ' ' * 20, end='\r')
                 _scraper.pull_friend_network(follower, extended_graph_limit)
+            for index, follower in enumerate(node.followers):
+                print('{}/{} follower follow graph'.format(
+                    index + 1, len(node.followers)), ' ' * 20, end='\r')
                 _scraper.pull_follow_network(follower, extended_graph_limit)
     
     print('\nExecution Complete')

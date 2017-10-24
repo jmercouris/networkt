@@ -82,10 +82,12 @@ class NetworkScrape(object):
                                           count=self.scope_depth, cursor=next_cursor)
             except TwythonAuthError:
                 # This user is not accessible to us, delete them
+                print('Authorization Error: {}'.format(user.screen_name))
                 user.delete()
                 return
             except TwythonError:
                 # This user is not accessible to us, delete them
+                print('Twython Error: {}'.format(user.screen_name))
                 user.delete()
                 return
             
