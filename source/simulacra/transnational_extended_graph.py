@@ -25,20 +25,18 @@ regex = re.compile('[^a-zA-Z]')
 
 
 def sanitize_dict(input_dict):
-    output_dict = deepcopy(input_dict)
+    output_dict = {}
+    
+    for key in input_dict:
+        output_dict[regex.sub('', key)] = input_dict[key]
     
     # set of keys to be removed
     sanitize_keys = ['friends', 'followers', 'statuses', 'tags',
-                     'created_at', 'description']
+                     'createdat', 'description']
     for key in sanitize_keys:
         output_dict.pop(key)
     
-    # clean every key from non alpha characters
-    for key in output_dict:
-        value = output_dict.pop(key)
-        output_dict[regex.sub('', key)] = value
-    
-    # clean values that cannot be represented in as string
+    # clean values that cannot be represented as a string
     for key in output_dict:
         if output_dict[key] is None:
             output_dict[key] = str(output_dict[key])
