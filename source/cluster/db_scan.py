@@ -51,6 +51,7 @@ def cluster_documents(documents):
 
 def main():
     tag = Tag.nodes.get(name=Tag.FILTER_1)
+    total_diffusion_instances = 0
     for node in tag.users:
         print('processing {}'.format(node.screen_name))
         diffusion_instances = 0
@@ -102,10 +103,12 @@ def main():
             if(friend_statuses and follower_statuses):
                 # cluster and identify diffusion
                 if identify_transnational_diffusion(node, len(friend_statuses),
-                                                    friend_statuses + [status] + follower_statuses):
+                                                    friend_statuses + [status] + follower_statuses,
+                                                    output=False):
                     diffusion_instances += 1
-        
+        total_diffusion_instances += diffusion_instances
         print('{} diffusion instances: {}'.format(node.screen_name, diffusion_instances))
+    print('Total Diffusion Instances: {}'.format(total_diffusion_instances))
 
 
 def identify_transnational_diffusion(user, user_index, all_statuses, output=False):
