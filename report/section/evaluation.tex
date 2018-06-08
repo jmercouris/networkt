@@ -28,4 +28,62 @@ bounds of 75\%, if they had over 50 tweets, and if they were not just
 retweeting the same information over 50\% of the time, they qualified.
 
 From these Transnational Ego-Centric networks, we collected a total of
-2412594 tweets for analysis.
+2412594 tweets for analysis. Of these tweets, we detected x counts of
+transnational diffusion events. These events were sparsely related
+about business, despite the individuals involved in them being focused
+on business.
+
+From our approach, there are a few insurmountable, generalized
+problems. The first major problem is that we were unable to tell
+whether a tweet or idea actually originated and was diffused by a
+Transnational Entrepreneur. This is because are not directly measuring
+the flow of information by probing the minds of individuals, and
+instead observing their behavior on a network. FOr example, it is
+wholly possible and likely that two or more users from two distinct
+networks are listening to the same media source as the Transnational
+Entrepreneur and receive their data from that source. To explain more
+explicitly, imagine that all three individuals (the Transnational
+Entrepreneur, the person from network A of the transnational, and the
+persom from network B of the transnational) are all interested in
+business. It is very possible that all three of them are following a
+popular business leader on Twitter. In the case that the popular
+business leader tweets or disseminates knowledge that is interesting,
+we may ``observe'' Transnational diffusion due to the ordering of the
+tweets within the Transnational's ego-centric network, whereas the
+information actually originated from a third source. This of course
+will always be a problem since we are not directly measuring what the
+origin of information is, and only assuming based upon our percieved
+propagation of the data through the network.
+
+The second major, generalized problem is that of parameterization.
+When sifting through a data set of 2412594 tweets, it is not feasible,
+for the purposes of this research to go through them by hand. This
+involves using algorithms and programs to identify and categorize
+tweets as being related. To do this, we used DB Scan, which does not
+require us to know how many content clusters we will be expecting (in
+contrast with K-Means and others). DB Scan is no silver bullet. One
+has to manually run and re-run many tests against the data set to
+determine the correct parameters for epsilon, and the minimum
+samples. The epsilon value refers to the maximum distance between two
+vectors for them to be considered part of the same cluster, and the
+minimum samples refers to the minimum amount of vectors within epsilon
+distance to constitute a cluster. The minimum sample size for a given
+cluster in our project is obvious, three, that is the amount of tweets
+that may constitute a transnational diffusion event. The harder value
+to tweak is epsilon. Ultimately we decided on an epsilon value of 1.25
+which minimizes the amount of false positives.
+
+Note: One can also look at the distribution of data and attempt to
+pick suitable epsilon values, but ultimately a human will have to
+examine the output and verify that the program is behaving in
+accordance with our expectations.
+
+Similarly with the DB Scan parameters, one has to also consider the
+actual generation of vectors. Since we are using TF/IDF, we have to
+tweak the minimum document frequency, maximum document frequency, and
+possibly our stopword set and stemmer. This is an especially
+challenging configuration due to the size of the documents on the
+Twitter network (where words are also frequently
+abbreviated). Ultimately we decided on using the NLTK stopword set, a
+minimum document frequency of 0.0, a maximum document frequency of
+0.80, and a porter stemmer to process and tokenize the text.
