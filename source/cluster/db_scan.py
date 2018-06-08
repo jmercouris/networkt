@@ -37,14 +37,14 @@ def cluster_documents(documents):
     vectorizer = TfidfVectorizer(tokenizer=process_text,
                                  stop_words=stopwords.words('english'),
                                  min_df=0.0,
-                                 max_df=0.95,
+                                 max_df=0.80,
                                  lowercase=True)
     
     # Data Vectorizing
     tfidf_model = vectorizer.fit_transform(documents)
     
     # Data Clustering
-    db = DBSCAN(eps=1.50, min_samples=3).fit(tfidf_model)
+    db = DBSCAN(eps=1.25, min_samples=3).fit(tfidf_model)
     
     return db.labels_
 
