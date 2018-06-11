@@ -12,7 +12,7 @@ from neomodel import db
 from nltk import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
-from scipy.stats import skew
+from scipy.stats import skew, kurtosis
 from sklearn.cluster import DBSCAN
 from sklearn.feature_extraction.text import TfidfVectorizer
 
@@ -24,18 +24,20 @@ def main():
         for node in tag.users:
             print('processing {}'.format(node.screen_name))
             diffusion_count = get_transnational_diffusion_count(node)
-            skew = calculate_skew(node)
-            writer.writerow([node.screen_name, diffusion_count, skew])
+            
+            time_zone_histogram_data = get_time_zone_histogram_data(node)
+            time_zone_kurtosis = kurtosis(time_zone_histogram_data)
+            
+            writer.writerow([node.screen_name, diffusion_count, time_zone_kurtosis])
+            print(time_zone_histogram_data)
 
 
-def calculate_skew(node):
+def get_time_zone_histogram_data(node):
     time_zones = ([node.time_zone for node in node.followers] +
                   [node.time_zone for node in node.friends])
     
-    # count via dictionary
     time_zone_dictionary = defaultdict(int)
     
-    # count how many members are in each time zone
     for time_zone in time_zones:
         time_zone_dictionary[time_zone] = time_zone_dictionary[time_zone] + 1
     
@@ -43,9 +45,8 @@ def calculate_skew(node):
     
     for time_zone, count in time_zone_dictionary.items():
         time_zone_histogram_data.append(count)
-    print(time_zone_histogram_data)
     
-    return skew(time_zone_histogram_data)
+    return time_zone_histogram_data
 
 
 def process_text(text, stem=False):
