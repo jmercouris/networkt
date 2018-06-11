@@ -299,3 +299,6 @@ offline
 
 # Ignore org files
 *.org
+
+# Ignore CSV files
+*.csv
