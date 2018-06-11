@@ -24,12 +24,9 @@ def main():
         for node in tag.users:
             print('processing {}'.format(node.screen_name))
             diffusion_count = get_transnational_diffusion_count(node)
-            
             time_zone_histogram_data = get_time_zone_histogram_data(node)
             time_zone_kurtosis = kurtosis(time_zone_histogram_data)
-            
             writer.writerow([node.screen_name, diffusion_count, time_zone_kurtosis])
-            print(time_zone_histogram_data)
 
 
 def get_time_zone_histogram_data(node):
