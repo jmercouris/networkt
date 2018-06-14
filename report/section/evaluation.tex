@@ -88,3 +88,28 @@ Twitter network (where words are also frequently
 abbreviated). Ultimately we decided on using the NLTK stopword set, a
 minimum document frequency of 0.0, a maximum document frequency of
 0.80, and a porter stemmer to process and tokenize the text.
+
+Lastly, when we plot our two data sets on the same graph, the delta
+from a kurtosis of 3.0, and the amount of diffusion instances, we see
+no significant relationship between the two variables. Therefore, the
+null hypothesis is proven. There appears to be no moderation on
+transnational diffusion activity as a product of the kurtosis in the
+distribution of individuals in a given individuals network.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1.0\textwidth]{delta_from_normal_distribution.png}
+  \caption{The relationship between the amount of transnational diffusion instances, and the user's ego-centric network distribution kurtosis.}
+\end{figure}
+
+However, if we exclude all values below five diffusion instances, we
+in fact see an inverse relationship of our hypothesis. There may in fact
+be a relationship in the quantity and frequency of transnational
+diffusion. Those with the most leptokurtic distributions may be those
+who are most frequently involed in transnational diffusion. Looking at the
+chart below, which omits transnationals with five or less diffusion instances
+paints a quite different picture:
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1.0\textwidth]{trimmed_delta_from_normal_distribution.png}
+  \caption{The relationship between the amount of transnational diffusion instances, and the user's ego-centric network distribution kurtosis, but only for users with 5 or more transnational diffusion events.}
+\end{figure}
