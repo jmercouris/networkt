@@ -20,10 +20,10 @@ user.
 \item \verb|verified|: Has the User submitted proof to Twitter of their identity
 \end{itemize}
 
-In addition to this data, we are able to get all of their
-relationships (friends and followers). Finally, we can get their
-latest 200 statuses (tweets) which are used for tracing Information
-Diffusion through a Twitter network.
+In addition to this data for each user, we are able to get all of the
+users' relationships (friends and followers). Finally, we can get
+their latest 200 statuses (tweets) which are used for tracing
+information diffusion through a ego-centric Twitter network.
 
 \section{The Root Node}
 The study that we have done may be replicated in any given country
@@ -39,45 +39,47 @@ given the following process:
 \end{enumerate}
 
 The Twitter account that you find in the third step will represent
-your network root. From this root, you will branch off to find
-Transnational Entrepreneurs.
+your network root (root node). From this root, you will branch off to
+find Transnational Entrepreneurs.
 
 \section{Root Network Extraction}
-After identifying a Twitter User as your Root node, the program will
-extract a group of follower's from your Root node. These are your Root
-node's 1st degree network, or rather, an incomplete ego-centric
-network. This group of followers represent candidates for
-Transnational Entrepreneurs, we know they are likely Entreprenuers in
-the city that we are interested in, in order to determine whether they
-are the users that we are looking for, we will perform a set of
-filters on them.
+After identifying a Twitter User as your root node, the program will
+extract a group of followers from your root node. These are your root
+node's 1st degree network, or rather, an incomplete, directional,
+ego-centric network. This group of followers represent candidates for
+Transnational Entrepreneurs, we use these users as candidates because
+they are likely Entreprenuers in the city that we are interested in.
+To determine whether they are the users that we are looking for, we
+will perform a set of filters operations on them.
 
 \section{Filter Level 0}
-Filter level 0 is responsible for filtering the Root Node's followers
-to see whether they are of interest. We check two things here.
+The first filter involved is named Filter level 0. Filter level 0 is
+responsible for filtering the Root Node's followers to see whether
+they are of interest. For the purposes of this research, we check two
+things here.
 
 \begin{itemize}
 \item Is the User from Berlin?
 \item Is the User a human?
 \end{itemize}
 
-The way we determine whether the User is from Berlin is largely by
-relying on their time zone settings. We found that many people set
-their language, or their city to whatever they would like, but the
-timezone, often automatically set by the computer is a good indicator
-of the user's actual locale. Either way, going with any one of the
-attributes is not a completley valid way to ensure that a given user
-says where they actually are, all information is subject to what the
-user wishes to input.
+The way we determine whether the User is from Berlin is by relying on
+their time zone settings. We found that many people set their
+language, or their city to whatever they would like, but the timezone,
+often automatically set by the computer is a good indicator of a
+user's actual locale. Regardless, going with any one of the attributes
+is not a completley valid way to ensure that a given user says where
+they actually are, all information is subject to what the user wishes
+to input.
 
-The second criteria is a little bit more difficult to discern. It is
-not always possible to tell apart a human from a robot or
-organization. In order to keep things as simple as possible, we
-performed some basic checks that look for a valid ratio of
-friends:followers, limited amount of content repetition/spam, and
+The second criteria is a little bit more difficult to discern (is the
+user human). It is not always possible to tell apart a human from a
+robot or organization. In order to keep things as simple as possible,
+we performed some basic checks that look for a valid ratio of
+friends:followers, a limited amount of content repetition/spam, and
 automatically passed them if they were twitter verified. This is not a
 foolproof way of filtering users as robots or not, but it is
-computationally cheap and allowed us to quickly move on to our next
+computationally inexpensive and allowed us to move on to our next
 stage of filtering. Further research could focus more on this aspect.
 
 \section{Filter Level 1}
