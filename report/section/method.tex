@@ -189,13 +189,13 @@ Entrepreneur:
 \end{enumerate}
 
 If this pattern can be observed, then an example of Transnational
-Diffusion has been identified, a tweet that somebody in one country
+Diffusion has been identified- a tweet that somebody in one country
 made, was transferred to another country via a Transnational
-Entrepreneur. They helped facilitate information diffusion across
-borders.
+Entrepreneur. The Transnational Entrepreneur helped facilitate
+information diffusion across borders.
 
 Due to the high volume of tweets within a network, doing this by hand
-would be nearly impossible. In order to do this effectively against
+would be nearly impossible. In order to do this effectively, against
 multiple Transnational Entrepreneur ego-centric networks, machine
 learning was utilized.
 
@@ -204,22 +204,25 @@ In order to group related Tweets together, there are a number of
 possible clustering algorithms and document vectorization
 schemes. Their needs and usefulness depends on the context, and nature
 of the data, and the information known about that data, below, the
-choices for this research will be explained and justified.
+choices made for this research will be explained and justified.
 
 \section{Document Tokenization \& Vectorization}
 The first problem is: how to vectorize the documents (Tweets). To
 vectorize documents means to create a simplified representation of a
-document. This simplified document representation allows usage of a
-clustering or learning algorithm. It is important to simplify and
-select only the most salient features of the document in order to make
-the computation feasible.
+document extracting all salient features for analysis (clusterization,
+semantic analysis, etc). This simplified document representation
+allows usage of a clustering or learning algorithm. It is important to
+simplify and select only the most salient features of the document in
+order to make the computation feasible. If you select the wrong
+features or wrong parameters for your clustering, your model will be
+effected by noise and contain false positives or false negatives.
 
 For the purposes of this research, TF/IDF (term frequency/inverse
 document frequency) was used in conjunction with a Porter
 Stemmer. What this means is the following: If a word appears
 frequently in a document, but infrequently in the other documents of a
-collection, then that word is more likely to be salient to the context
-of that document.
+collection, then, that word is more likely to be salient to the
+context of that document.
 
 To understand TF/IDF, consider a concrete example: A collection of
 documents about legal issues. One of the documents is about the laws
@@ -249,8 +252,8 @@ stem example:
 
 In the example, the word Macaw is simplified to Bird. Therefore, if
 the document uses the word ``Parrot'' or ``Macaw'', both terms will be
-classified as ``bird'' and the context of the document overall will
-become clearer.
+classified as ``bird'' and the context of the document overall will be
+more reliable, at the cost of less accuracy.
 
 \section{DB Scan Clustering}
 The clustering algorithm selected for this research was
@@ -270,8 +273,9 @@ implementation used in the research. For example, one can set what the
 minimum threshold of related vectors to constitute a cluster. In
 simpler terms, how many documents must be related for a cluster to be
 considered a cluster. Additionally important is the ability to set the
-threshold distance for two vectors to be related. This fine-tuning
-allows the data to be more accurately grouped and categorized.
+threshold distance for two vectors to be related (known as
+epsilon). This fine-tuning allows the data to be more accurately
+grouped and categorized based on its nature.
 
 Therefore, to breifly summarize, DB Scan was chosen because there were
 an unknown quantity of content-clusters within the data set, and the
