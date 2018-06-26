@@ -84,50 +84,51 @@ stage of filtering. Further research could focus more on this aspect.
 
 \section{Filter Level 1}
 Filter level 1 is the part of the filtering process in which we
-determine whether a user is largely of interest to us, are we going to
-gather their ego-centric network. The reason that we must assess this
-at this stage is because we are rate limited in how many API calls we
-may make to the Twitter API for a given time frame (please see the
-appendix for details). In order to assess whether a candidate is
-therefore a transnational entrepreneur without pulling their whole
-network, we pull a sample of their friends.
+determine whether a user is of interest for further analysis. Exemple
+gratia, are we going to gather their ego-centric network? The reason
+that we must assess this at this stage is because we are rate limited
+in how many API calls we may make to the Twitter API for a given time
+frame (please see the appendix for details). In order to assess
+whether a candidate is therefore a transnational entrepreneur without
+pulling their whole network, we pull a sample of their friends.
 
 If we find that the sample distribution is valid, then we will mark
 them as filtered and move on to processing them in the next stage. The
 distribution ratio of a valid transnational is therefore that their
 top two most common nationalaties in their network must be more than
 \verb|50%| of their network and that their top two most common
-nationalities may not differ by more than \verb|80%|.
+nationalities may not differ by more than \verb|80%| in quantity.
 
 \section{Transnational Entrepreneur Ego-Centric Network Extraction}
 Following the selection of a set of individuals that we are interested
-in we begin the extraction process. We iterate through every
+in, we begin the extraction process. We iterate through every
 Transnational Entrepreneur candidate and collect a limited network of
-their friends and followers. For our initial study, we limited this to
-200 friends and 200 followers each for a given Transnational
-Entrepreneur.
+their friends and followers. For our initial study, we limited this
+network to a maximum of 200 friends and 200 followers for a given
+Transnational Entrepreneur.
 
 \section{Transnational Entrepreneur Ego-Centric Network Activity}
 After extracting up to 200 friends and 200 followers from every given
-Transnational Entreprenuer candidate we gathered the last 200 tweets
-from every single user in the ego-centric network. This enables us to
-play back histoy. By having a record of every single tweet, and every
-single timestamp from every tweet, we can effectivley trace the
-diffusion of an idea throughout a network. If we know that one of a
-Transantional Entrepreneur's friends tweeted about something, and then
-subsequently the Transantional Entrepreneur tweets about the same
-topic, we can assume with some degree of certainty that we witnessed
-information diffusion from the friend to the Transnational
-Entrepreneur.
+Transnational Entreprenuer candidate, we gathered the latest 200
+tweets from every single user in the ego-centric network. If the user
+had tweeted less than 200 total tweets, we gathered all of their
+tweets. By having a record of every single tweet, and every single
+timestamp from every tweet, we can trace the diffusion of an idea
+throughout a network. If we know that one of a Transantional
+Entrepreneur's friends tweeted about something, and then subsequently
+the Transantional Entrepreneur tweeted about the same topic, we can
+assume with some degree of certainty that we witnessed information
+diffusion from the friend of the Transnational Entrepreneur to the
+Transnational Entrepreneur.
 
 \section{Filter Level 2}
 After collecting all of the tweets from every single user of the
-Transnational Entrepreneurs ego-centric we now have the capability to
-do more effective filtering for different indicators that a given user
-may be a robot. In the case that a user is a robot, we do not want to
-consider their data, our study is only concerned with individuals. To
-quickly sort through hundreds of thousands of users we take a number
-of shortcuts that are indicators of humanity.
+Transnational Entrepreneur's ego-centric network, we now had the
+capability to do more effective filtering for different indicators
+that a given user may be a robot. In the case that a user is a robot,
+we do not want to consider their data, our study is only concerned
+with people. To quickly sort through hundreds of thousands of users we
+take a number of shortcuts that are proxy indicators of humanity:
 
 \begin{itemize}
 \item Is the user twitter verified?
@@ -138,7 +139,7 @@ of shortcuts that are indicators of humanity.
 
 \subsection{Is The User Twitter Verified}
 One of the indicators we use to see whether a Twitter User's tweets
-are worth clustering is whether they are verified or not. A verified
+are of human origin is whether they are verified or not. A verified
 Twitter user is one that has submitted formal proof to Twitter that
 they are who they say they are. Verified Twitter accounts are
 therefore usually not spammers, and real people or organizations.
@@ -148,23 +149,23 @@ A common technique by spam bots is to friend as many people as
 possible in the hope that they will friend them back. They are
 operating on the human reciprocity principle, and usually with rather
 limited success. Because the amount of people that friend them back is
-so low, and far lower than it would be for most humans, we can filter
-them out easily. We set a threshold of 10:1 friend to follower ratio
-for someone to be considered within our network. This means that for
-every 10 people that they are friends with, they must have at lest 1
-follower, any less and they will be discounted.
+may be low, and far lower than it would be for most humans, we can
+filter them out easily. We set a threshold of 10:1 friend to follower
+ratio for someone to be considered human within our network. This
+means that for every 10 people that they are friends with, they must
+have at lest 1 follower, any less and they will be discounted.
 
 \subsection{Minimum Status Requirements}
 The minimum status requirements that we pose on a user are to make
 sure that they are active on twitter. We want to only pick up
-individuals that are actually participating in conversations and
-contributing to a community. For this reason we set a minimum number
-of statuses to 50, if a user has less than 50 statuses ever tweeted,
-then they are not considered in our algorithm.
+individuals that are participating in conversations and contributing
+to a community. For this reason we set a minimum number of statuses to
+50, if a user has less than 50 statuses ever tweeted, then they are
+not considered in our computation.
 
 \subsection{Is the User Spamming?}
 Finally, the last thing that we can check, and the most
-computationally expensive is, is the user spamming? To do this we
+computationally expensive is- is the user spamming? To do this we
 check the latest 200 of a user's total tweets, if over \verb|50%| of
 them are \verb|75%| or more similar, then we can conclude they are
 likely spamming and we will not include their tweets in our analysis.
@@ -172,9 +173,9 @@ likely spamming and we will not include their tweets in our analysis.
 \section{Diffusion Sequence Identification}
 Following the collection of all of the tweets within our network we
 need to be able to identify diffusion of information. Because we have
-a list of all the tweets and when they occured, we effectively have a
+a list of all the tweets, and when they occured, we effectively have a
 very large timeline of tweets from the perspective of the
-transnational entrepreneur. We can arrange them linearly and we can
+Transnational Entrepreneur. We canthen arrange them linearly and
 replay the history of the network throughout time.
 
 Throughout the replay of the network it is possible to look for the
