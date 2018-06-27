@@ -1,31 +1,17 @@
-The goal of the imlementation section is to concretely describe how
-the software was written, how it all fits together, and what are the
-actual operations it performs. The implementation section is a
-definition of how the Method was carried out on a programmatic level.
+The imlementation section concretely describes how the software was
+written, how it all fits together, and what are the actual operations
+it performs. The implementation section is a definition of how the
+Method was carried out on a computational level.
 
-\section{The Database Structure}
-The database structure was designed to mimic the nature of the twitter
-network graph as closely as possible. For this reason, the datastore
-of choice for this project was Neo4j. Neo4j was chosen because of its
+\section{Database Structure}
+The database structure was designed to mimic the nature of the Twitter
+network graph as closely as possible. For this reason, the database of
+choice for this project was Neo4j. Neo4j was chosen because of its
 powerful ability to model graphs and networks. Neo4j ships with native
 implementations to connect nodes together, as well as cypher, a
 powerful query language. As an example, cypher is used to select the
-tweets of all the individuals in a transnational network, using just
-one command.
-
-The database contains several types of objects to represent different
-parts of the twitter network. The objects will explained below.
-
-\section{Graph}
-The Graph package contains all of the important definitions for the
-database structure, access, and extraction of data from Twitter. It is
-composed of three important modules:
-
-\begin{enumerate}
-\item Data Model
-\item Filter Node
-\item Network Scrape
-\end{enumerate}
+Tweets of all the individuals in a transnational network, using just
+one query.
 
 \subsection{Data Model}
 The data model is where the representations for all of the objects on
@@ -69,11 +55,12 @@ This object is used to model a given Twitter user and can be used to
 persist all of the important information about them. By breaking apart
 the user model into fields of interest, we are able to write queries
 that target specific properties of users- for example- we can write a
-query to return all users with a location of X.
+query to return all users with a location of X, X being a location of
+our choice.
 
 \subsubsection{The  Status Class}
 The Status class is responsible for maintaining all of the statuses of
-every user within the network. That is, the status class is a
+every user within the network. That is, the Status Class is a
 representation of a Tweet. This class is important because it contains
 all of the data that is fed into our clustering sequence for
 identifying the diffusion of information. The Status class has a one
@@ -105,27 +92,12 @@ class Status(StructuredNode):
 As with the Node class, the Status class represents and classifies all
 information available about a given Tweet published on Twitter.
 
-\subsection{Filter Node}
-The filter node module is responsible for all operations relating to
-classifying different nodes during the network scraping
-process. Within filter node there are a set of functions called
-``filter x'' that accept a Node object as input, and return a true or
-false value as to whether a given Node qualifies for a particular
-attribute.
-
-To provide a concrete example of Node filtering, consider
-identification of Transnational Entrepreneurs. Due to the Twitter
-API's rate limits, different filtering strategies are used to
-determine the liklihood that a given user is a Transnational
-Entrpreneur. This helps improve the performance of collecting networks
-of interest on Twitter. During the initial collection of followers of
-a startup hub, the filter\_1 function, will determine whether a sample
-network of a user qualifies them as being a Transnational candidate.
-
-\subsection{Network Scrape}
-The network scrape module contains a set of functions for extracting a
-network of a Twitter user in a reliable way. Within network scrape,
-there are functions available to:
+\section{Extraction}
+Following the definition of the Data model, the next package within
+the programs pipline is population the database from the Twitter API.
+To do this, the Network Scrape module contains a set of functions for
+extracting a network of a Twitter user in a reliable way. Within
+network scrape, there are functions available to:
 
 \begin{enumerate}
 \item Get a single User and persist them
@@ -134,10 +106,10 @@ there are functions available to:
 \item Get a User's Status' and persist them
 \end{enumerate}
 
-Together, composting these functions allows for a snapshot of a given
+Together, composing these functions allows for a snapshot of a given
 individual's network. By abstracting away the functions of the Twitter
 API in the Network Scrape module, extracting a user's Twitter network
-is significantly eased.
+is significantly simplified.
 
 There are several constraints that the Network Scrape module
 considers. One of the primary constraints is, that there are different
@@ -151,16 +123,38 @@ but simultaneously prohibit the collection of data via the API for
 that user. If this behavior is not accounted for, the Network
 representation within Neo4j may contain empty Nodes, or Nodes without
 statuses. These problems and others are all abstracted by Network
-Scrape, so that the Scrapet package runner module can easily extract
-and persist a network snapshot from Twitter to Neo4j.
+Scrape, so that the main runner module can easily extract and persist
+a network snapshot from Twitter to Neo4j.
 
-\section{Cluster}
-The cluster package is responsible for determining whether two Tweets
-are semantically related, and how semantically related they are. This
-information is then used to attempt to trace the diffusion of
-information through a given Transnational Entrepreneur's network. In
-the code samples below, the implementation, and rationale for design
-decisions will be explained.
+\section{Filtering}
+Throughout the extraction process described above, there are a set of
+Filters that can be used to moderate and guide the extraction process.
+The filter node module is responsible for all of these moderating
+operations.  Within filter node there are a set of functions called
+``filter x'' (where X is an arbitrary string) that accept a Node data
+object (a Twitter user in this context) as input, and return a true or
+false value as to whether a given Node qualifies for a particular
+attribute.
+
+To provide a concrete example of Node filtering, consider
+identification of Transnational Entrepreneurs. Due to the Twitter
+API's rate limits, different filtering strategies are used to
+determine the liklihood that a given user is a Transnational
+Entrpreneur. This helps improve the performance of collecting networks
+of interest on Twitter. During the initial collection of followers of
+a startup hub, the filter\_1 function, will determine whether a sample
+network from a given user qualifies them as being a Transnational
+candidate.
+
+\section{Clustering}
+The final step in the analysis pipeline involves clustering all of the
+resolved data from the network to attempt to identify Transnational
+Diffusion. The cluster package is responsible for determining whether
+two Tweets are semantically related, and how semantically related they
+are. This information is then used to attempt to trace the diffusion
+of information through a given Transnational Entrepreneur's
+network. In the code samples below, the implementation, and rationale
+for design decisions will be explained.
 
 \begin{lstlisting}
 def process_text(text, stem=False):
@@ -178,11 +172,10 @@ def process_text(text, stem=False):
     return tokens
 \end{lstlisting}
 
-The process text function is responsible for taking a piece of text
-and normalizing it for comparison. It starts by first removing all
-punctuation, while true, that punctuation carries meaning, it
-introduces noise into the clustering algorithm and makes it more
-difficult to cluster relevant documents.
+The first step of the clustering process involves basic text
+processing.  The process text function is responsible for taking a
+piece of text and normalizing it for comparison. It starts by first
+removing all punctuation.
 
 After processing the text to remove the punctuation, the words are
 stemmed. The process of stemming ensures that two related words are
@@ -192,9 +185,8 @@ by the clustering algorithm.
 
 Finally, the process text function returns an array of ``tokens'',
 another way of saying ``words'' which comprise the document that is
-processed. These ``tokens'' are then fed into a function which
-turns them into a vector, and then clusters them. That function
-is below:
+processed. These ``tokens'' are then fed into a function which turns
+them into a vector, and then clusters them. That function is below:
   
 \begin{lstlisting}
 def cluster_documents(documents):
@@ -275,8 +267,8 @@ the diffusion event. Finally, it groups all Tweets from both groups
 Transantional Entrepreneur's diffusion Tweet.
 
 Together, all of these functions work together to identify
-Transnational Diffusion. A high level overview of the operations
-necessary is below:
+Transnational Diffusion. A high level overview of the operations is
+delineated below:
 
 \begin{enumerate}
 \item Find Transnational Tweets within the Database, Iterate over each
@@ -289,3 +281,6 @@ necessary is below:
   group A, X, and then group B if and only if they share the same
   content cluster as X
 \end{enumerate}
+
+When executed in this order, the complete pipeline can find and
+extract instances of Transnational Diffusion.
