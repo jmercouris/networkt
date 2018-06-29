@@ -23,7 +23,7 @@ user.
 In addition to this data for each user, we are able to get all of the
 users' relationships (friends and followers). Finally, we can get
 their latest 200 statuses (tweets) which are used for tracing
-information diffusion through a ego-centric Twitter network.
+information diffusion through a egocentric Twitter network.
 
 \section{The Root Node}
 The study that we have done may be replicated in any given country
@@ -46,7 +46,7 @@ find Transnational Entrepreneurs.
 After identifying a Twitter User as your root node, the program will
 extract a group of followers from your root node. These are your root
 node's 1st degree network, or rather, an incomplete, directional,
-ego-centric network. This group of followers represent candidates for
+egocentric network. This group of followers represent candidates for
 Transnational Entrepreneurs, we use these users as candidates because
 they are likely Entreprenuers in the city that we are interested in.
 To determine whether they are the users that we are looking for, we
@@ -85,7 +85,7 @@ stage of filtering. Further research could focus more on this aspect.
 \section{Filter Level 1}
 Filter level 1 is the part of the filtering process in which we
 determine whether a user is of interest for further analysis. Exemple
-gratia, are we going to gather their ego-centric network? The reason
+gratia, are we going to gather their egocentric network? The reason
 that we must assess this at this stage is because we are rate limited
 in how many API calls we may make to the Twitter API for a given time
 frame (please see the appendix for details). In order to assess
@@ -99,7 +99,7 @@ top two most common nationalaties in their network must be more than
 \verb|50%| of their network and that their top two most common
 nationalities may not differ by more than \verb|80%| in quantity.
 
-\section{Transnational Entrepreneur Ego-Centric Network Extraction}
+\section{Transnational Entrepreneur Egocentric Network Extraction}
 Following the selection of a set of individuals that we are interested
 in, we begin the extraction process. We iterate through every
 Transnational Entrepreneur candidate and collect a limited network of
@@ -107,10 +107,10 @@ their friends and followers. For our initial study, we limited this
 network to a maximum of 200 friends and 200 followers for a given
 Transnational Entrepreneur.
 
-\section{Transnational Entrepreneur Ego-Centric Network Activity}
+\section{Transnational Entrepreneur Egocentric Network Activity}
 After extracting up to 200 friends and 200 followers from every given
 Transnational Entreprenuer candidate, we gathered the latest 200
-tweets from every single user in the ego-centric network. If the user
+tweets from every single user in the egocentric network. If the user
 had tweeted less than 200 total tweets, we gathered all of their
 tweets. By having a record of every single tweet, and every single
 timestamp from every tweet, we can trace the diffusion of an idea
@@ -123,7 +123,7 @@ Transnational Entrepreneur.
 
 \section{Filter Level 2}
 After collecting all of the tweets from every single user of the
-Transnational Entrepreneur's ego-centric network, we now had the
+Transnational Entrepreneur's egocentric network, we now had the
 capability to do more effective filtering for different indicators
 that a given user may be a robot. In the case that a user is a robot,
 we do not want to consider their data, our study is only concerned
@@ -196,7 +196,7 @@ information diffusion across borders.
 
 Due to the high volume of tweets within a network, doing this by hand
 would be nearly impossible. In order to do this effectively, against
-multiple Transnational Entrepreneur ego-centric networks, machine
+multiple Transnational Entrepreneur egocentric networks, machine
 learning was utilized.
 
 \section{Grouping Similar Tweets}
