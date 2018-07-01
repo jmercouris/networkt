@@ -5,7 +5,7 @@ user.
 \begin{itemize}
 \item \verb|created_at|: User account creation date
 \item \verb|description|: User account description
-\item \verb|favorites_count|: How many tweets has the User favorited.
+\item \verb|favorites_count|: How many Tweets has the User favorited.
 \item \verb|followers_count|: How many followers does the User have
 \item \verb|friends_count|: How many users does the User follow
 \item \verb|id_str|: What is the User's unique id
@@ -22,7 +22,7 @@ user.
 
 In addition to this data for each user, we are able to get all of the
 users' relationships (friends and followers). Finally, we can get
-their latest 200 statuses (tweets) which are used for tracing
+their latest 200 statuses (Tweets) which are used for tracing
 information diffusion through a egocentric Twitter network.
 
 \section{The Root Node}
@@ -116,9 +116,9 @@ Transnational Entrepreneur.
 \section{Transnational Entrepreneur Egocentric Network Activity}
 After extracting up to 200 friends and 200 followers from every given
 Transnational Entreprenuer candidate, we gathered the latest 200
-tweets from every single user in the egocentric network. If the user
-had tweeted less than 200 total tweets, we gathered all of their
-tweets.
+Tweets from every single user in the egocentric network. If the user
+had Tweeted less than 200 total Tweets, we gathered all of their
+Tweets.
 
 \begin{figure}[H]
   \centering
@@ -127,17 +127,17 @@ tweets.
 \end{figure}
 
 
-By having a record of every single tweet, and every single
-timestamp from every tweet, we can trace the diffusion of an idea
+By having a record of every single Tweet, and every single
+timestamp from every Tweet, we can trace the diffusion of an idea
 throughout a network. If we know that one of a Transantional
-Entrepreneur's friends tweeted about something, and then subsequently
-the Transantional Entrepreneur tweeted about the same topic, we can
+Entrepreneur's friends Tweeted about something, and then subsequently
+the Transantional Entrepreneur Tweeted about the same topic, we can
 assume with some degree of certainty that we witnessed information
 diffusion from the friend of the Transnational Entrepreneur to the
 Transnational Entrepreneur.
 
 \section{Filter Level 2}
-After collecting all of the tweets from every single user of the
+After collecting all of the Tweets from every single user of the
 Transnational Entrepreneur's egocentric network, we now had the
 capability to do more effective filtering for different indicators
 that a given user may be a robot. In the case that a user is a robot,
@@ -149,11 +149,11 @@ take a number of shortcuts that are proxy indicators of humanity:
 \item Is the user twitter verified?
 \item Does the user have a valid ratio of friends to followers?
 \item Does the user have enough statuses?
-\item Is the user simply spamming the same tweet over and over again?
+\item Is the user simply spamming the same Tweet over and over again?
 \end{itemize}
 
 \subsection{Is The User Twitter Verified}
-One of the indicators we use to see whether a Twitter User's tweets
+One of the indicators we use to see whether a Twitter User's Tweets
 are of human origin is whether they are verified or not. A verified
 Twitter user is one that has submitted formal proof to Twitter that
 they are who they say they are. Verified Twitter accounts are
@@ -175,21 +175,21 @@ The minimum status requirements that we pose on a user are to make
 sure that they are active on twitter. We want to only pick up
 individuals that are participating in conversations and contributing
 to a community. For this reason we set a minimum number of statuses to
-50, if a user has less than 50 statuses ever tweeted, then they are
+50, if a user has less than 50 statuses ever Tweeted, then they are
 not considered in our computation.
 
 \subsection{Is the User Spamming?}
 Finally, the last thing that we can check, and the most
 computationally expensive is- is the user spamming? To do this we
-check the latest 200 of a user's total tweets, if over \verb|50%| of
+check the latest 200 of a user's total Tweets, if over \verb|50%| of
 them are \verb|75%| or more similar, then we can conclude they are
-likely spamming and we will not include their tweets in our analysis.
+likely spamming and we will not include their Tweets in our analysis.
 
 \section{Diffusion Sequence Identification}
-Following the collection of all of the tweets within our network we
+Following the collection of all of the Tweets within our network we
 need to be able to identify diffusion of information. Because we have
-a list of all the tweets, and when they occured, we effectively have a
-very large timeline of tweets from the perspective of the
+a list of all the Tweets, and when they occured, we effectively have a
+very large timeline of Tweets from the perspective of the
 Transnational Entrepreneur. We canthen arrange them linearly and
 replay the history of the network throughout time.
 
@@ -200,16 +200,16 @@ Entrepreneur:
 \begin{enumerate}
 \item Country A - One of my friends posts a piece of information \verb|i| 
 \item I pick up \verb|i| and post about it as well
-\item Country B - One of my followers posts about \verb|i| after seeing my tweet
+\item Country B - One of my followers posts about \verb|i| after seeing my Tweet
 \end{enumerate}
 
 If this pattern can be observed, then an example of Transnational
-Diffusion has been identified- a tweet that somebody in one country
+Diffusion has been identified- a Tweet that somebody in one country
 made, was transferred to another country via a Transnational
 Entrepreneur. The Transnational Entrepreneur helped facilitate
 information diffusion across borders.
 
-Due to the high volume of tweets within a network, doing this by hand
+Due to the high volume of Tweets within a network, doing this by hand
 would be nearly impossible. In order to do this effectively, against
 multiple Transnational Entrepreneur egocentric networks, machine
 learning was utilized.

@@ -45,16 +45,16 @@ From our now smaller set of followers, we select based on:
 Filter 2
 --------------------------------------------------------------------------------
 This filter concerns itself if we are interested in the content of
-someone's tweets.  After the following steps we evaluate a set of
+someone's Tweets.  After the following steps we evaluate a set of
 criteria.
 
-#. Collect the last 200 tweets of every individual in the
+#. Collect the last 200 Tweets of every individual in the
    follower's (F) egocentric network.
 
-From our networks, we consider which user's tweets are interesting based on:
+From our networks, we consider which user's Tweets are interesting based on:
 ********************************************************************************
 - If they are a verified user (automatically labeled as filter 2)
-- If they tweet frequently enough (accounts with less than 50 total
-  tweets are not considered)
+- If they Tweet frequently enough (accounts with less than 50 total
+  Tweets are not considered)
 - If they have a valid follower to friend ratio
 - If they avoid repeating themselves over 50% of the time
