@@ -210,6 +210,12 @@ Entrepreneur:
 \item Country B - One of my followers posts about \verb|i| after seeing my Tweet
 \end{enumerate}
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1.0\textwidth]{diffusion.png}
+  \caption{Diffusion traversing the Transantional Entrepreneur's egocentric network.}
+\end{figure}
+
 If this pattern can be observed, then an example of Transnational
 Diffusion has been identified- a Tweet that somebody in one country
 made, was transferred to another country via a Transnational
@@ -298,6 +304,20 @@ considered a cluster. Additionally important is the ability to set the
 threshold distance for two vectors to be related (known as
 epsilon). This fine-tuning allows the data to be more accurately
 grouped and categorized based on its nature.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1.0\textwidth]{db_scan.png}
+  \caption{An example of DB Scan with a threshold of three as the minimum amount of samples.}
+\end{figure}
+
+As can be seen in the above diagram. Given an Epsilon, DB Scan limits
+how far away from each other two nodes may be. Then, given a minimum
+samples, DB Scan limits the minimum length of the chain of
+interconnected samples that constitute a cluster. For example, in the
+diagram above, the top left does not constitute a cluster because
+there are too few samples- despite the nodes being within the defined
+(for the diagram) Epsilon distance.
 
 Therefore, to breifly summarize, DB Scan was chosen because there were
 an unknown quantity of content-clusters within the data set, and the
