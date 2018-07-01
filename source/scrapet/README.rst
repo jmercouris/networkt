@@ -13,7 +13,7 @@ This filter  involves determining whether we would like to
 consider a candidate for analysis.
 
 #. Select a startup incubator/workspace/hotspot in a city we are
-   interested in studying, find their twitter username.
+   interested in studying, find their Twitter username.
 #. Collect a set of followers following that startup incubator, living
    in the same city.
 

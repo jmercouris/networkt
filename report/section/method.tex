@@ -146,7 +146,7 @@ with people. To quickly sort through hundreds of thousands of users we
 take a number of shortcuts that are proxy indicators of humanity:
 
 \begin{itemize}
-\item Is the user twitter verified?
+\item Is the user Twitter verified?
 \item Does the user have a valid ratio of friends to followers?
 \item Does the user have enough statuses?
 \item Is the user simply spamming the same Tweet over and over again?
@@ -170,9 +170,16 @@ ratio for someone to be considered human within our network. This
 means that for every 10 people that they are friends with, they must
 have at lest 1 follower, any less and they will be discounted.
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1.0\textwidth]{friend_follower_ratio.png}
+  \caption{An invalid friend to follower ratio.}
+\end{figure}
+
+
 \subsection{Minimum Status Requirements}
 The minimum status requirements that we pose on a user are to make
-sure that they are active on twitter. We want to only pick up
+sure that they are active on Twitter. We want to only pick up
 individuals that are participating in conversations and contributing
 to a community. For this reason we set a minimum number of statuses to
 50, if a user has less than 50 statuses ever Tweeted, then they are
