@@ -1,4 +1,4 @@
-The imlementation section concretely describes how the software was
+The implementation section concretely describes how the software was
 written, how it all fits together, and what are the actual operations
 it performs. The implementation section is a definition of how the
 Method was carried out on a computational level.
@@ -94,7 +94,7 @@ information available about a given Tweet published on Twitter.
 
 \section{Extraction}
 Following the definition of the Data model, the next package within
-the programs pipline is population the database from the Twitter API.
+the programs pipeline is population the database from the Twitter API.
 To do this, the Network Scrape module contains a set of functions for
 extracting a network of a Twitter user in a reliable way. Within
 network scrape, there are functions available to:
@@ -139,8 +139,8 @@ attribute.
 To provide a concrete example of Node filtering, consider
 identification of Transnational Entrepreneurs. Due to the Twitter
 API's rate limits, different filtering strategies are used to
-determine the liklihood that a given user is a Transnational
-Entrpreneur. This helps improve the performance of collecting networks
+determine the likelihood that a given user is a Transnational
+Entrepreneur. This helps improve the performance of collecting networks
 of interest on Twitter. During the initial collection of followers of
 a startup hub, the filter\_1 function, will determine whether a sample
 network from a given user qualifies them as being a Transnational
@@ -180,7 +180,7 @@ removing all punctuation.
 After processing the text to remove the punctuation, the words are
 stemmed. The process of stemming ensures that two related words are
 reduced into their base form. This transforms words like ``macaw'' and
-``parakeet'' both to ``bird'' which allows for an easier comparision
+``parakeet'' both to ``bird'' which allows for an easier comparison
 by the clustering algorithm.
 
 Finally, the process text function returns an array of ``tokens'',
@@ -264,7 +264,7 @@ Transnational before a diffusion event (Tweet). It then clusters all
 of the Tweets from the followers of a Transnational Entrepreneur after
 the diffusion event. Finally, it groups all Tweets from both groups
 (friends and followers), that are of the same content cluster as the
-Transantional Entrepreneur's diffusion Tweet.
+Transnational Entrepreneur's diffusion Tweet.
 
 Together, all of these functions work together to identify
 Transnational Diffusion. A high level overview of the operations is
@@ -273,13 +273,15 @@ delineated below:
 \begin{enumerate}
 \item Find Transnational Tweets within the Database, Iterate over each
   Tweet as X
-\item Find Transnational Friend Tweets occuring before Tweet X as A
-\item Find Transnational Follower Tweets occuring after Tweet X as B
-\item Process and cluster Text from Tweets in group A, B, and Tweet X together
-\item Identify all Tweets from group A, B that are of the same content cluster as X
+\item Find Transnational Friend Tweets occurring before Tweet X as A
+\item Find Transnational Follower Tweets occurring after Tweet X as B
+\item Process and cluster Text from Tweets in group A, B, and Tweet X
+  together
+\item Identify all Tweets from group A, B that are of the same content
+  cluster as X
 \item Save results of Transnational Diffusion by recording Tweets from
-  group A, X, and then group B if and only if they share the same
-  content cluster as X
+  group A, X, and group B if and only if they share the same content
+  cluster as X
 \end{enumerate}
 
 When executed in this order, the complete pipeline can find and

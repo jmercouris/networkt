@@ -14,7 +14,7 @@ user.
 \item \verb|location|: Where is the User located
 \item \verb|name|: What is the User's name
 \item \verb|screen_name|: What is the User's screen name
-\item \verb|statuses_count|: How many stasuses has the User posted
+\item \verb|statuses_count|: How many statuses has the User posted
 \item \verb|time_zone|: What is the time zone of the user
 \item \verb|utc_offset|: What is the UTC (coordinated universal time) offset of the user
 \item \verb|verified|: Has the User submitted proof to Twitter of their identity
@@ -54,7 +54,7 @@ extract a group of followers from your root node. These are your root
 node's 1st degree network, or rather, an incomplete, directional,
 egocentric network. This group of followers represent candidates for
 Transnational Entrepreneurs, we use these users as candidates because
-they are likely Entreprenuers in the city that we are interested in.
+they are likely Entrepreneurs in the city that we are interested in.
 To determine whether they are the users that we are looking for, we
 will perform a set of filters operations on them.
 
@@ -71,10 +71,10 @@ things here.
 
 The way we determine whether the User is from Berlin is by relying on
 their time zone settings. We found that many users set their language,
-or their city to whatever they would like, but the timezone, often
+or their city to whatever they would like, but the time-zone, often
 automatically set by the computer, is a good indicator of a user's
 actual locale. Regardless, going with any one of the attributes is not
-a completley valid way to ensure that a given user says where they
+a completely valid way to ensure that a given user says where they
 actually are, all information is subject to what the user wishes to
 input.
 
@@ -101,7 +101,7 @@ pulling their whole network, we pull a sample of their friends.
 If we find that the sample distribution is valid, then we will mark
 them as filtered and move on to processing them in the next stage. The
 distribution ratio of a valid transnational is therefore that their
-top two most common nationalaties in their network must be more than
+top two most common nationalities in their network must be more than
 \verb|50%| of their network and that their top two most common
 nationalities may not differ by more than \verb|80%| in quantity.
 
@@ -115,7 +115,7 @@ Transnational Entrepreneur.
 
 \section{Transnational Entrepreneur Egocentric Network Activity}
 After extracting up to 200 friends and 200 followers from every given
-Transnational Entreprenuer candidate, we gathered the latest 200
+Transnational Entrepreneur candidate, we gathered the latest 200
 Tweets from every single user in the egocentric network. If the user
 had Tweeted less than 200 total Tweets, we gathered all of their
 Tweets.
@@ -123,15 +123,15 @@ Tweets.
 \begin{figure}[H]
   \centering
   \includegraphics[width=1.0\textwidth]{tweets.png}
-  \caption{A network graph of a Transnational Entrepreneur and thier Tweets.}
+  \caption{A network graph of a Transnational Entrepreneur and their Tweets.}
 \end{figure}
 
 
 By having a record of every single Tweet, and every single
 timestamp from every Tweet, we can trace the diffusion of an idea
-throughout a network. If we know that one of a Transantional
+throughout a network. If we know that one of a Transnational
 Entrepreneur's friends Tweeted about something, and then subsequently
-the Transantional Entrepreneur Tweeted about the same topic, we can
+the Transnational Entrepreneur Tweeted about the same topic, we can
 assume with some degree of certainty that we witnessed information
 diffusion from the friend of the Transnational Entrepreneur to the
 Transnational Entrepreneur.
@@ -195,9 +195,9 @@ likely spamming and we will not include their Tweets in our analysis.
 \section{Diffusion Sequence Identification}
 Following the collection of all of the Tweets within our network we
 need to be able to identify diffusion of information. Because we have
-a list of all the Tweets, and when they occured, we effectively have a
-very large timeline of Tweets from the perspective of the
-Transnational Entrepreneur. We canthen arrange them linearly and
+a list of all the Tweets, and when they occurred, we effectively have a
+very large time-line of Tweets from the perspective of the
+Transnational Entrepreneur. We can then arrange them linearly and
 replay the history of the network throughout time.
 
 Throughout the replay of the network it is possible to look for the
@@ -213,7 +213,7 @@ Entrepreneur:
 \begin{figure}[H]
   \centering
   \includegraphics[width=1.0\textwidth]{diffusion.png}
-  \caption{Diffusion traversing the Transantional Entrepreneur's egocentric network.}
+  \caption{Diffusion traversing the Transnational Entrepreneur's egocentric network.}
 \end{figure}
 
 If this pattern can be observed, then an example of Transnational
@@ -286,7 +286,7 @@ more reliable, at the cost of less accuracy.
 \section{DB Scan Clustering}
 The clustering algorithm selected for this research was
 DB-Scan. Initially K-Means was selected due to its fast performance
-and the limited accesss to computational power, but it was deemed
+and the limited access to computational power, but it was deemed
 unsuitable. The reason K-Means was deemed unsuitable, and the reason
 DB-Scan was chosen is because DB-Scan does not require pre-defining
 how many clusters exist in a given data set.
@@ -294,7 +294,7 @@ how many clusters exist in a given data set.
 DB-Scan, roughly speaking, works by measuring the distance between two
 vectors in a two dimensional space. If this distance is close enough,
 these two vectors form the basis of a of a cluster. Iteratively
-analayzing each vector reveals which vectors are all close enough to
+analyzing each vector reveals which vectors are all close enough to
 each other to form a cluster. There are some settable parameters
 within DB-Scan's implementation, particularly the Sci-kit Learn
 implementation used in the research. For example, one can set what the
@@ -319,7 +319,7 @@ diagram above, the top left does not constitute a cluster because
 there are too few samples- despite the nodes being within the defined
 (for the diagram) Epsilon distance.
 
-Therefore, to breifly summarize, DB Scan was chosen because there were
+Therefore, to briefly summarize, DB Scan was chosen because there were
 an unknown quantity of content-clusters within the data set, and the
 parameters available to tweak the behavior of the algorithm allowed
 for fine grained adjustment of the similarity measure comparing two
