@@ -42,6 +42,12 @@ The Twitter account that you find in the third step will represent
 your network root (root node). From this root, you will branch off to
 find Transnational Entrepreneurs.
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1.0\textwidth]{root_node.png}
+  \caption{The root node and Transnational Entrepreneur candidates.}
+\end{figure}
+
 \section{Root Network Extraction}
 After identifying a Twitter User as your root node, the program will
 extract a group of followers from your root node. These are your root
@@ -54,7 +60,7 @@ will perform a set of filters operations on them.
 
 \section{Filter Level 0}
 The first filter involved is named Filter level 0. Filter level 0 is
-responsible for filtering the Root Node's followers to see whether
+responsible for filtering the root node's followers to see whether
 they are of interest. For the purposes of this research, we check two
 things here.
 
@@ -64,20 +70,20 @@ things here.
 \end{itemize}
 
 The way we determine whether the User is from Berlin is by relying on
-their time zone settings. We found that many people set their
-language, or their city to whatever they would like, but the timezone,
-often automatically set by the computer is a good indicator of a
-user's actual locale. Regardless, going with any one of the attributes
-is not a completley valid way to ensure that a given user says where
-they actually are, all information is subject to what the user wishes
-to input.
+their time zone settings. We found that many users set their language,
+or their city to whatever they would like, but the timezone, often
+automatically set by the computer, is a good indicator of a user's
+actual locale. Regardless, going with any one of the attributes is not
+a completley valid way to ensure that a given user says where they
+actually are, all information is subject to what the user wishes to
+input.
 
 The second criteria is a little bit more difficult to discern (is the
 user human). It is not always possible to tell apart a human from a
 robot or organization. In order to keep things as simple as possible,
 we performed some basic checks that look for a valid ratio of
 friends:followers, a limited amount of content repetition/spam, and
-automatically passed them if they were twitter verified. This is not a
+automatically passed them if they were Twitter verified. This is not a
 foolproof way of filtering users as robots or not, but it is
 computationally inexpensive and allowed us to move on to our next
 stage of filtering. Further research could focus more on this aspect.
@@ -112,7 +118,16 @@ After extracting up to 200 friends and 200 followers from every given
 Transnational Entreprenuer candidate, we gathered the latest 200
 tweets from every single user in the egocentric network. If the user
 had tweeted less than 200 total tweets, we gathered all of their
-tweets. By having a record of every single tweet, and every single
+tweets.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1.0\textwidth]{tweets.png}
+  \caption{A network graph of a Transnational Entrepreneur and thier Tweets.}
+\end{figure}
+
+
+By having a record of every single tweet, and every single
 timestamp from every tweet, we can trace the diffusion of an idea
 throughout a network. If we know that one of a Transantional
 Entrepreneur's friends tweeted about something, and then subsequently
